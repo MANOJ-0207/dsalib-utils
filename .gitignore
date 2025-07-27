@@ -1,0 +1,49 @@
+# === Java & Maven ===
+
+# Compiled class files
+*.class
+
+# Maven target directory
+/target/
+
+# Logs
+*.log
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# Eclipse
+*.classpath
+*.project
+*.settings/
+
+# VS Code
+.vscode/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# GPG / Secrets (if generated locally)
+*.asc
+*.key
+*.gpg
+secring.gpg
+pubring.gpg
+
+# GitHub workflow cache (optional)
+.github/workflows/*.log
+.github/workflows/*.xml
+.github/workflows/.idea/
+
+# Mac and Linux specific temp files
+*.swp
+*~
