@@ -34,7 +34,7 @@ class DetailedEdgeTest {
     @Test
     void testToString() {
         DetailedEdge<String> edge = new DetailedEdge<>("X", "Y", 42);
-        assertEquals("X --42→ Y", edge.toString());
+        assertEquals("X --42-→ Y", edge.toString());
     }
 
     @Test

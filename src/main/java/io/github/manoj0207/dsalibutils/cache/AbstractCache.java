@@ -7,7 +7,7 @@ import java.util.Map;
  * An abstract base class for cache implementations.
  * Provides basic map-backed storage and common operations such as
  * {@code contains}, {@code remove}, {@code clear}, and {@code size}.
- *
+ * <p>
  * Subclasses must implement {@code get} and {@code put} based on
  * the specific caching strategy (e.g., LRU, LFU, FIFO).
  *
@@ -16,10 +16,14 @@ import java.util.Map;
  */
 public abstract class AbstractCache<K, V> implements Cache<K, V> {
 
-    /** Maximum number of entries this cache can hold */
+    /**
+     * Maximum number of entries this cache can hold.
+     */
     protected final int capacity;
 
-    /** Internal key-value map representing the cache store */
+    /**
+     * Internal key-value map representing the cache store.
+     */
     protected final Map<K, V> store;
 
     /**
@@ -30,7 +34,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      */
     public AbstractCache(int capacity) {
         if (capacity < 0) {
-            throw new IllegalArgumentException("Cache capacity not be negative.");
+            throw new IllegalArgumentException("Cache capacity must not be negative.");
         }
         this.capacity = capacity;
         this.store = new HashMap<>();
@@ -40,8 +44,8 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * Checks if the cache contains a mapping for the given key.
      *
      * @param key the non-null key to check
-     * @return true if the cache contains the key, false otherwise
-     * @throws IllegalArgumentException if the key is null
+     * @return {@code true} if the cache contains the key, {@code false} otherwise
+     * @throws IllegalArgumentException if the key is {@code null}
      */
     @Override
     public boolean contains(K key) {
@@ -66,7 +70,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * If the key does not exist, the call has no effect.
      *
      * @param key the non-null key to remove
-     * @throws IllegalArgumentException if the key is null
+     * @throws IllegalArgumentException if the key is {@code null}
      */
     @Override
     public void remove(K key) {

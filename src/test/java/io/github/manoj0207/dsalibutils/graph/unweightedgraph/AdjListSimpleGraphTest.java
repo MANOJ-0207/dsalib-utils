@@ -94,8 +94,8 @@ class AdjListSimpleGraphTest {
         graph.addEdge(3, 4);
 
         Set<Edge<Integer>> bridges = graph.getBridgeEdges();
-        assertTrue(bridges.contains(new Edge<>(1, 2)) || bridges.contains(new Edge<>(2, 1)));
-        assertTrue(bridges.contains(new Edge<>(3, 4)) || bridges.contains(new Edge<>(4, 3)));
+        assertTrue(bridges.contains(new Edge<>(1, 2, false)) || bridges.contains(new Edge<>(2, 1, false)));
+        assertTrue(bridges.contains(new Edge<>(3, 4, false)) || bridges.contains(new Edge<>(4, 3, false)));
     }
 
     // === DIRECTED GRAPH TESTS ===

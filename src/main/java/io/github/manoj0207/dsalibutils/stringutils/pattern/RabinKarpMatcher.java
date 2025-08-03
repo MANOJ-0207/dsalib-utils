@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Rabin-Karp string matcher using rolling hash.
+ * <p>
  * Supports configurable hash base and modulus to manage collisions and overflow.
  */
 public class RabinKarpMatcher extends AbstractPatternMatcher {
@@ -28,11 +29,13 @@ public class RabinKarpMatcher extends AbstractPatternMatcher {
     }
 
     /**
+     * <b>Time Complexity:</b> <p>O(N + M)</p> average case, where N is the length of text and M is the length of pattern.
+     * <p>
      * Performs Rabin-Karp pattern matching using rolling hash on character arrays.
      *
-     * @param text    the text as char array (non-null)
-     * @param pattern the pattern as char array (non-null)
-     * @return list of starting indices where pattern matches in text
+     * @param text    the text as character array (non-null)
+     * @param pattern the pattern as character array (non-null)
+     * @return list of starting indices where the pattern matches in the text
      */
     @Override
     protected List<Integer> doSearch(char[] text, char[] pattern) {
@@ -55,7 +58,7 @@ public class RabinKarpMatcher extends AbstractPatternMatcher {
         }
 
         for (int i = 0; i <= n - m; i++) {
-            // On hash match, verify actual characters to avoid false positive due to collision
+            // On hash match, verify actual characters to avoid false positives
             if (patternHash == textHash && isEqual(text, i, pattern)) {
                 result.add(i);
             }
@@ -71,12 +74,14 @@ public class RabinKarpMatcher extends AbstractPatternMatcher {
     }
 
     /**
-     * Utility method to compare characters between text segment and pattern.
+     * <b>Time Complexity:</b> <p>O(M)</p> per call.
+     * <p>
+     * Utility method to compare characters between a text segment and pattern.
      *
      * @param text    the input text array
-     * @param start   the start index in text to compare
+     * @param start   the start index in the text to compare
      * @param pattern the pattern to match
-     * @return true if substring matches pattern, false otherwise
+     * @return {@code true} if the substring matches the pattern, {@code false} otherwise
      */
     private boolean isEqual(char[] text, int start, char[] pattern) {
         for (int i = 0; i < pattern.length; i++) {

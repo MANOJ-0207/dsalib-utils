@@ -26,8 +26,10 @@ class AdjMatrixWeightedGraphTest {
         undirectedGraph.addEdge("B", "C", 2);
         assertEquals(6, undirectedGraph.dijkstra("A", "C")); // A->B->C
 
+        assertTrue(((AdjMatrixWeightedGraph<String>) undirectedGraph).isBridgeEdge("B", "C"));
+
         undirectedGraph.removeEdge("B", "C");
-        assertEquals(-1, undirectedGraph.dijkstra("A", "C")); // disconnected
+        assertNull(undirectedGraph.dijkstra("A", "C")); // disconnected
     }
 
     @Test
@@ -52,7 +54,7 @@ class AdjMatrixWeightedGraphTest {
 
         assertEquals(3, directedGraph.dijkstra("A", "C"));
         assertEquals(1, directedGraph.dijkstra("A", "B"));
-        assertEquals(-1, directedGraph.dijkstra("C", "A")); // unreachable
+        assertNull(directedGraph.dijkstra("C", "A")); // unreachable
     }
 
     @Test
@@ -152,6 +154,11 @@ class AdjMatrixWeightedGraphTest {
         undirectedGraph.dfs("A", dfs::add);
         assertTrue(dfs.containsAll(List.of("A", "B")));
         assertFalse(dfs.contains("X"));
+
+        undirectedGraph.addEdge("Y", "A", 1);
+        assertTrue(((AdjMatrixWeightedGraph<String>) undirectedGraph).isBridgeEdge("X", "Y"));
+        assertTrue(((AdjMatrixWeightedGraph<String>) undirectedGraph).isBridgeNode("Y"));
+
     }
 
     @Test
@@ -191,9 +198,11 @@ class AdjMatrixWeightedGraphTest {
     void testReachabilityUndirected() {
         undirectedGraph.addEdge("A", "B", 1);
         undirectedGraph.addEdge("C", "D", 1);
-
+        undirectedGraph.addEdge("B", "C", 1);
         assertTrue(undirectedGraph.isReachable("B", "A"));
-        assertFalse(undirectedGraph.isReachable("A", "D"));
+        assertTrue(undirectedGraph.isReachable("A", "D"));
+        assertTrue(((AdjMatrixWeightedGraph<String>) undirectedGraph).isBridgeEdge("A", "B"));
+        assertTrue(((AdjMatrixWeightedGraph<String>) undirectedGraph).isBridgeNode("B"));
     }
 
     @Test
@@ -227,6 +236,9 @@ class AdjMatrixWeightedGraphTest {
         undirectedGraph.addEdge("C", "A", 1);
 
         assertTrue(undirectedGraph.isStronglyConnected());
+
+        assertFalse(((AdjMatrixWeightedGraph<String>) undirectedGraph).isBridgeEdge("A", "B"));
+        assertFalse(((AdjMatrixWeightedGraph<String>) undirectedGraph).isBridgeNode("B"));
     }
 
     @Test
@@ -235,6 +247,12 @@ class AdjMatrixWeightedGraphTest {
         undirectedGraph.addEdge("C", "D", 1);
 
         assertFalse(undirectedGraph.isStronglyConnected());
+
+        undirectedGraph.addEdge("B", "C", 1);
+        assertTrue(((AdjMatrixWeightedGraph<String>) undirectedGraph).isBridgeEdge("A", "B"));
+
+        assertTrue(undirectedGraph.isStronglyConnected());
+        assertTrue(((AdjMatrixWeightedGraph<String>) undirectedGraph).isBridgeNode("B"));
     }
 
     @Test
@@ -253,11 +271,9 @@ class AdjMatrixWeightedGraphTest {
         graph.addEdge("C", "D", 1);
         graph.addEdge("D", "E", 1);
 
-        // Only one SCC component includes A-B-C
         List<List<String>> sccs = graph.getStronglyConnectedComponents();
         assertEquals(3, sccs.size());
 
-        // A-B-C in one component, D, E separate
         Map<String, Integer> sccMap = graph.getSCCMap();
         int abcComponent = sccMap.get("A");
         assertEquals(abcComponent, sccMap.get("B"));
@@ -267,7 +283,6 @@ class AdjMatrixWeightedGraphTest {
 
         assertEquals(3, graph.getSCCCount());
     }
-
 
     @Test
     void testPrintGraphNoException() {

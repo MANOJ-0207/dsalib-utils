@@ -7,15 +7,23 @@ import java.util.function.Function;
 
 /**
  * A generic segment tree supporting lazy propagation for efficient range updates and queries.
- * <p>
- * This implementation supports:
+ *
+ * <p>This implementation supports:
  * <ul>
- *     <li>Point update with object replacement</li>
- *     <li>Point update using transformation function</li>
- *     <li>Range update using transformation functions (chained in order)</li>
+ *   <li>Point update with direct object replacement</li>
+ *   <li>Point update using transformation function</li>
+ *   <li>Range update using transformation functions (chained in order)</li>
  * </ul>
  *
- * @param <T> the type of elements in the segment tree
+ * <p><b>Time Complexities:</b>
+ * <ul>
+ *   <li>Build: O(n)</li>
+ *   <li>Query: O(log n)</li>
+ *   <li>Point Update: O(log n)</li>
+ *   <li>Range Update: O(log n)</li>
+ * </ul>
+ *
+ * @param <T> the type of elements stored and operated on in the segment tree
  */
 public class GenericLazySegmentTree<T> implements SegmentTree<T> {
 
@@ -24,8 +32,8 @@ public class GenericLazySegmentTree<T> implements SegmentTree<T> {
     private final Function<T, T>[] lazy;
     private final int n;
 
-    private final BinaryOperator<T> combine;  // Combines values from child nodes
-    private final T defaultValue;             // Identity/default value for queries
+    private final BinaryOperator<T> combine;
+    private final T defaultValue;
 
     /**
      * Constructs a lazy segment tree from an array.
@@ -53,7 +61,8 @@ public class GenericLazySegmentTree<T> implements SegmentTree<T> {
         this.combine = combine;
         this.defaultValue = defaultValue;
 
-        int size = 4 * n;
+        int height = (int) Math.ceil(Math.log(n) / Math.log(2));
+        int size = 2 * (1 << height) - 1;
         this.tree = (T[]) new Object[size];
         this.lazy = (Function<T, T>[]) new Function[size];
 
@@ -74,8 +83,10 @@ public class GenericLazySegmentTree<T> implements SegmentTree<T> {
         this((inputList == null) ? null : inputList.toArray((T[]) new Object[0]), combine, defaultValue);
     }
 
+    // --------------------- INTERNAL METHODS ----------------------
+
     /**
-     * Recursively builds the segment tree.
+     * Recursively builds the segment tree from the input array.
      */
     private void build(int start, int end, int node) {
         if (start == end) {
@@ -104,9 +115,8 @@ public class GenericLazySegmentTree<T> implements SegmentTree<T> {
         }
     }
 
-
     /**
-     * Combines two functions into a single one, preserving the order of application.
+     * Chains two transformation functions in order: f1 ∘ f2
      */
     private Function<T, T> chainFunctions(Function<T, T> f1, Function<T, T> f2) {
         if (f1 == null) return f2;
@@ -128,29 +138,6 @@ public class GenericLazySegmentTree<T> implements SegmentTree<T> {
         updatePoint(0, n - 1, index, value, 0);
     }
 
-    /**
-     * Updates the value at a specific index by applying a transformation function.
-     *
-     * @param index the index to update
-     * @param updater the function to apply to the current value
-     * @throws IllegalArgumentException if the updater function is null
-     * @throws IndexOutOfBoundsException if the index is out of range
-     */
-    @Override
-    public void update(int index, Function<T, T> updater) {
-        if (index < 0 || index >= n)
-            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
-        if (updater == null)
-            throw new IllegalArgumentException("Update function must not be null.");
-
-        T oldValue = query(index, index);
-        T newValue = updater.apply(oldValue);
-        update(index, newValue);
-    }
-
-    /**
-     * Internal helper for direct point updates.
-     */
     private void updatePoint(int start, int end, int index, T value, int node) {
         propagate(start, end, node);
 
@@ -168,6 +155,25 @@ public class GenericLazySegmentTree<T> implements SegmentTree<T> {
         tree[node] = combine.apply(tree[2 * node + 1], tree[2 * node + 2]);
     }
 
+    /**
+     * Updates the value at a specific index by applying a transformation function.
+     *
+     * @param index  the index to update
+     * @param updater the function to apply to the current value
+     * @throws IllegalArgumentException if the updater function is null
+     * @throws IndexOutOfBoundsException if the index is out of range
+     */
+    @Override
+    public void update(int index, Function<T, T> updater) {
+        if (index < 0 || index >= n)
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        if (updater == null)
+            throw new IllegalArgumentException("Update function must not be null.");
+
+        T oldValue = query(index, index);
+        T newValue = updater.apply(oldValue);
+        update(index, newValue);
+    }
 
     /**
      * Applies a transformation function lazily to all elements in the range [l, r].

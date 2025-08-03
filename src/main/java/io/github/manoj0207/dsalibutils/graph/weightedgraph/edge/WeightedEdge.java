@@ -1,24 +1,46 @@
 package io.github.manoj0207.dsalibutils.graph.weightedgraph.edge;
 
 /**
- * Represents a weighted edge pointing to a target node {@code node} with a specific {@code weight}.
+ * <p>
+ * Represents a <b>weighted edge</b> pointing to a target node {@code node} with a specified {@code weight}.
+ * </p>
  *
- * <p>This is commonly used in adjacency lists for weighted graphs, especially in
- * algorithms like Dijkstra, Prim, etc., where only the neighbor and edge weight are needed.</p>
+ * <p>
+ * This structure is commonly used in adjacency lists of weighted graphs, especially in algorithms such as:
+ * <ul>
+ *   <li><b>Dijkstra's Algorithm</b></li>
+ *   <li><b>Prim's Minimum Spanning Tree</b></li>
+ *   <li>Any graph traversal where edge weights to neighbors are tracked</li>
+ * </ul>
+ * </p>
  *
- * <p>As a record:
- * - This is immutable and thread-safe.
- * - Auto-generates {@code equals()}, {@code hashCode()}, and {@code toString()}.
- * - Implements {@code Comparable} by comparing edge weights.</p>
+ * <p>
+ * Key characteristics:
+ * <ul>
+ *   <li><b>Immutable</b> and <b>thread-safe</b> as it is a Java {@code record}</li>
+ *   <li>Auto-generated {@code equals()}, {@code hashCode()}, and {@code toString()}</li>
+ *   <li><b>Custom equality</b>: Two edges are considered equal if they point to the same target node, regardless of weight</li>
+ *   <li><b>Comparable</b>: Ordered by edge weight (ascending)</li>
+ * </ul>
+ * </p>
  *
- * @param node   the target node of the edge
- * @param weight the weight of the edge
- * @param <K>    the type of node
+ * @param <K>     the type of the node
+ * @param node    the target node this edge points to
+ * @param weight  the weight of the edge
  */
 public record WeightedEdge<K>(K node, int weight) implements Comparable<WeightedEdge<K>> {
 
     /**
-     * Compares this edge with another based on weight (for use in priority queues).
+     * <p>
+     * Compares this edge to another edge based on weight.
+     * </p>
+     *
+     * <p>
+     * This is useful for priority queues and greedy algorithms like Prim's and Dijkstra's.
+     * </p>
+     *
+     * @param other the other edge to compare to
+     * @return a negative value if this edge has lower weight, positive if higher, 0 if equal
      */
     @Override
     public int compareTo(WeightedEdge<K> other) {
@@ -26,7 +48,11 @@ public record WeightedEdge<K>(K node, int weight) implements Comparable<Weighted
     }
 
     /**
-     * String representation of the edge for debugging/logging.
+     * <p>
+     * Returns a human-readable string representation of this edge.
+     * </p>
+     *
+     * @return a string in the format: {@code targetNode (wt: weight)}
      */
     @Override
     public String toString() {
@@ -34,7 +60,17 @@ public record WeightedEdge<K>(K node, int weight) implements Comparable<Weighted
     }
 
     /**
-     * Custom equality: edges are considered equal if they point to the same node (ignores weight).
+     * <p>
+     * Determines equality based only on the target node.
+     * </p>
+     *
+     * <p>
+     * This is useful when using {@code Set<WeightedEdge<K>>} or {@code Map<K, WeightedEdge<K>>}
+     * to represent the best known edge to each node (e.g., in Prim's or Dijkstra's algorithms).
+     * </p>
+     *
+     * @param obj the object to compare
+     * @return {@code true} if the other object is a {@code WeightedEdge} with the same node, ignoring weight
      */
     @Override
     public boolean equals(Object obj) {
@@ -44,7 +80,15 @@ public record WeightedEdge<K>(K node, int weight) implements Comparable<Weighted
     }
 
     /**
-     * Hash code based only on the target node (consistent with equals).
+     * <p>
+     * Computes hash code using only the target node.
+     * </p>
+     *
+     * <p>
+     * This ensures consistency with {@code equals()}, where weight is not considered.
+     * </p>
+     *
+     * @return the hash code of the target node
      */
     @Override
     public int hashCode() {

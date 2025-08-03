@@ -1,5 +1,6 @@
 package io.github.manoj0207.dsalibutils.graph.weightedgraph;
 
+import io.github.manoj0207.dsalibutils.graph.weightedgraph.edge.DetailedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +29,14 @@ class AdjListWeightedGraphTest {
         assertTrue(undirectedGraph.isReachable("A", "C"));
         undirectedGraph.removeEdge("B", "C");
         assertFalse(undirectedGraph.isReachable("A", "C"));
+
+        // Test bridge edge detection
+        undirectedGraph.addEdge("B", "C", 3);
+        undirectedGraph.addEdge("C", "A", 4);
+        undirectedGraph.addEdge("C", "D", 4);
+        assertTrue(((AdjListWeightedGraph<String>) undirectedGraph).isBridgeEdge("C", "D"));
+        assertFalse(((AdjListWeightedGraph<String>) undirectedGraph).isBridgeEdge("A", "C"));
+
     }
 
     @Test
@@ -38,13 +47,13 @@ class AdjListWeightedGraphTest {
 
         assertEquals(3, directedGraph.dijkstra("A", "C"));
         assertEquals(1, directedGraph.dijkstra("A", "B"));
-        assertEquals(-1, directedGraph.dijkstra("C", "A"));
+        assertNull(directedGraph.dijkstra("C", "A"));
     }
 
     @Test
     void testDijkstraInvalidSourceOrDestination() {
         directedGraph.addEdge("X", "Y", 5);
-        assertEquals(-1, directedGraph.dijkstra("A", "B")); // nonexistent nodes
+        assertNull(directedGraph.dijkstra("A", "B")); // nonexistent nodes
     }
 
     @Test
@@ -78,10 +87,15 @@ class AdjListWeightedGraphTest {
     void testPrimsMST() {
         undirectedIntGraph.addEdge(0, 1, 10);
         undirectedIntGraph.addEdge(1, 2, 5);
+        assertTrue(((AdjListWeightedGraph<Integer>) undirectedIntGraph).isBridgeNode(1)); // 0 part of triangle
         undirectedIntGraph.addEdge(0, 2, 1);
 
         int mstWeight = undirectedIntGraph.primsMST(0);
         assertEquals(6, mstWeight);
+
+        // Test bridge nodes
+        assertFalse(undirectedIntGraph.isBridgeNode(0)); // 0 part of triangle
+        assertFalse(undirectedIntGraph.isBridgeNode(1)); // 1 part of triangle
     }
 
     @Test
@@ -92,6 +106,10 @@ class AdjListWeightedGraphTest {
 
         int mstWeight = undirectedGraph.kruskalMST();
         assertEquals(3, mstWeight);
+
+        // A - C - B forms triangle; no bridge edges
+        Set<DetailedEdge<String>> bridges = undirectedGraph.getBridgeEdges();
+        assertTrue(bridges.isEmpty());
     }
 
     @Test
@@ -109,6 +127,10 @@ class AdjListWeightedGraphTest {
         assertTrue(dfsOrder.containsAll(List.of("A", "B", "C", "D")));
         assertTrue(bfsOrder.containsAll(List.of("A", "B", "C", "D")));
         assertEquals("A", bfsOrder.get(0));
+
+        // A-B-D forms a path, A-C is bridge
+        assertTrue(undirectedGraph.isBridgeEdge("A", "C"));
+        assertTrue(undirectedGraph.isBridgeNode("A"));
     }
 
     @Test
@@ -148,6 +170,11 @@ class AdjListWeightedGraphTest {
         assertTrue(undirectedGraph.isReachable("1", "2"));
         assertTrue(undirectedGraph.isReachable("2", "1"));
         assertFalse(undirectedGraph.isReachable("1", "3"));
+
+        undirectedGraph.addEdge("2", "3", 1);
+        assertTrue(undirectedGraph.isBridgeEdge("1", "2"));
+        assertFalse(undirectedGraph.isBridgeNode("1"));
+        assertTrue(undirectedGraph.isBridgeNode("2"));
     }
 
     @Test

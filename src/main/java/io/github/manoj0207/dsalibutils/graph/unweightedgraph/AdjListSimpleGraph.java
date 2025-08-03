@@ -5,16 +5,17 @@ import java.util.function.Consumer;
 
 /**
  * A generic graph implementation using an adjacency list.
- * Supports both directed and undirected graphs and includes
- * efficient methods for bridge edge/node detection with caching.
+ * <p>
+ * Supports both directed and undirected graphs, and includes
+ * efficient methods for bridge edge/node detection using Tarjan's algorithm.
  *
  * @param <K> the type of the nodes (vertices)
  */
-public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
+public class AdjListSimpleGraph<K> implements SimpleGraph<K> {
     private final Map<K, List<K>> adjacencyList = new HashMap<>();
     private final boolean isDirected;
 
-    // Caching Tarjan results
+    // Tarjan caching
     private boolean bridgeInfoValid = false;
     private Set<K> cachedArticulationPoints = new HashSet<>();
     private Set<Edge<K>> cachedBridgeEdges = new HashSet<>();
@@ -26,10 +27,18 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
     private List<Edge<K>> bridgeEdges;
     private Set<K> articulationPoints;
 
+    /**
+     * Constructs an undirected graph.
+     */
     public AdjListSimpleGraph() {
         this(false);
     }
 
+    /**
+     * Constructs a graph with the specified directionality.
+     *
+     * @param isDirected true for directed, false for undirected
+     */
     public AdjListSimpleGraph(boolean isDirected) {
         this.isDirected = isDirected;
     }
@@ -39,58 +48,61 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
      * Invalidates Tarjan cache.
      *
      * @param from source node
-     * @param to destination node
+     * @param to   destination node
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
+    @Override
     public void addEdge(K from, K to) {
         adjacencyList.computeIfAbsent(from, k -> new ArrayList<>()).add(to);
-        adjacencyList.computeIfAbsent(to, k -> new ArrayList<>()); // Do NOT overwrite!
+        adjacencyList.computeIfAbsent(to, k -> new ArrayList<>());
         if (!isDirected) {
             adjacencyList.get(to).add(from);
         }
-        bridgeInfoValid = false; // Invalidate Tarjan cache
+        bridgeInfoValid = false;
     }
 
-
     /**
-     * Removes the edge from 'from' to 'to'. If the graph is undirected, removes both directions.
-     * Does nothing if the edge or nodes do not exist.
+     * Removes an edge from the graph. If undirected, removes both directions.
      *
-     * @param from the source node
-     * @param to   the destination node
-     * @throws NullPointerException if either node is null
+     * @param from source node
+     * @param to   destination node
+     *
+     * <p><b>Time Complexity:</b> O(deg(from) + deg(to))</p>
      */
+    @Override
     public void removeEdge(K from, K to) {
-        Objects.requireNonNull(from, "From-node cannot be null");
-        Objects.requireNonNull(to, "To-node cannot be null");
+        Objects.requireNonNull(from);
+        Objects.requireNonNull(to);
 
         List<K> fromList = adjacencyList.get(from);
-        if (fromList != null) {
+        if (fromList != null)
             fromList.remove(to);
-        }
 
         if (!isDirected) {
             List<K> toList = adjacencyList.get(to);
-            if (toList != null) {
-                toList.remove(from);
-            }
+            if (toList != null) toList.remove(from);
         }
 
-        bridgeInfoValid = false; // Invalidate bridge cache
+        bridgeInfoValid = false;
     }
 
     /**
      * Returns an unmodifiable view of the adjacency list.
-     * Intended for testing or inspection purposes.
+     *
+     * @return the graph's adjacency list
      */
     public Map<K, List<K>> getAdjacencyList() {
         return Collections.unmodifiableMap(adjacencyList);
     }
 
     /**
-     * Performs Breadth-First Search (BFS) from a source node.
+     * Performs Breadth-First Search from a source node.
      *
-     * @param source starting node
+     * @param source the starting node
      * @param action action to perform on each visited node
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     public void bfs(K source, Consumer<K> action) {
         Set<K> visited = new HashSet<>();
@@ -110,10 +122,12 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
     }
 
     /**
-     * Performs Depth-First Search (DFS) from a source node.
+     * Performs Depth-First Search from a source node.
      *
-     * @param source starting node
+     * @param source the starting node
      * @param action action to perform on each visited node
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     public void dfs(K source, Consumer<K> action) {
         Set<K> visited = new HashSet<>();
@@ -132,10 +146,12 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
     }
 
     /**
-     * Returns a topological sort of the graph (only for directed graphs).
+     * Performs a topological sort of the graph.
      *
      * @return list of nodes in topological order
-     * @throws UnsupportedOperationException if graph is undirected
+     * @throws UnsupportedOperationException if the graph is undirected
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     public List<K> getTopologicalSort() {
         if (!isDirected) {
@@ -151,8 +167,7 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
             }
         }
 
-        List<K> result = new ArrayList<>(stack);
-        return result;
+        return new ArrayList<>(stack);
     }
 
     private void topoDfs(K node, Set<K> visited, Deque<K> stack) {
@@ -166,11 +181,14 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
     }
 
     /**
-     * Returns shortest distances from a source node using BFS.
+     * Computes shortest distances from a source node using BFS.
      *
-     * @param source starting node
-     * @return map of node to distance from source
+     * @param source the starting node
+     * @return map of node to shortest distance
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
+    @Override
     public Map<K, Integer> shortestDistances(K source) {
         Map<K, Integer> distance = new HashMap<>();
         Queue<K> queue = new LinkedList<>();
@@ -191,12 +209,15 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
     }
 
     /**
-     * Checks if a path exists between two nodes.
+     * Checks whether a path exists from {@code from} to {@code to}.
      *
      * @param from start node
-     * @param to end node
+     * @param to   destination node
      * @return true if reachable
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
+    @Override
     public boolean isReachable(K from, K to) {
         if (!adjacencyList.containsKey(from) || !adjacencyList.containsKey(to)) return false;
 
@@ -220,10 +241,13 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
     }
 
     /**
-     * Checks if the entire graph is connected (for undirected graph).
+     * Checks if the undirected graph is fully connected.
      *
-     * @return true if connected
+     * @return true if all nodes are reachable from any node
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
+    @Override
     public boolean isConnected() {
         if (adjacencyList.isEmpty()) return true;
         Set<K> visited = new HashSet<>();
@@ -232,50 +256,51 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
     }
 
     /**
-     * Returns true if the given edge is a bridge (critical connection).
+     * Checks if an edge is a bridge (i.e., its removal increases components).
      *
-     * @param u first node
-     * @param v second node
-     * @return true if the edge is a bridge
+     * @param u one end of the edge
+     * @param v the other end of the edge
+     * @return true if it is a bridge
      */
+    @Override
     public boolean isBridgeEdge(K u, K v) {
         computeTarjanIfNeeded();
-        return cachedBridgeEdges.contains(new Edge<>(u, v));
+        return cachedBridgeEdges.contains(new Edge<>(u, v, isDirected));
     }
 
     /**
-     * Returns true if the node is a bridge node (articulation point).
+     * Checks if a node is an articulation point.
      *
-     * @param node node to check
+     * @param node the node to check
      * @return true if it's a bridge node
      */
+    @Override
     public boolean isBridgeNode(K node) {
         computeTarjanIfNeeded();
         return cachedArticulationPoints.contains(node);
     }
 
     /**
-     * Returns the set of all bridge edges.
+     * Returns all bridge edges in the graph.
      *
      * @return set of bridge edges
      */
+    @Override
     public Set<Edge<K>> getBridgeEdges() {
         computeTarjanIfNeeded();
         return Collections.unmodifiableSet(cachedBridgeEdges);
     }
 
     /**
-     * Returns the set of all articulation points (bridge nodes) in the graph.
-     * A bridge node is a vertex whose removal increases the number of connected components.
+     * Returns all articulation points in the graph.
      *
-     * @return an unmodifiable set of all bridge nodes in the graph
+     * @return set of bridge nodes
      */
     @Override
     public Set<K> getBridgeNodes() {
         computeTarjanIfNeeded();
         return Collections.unmodifiableSet(cachedArticulationPoints);
     }
-
 
     private void computeTarjanIfNeeded() {
         if (bridgeInfoValid) return;
@@ -317,7 +342,7 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
                 }
 
                 if (low.get(v) > tin.get(u)) {
-                    bridgeEdges.add(new Edge<>(u, v));
+                    bridgeEdges.add(new Edge<>(u, v, isDirected));
                 }
 
             } else {
@@ -331,8 +356,9 @@ public class AdjListSimpleGraph<K> implements SimpleGraph<K>{
     }
 
     /**
-     * Prints the adjacency list.
+     * Prints the adjacency list of the graph.
      */
+    @Override
     public void printGraph() {
         for (Map.Entry<K, List<K>> entry : adjacencyList.entrySet()) {
             System.out.println(entry.getKey() + " → " + entry.getValue());

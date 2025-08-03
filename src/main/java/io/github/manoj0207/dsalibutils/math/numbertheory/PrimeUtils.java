@@ -10,6 +10,8 @@ import java.util.*;
 public class PrimeUtils {
 
     /**
+     * <p><b>Time Complexity:</b> O(n log log n)</p>
+     *
      * Generates a boolean array where {@code true} denotes that the index is prime using
      * the Sieve of Eratosthenes algorithm.
      *
@@ -24,7 +26,7 @@ public class PrimeUtils {
 
         boolean[] isPrime = new boolean[n + 1];
         Arrays.fill(isPrime, true);
-        if (n >= 0) isPrime[0] = false;
+        if (n != 0) isPrime[0] = false;
         if (n >= 1) isPrime[1] = false;
 
         for (int i = 2; i * i <= n; i++) {
@@ -38,6 +40,8 @@ public class PrimeUtils {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(n log log n)</p>
+     *
      * Precomputes the smallest prime factor (SPF) for each number up to {@code n}.
      *
      * @param n the upper bound (inclusive)
@@ -66,6 +70,8 @@ public class PrimeUtils {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(log x)</p>
+     *
      * Computes the list of prime factors of a number using a precomputed SPF array.
      *
      * @param x   the number to factorize (must be ≥ 2)
@@ -90,6 +96,8 @@ public class PrimeUtils {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O((n - m + 1) log log n)</p>
+     *
      * Computes prime numbers in the range [m, n] using the Segmented Sieve algorithm.
      *
      * @param m the lower bound (inclusive)
@@ -125,15 +133,16 @@ public class PrimeUtils {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(√x)</p>
+     *
      * Checks if a given integer is a prime number using trial division.
      *
      * @param x the number to check
      * @return {@code true} if {@code x} is a prime number; {@code false} otherwise
      */
     public static boolean isPrime(int x) {
-        if (x < 2)
-            return false;
-        int sq = (int)Math.sqrt(x);
+        if (x < 2) return false;
+        int sq = (int) Math.sqrt(x);
         for (int i = 2; i <= sq; i++) {
             if (x % i == 0) return false;
         }

@@ -7,13 +7,18 @@ import java.util.Arrays;
 
 /**
  * Generic segment tree supporting eager propagation (no lazy updates).
+ * <p>
  * Handles point updates and range queries over immutable or safely mutable data.
+ * </p>
  *
- * Supports two point update modes:
- *  - Direct replacement via value
- *  - In-place mutation or transformation via function
+ * <p><b>Supports:</b></p>
+ * <ul>
+ *     <li>Point update via direct value replacement</li>
+ *     <li>Point update via transformation function</li>
+ *     <li>Range update via transformation function (eager propagation)</li>
+ * </ul>
  *
- * @param <T> the type of the array elements
+ * @param <T> the type of elements managed by the segment tree
  */
 public class GenericEagerSegmentTree<T> implements SegmentTree<T> {
 
@@ -23,6 +28,14 @@ public class GenericEagerSegmentTree<T> implements SegmentTree<T> {
     private final BinaryOperator<T> operation;
     private final T defaultValue;
 
+    /**
+     * Constructs a segment tree from an array.
+     *
+     * @param input         the input array
+     * @param operation     the binary operator to combine values (e.g. sum, min, max)
+     * @param defaultValue  the identity element for the operation
+     * @throws IllegalArgumentException if input is null/empty or operation is null
+     */
     @SuppressWarnings("unchecked")
     public GenericEagerSegmentTree(T[] input, BinaryOperator<T> operation, T defaultValue) {
         if (input == null || input.length == 0)
@@ -42,6 +55,14 @@ public class GenericEagerSegmentTree<T> implements SegmentTree<T> {
         build(0, n - 1, 0);
     }
 
+    /**
+     * Constructs a segment tree from a list.
+     *
+     * @param inputList     the list of input values
+     * @param operation     the binary operator to combine values
+     * @param defaultValue  the identity element for the operation
+     * @throws IllegalArgumentException if input list is null or empty
+     */
     public GenericEagerSegmentTree(List<T> inputList, BinaryOperator<T> operation, T defaultValue) {
         this(
                 inputList == null ? null : inputList.toArray((T[]) new Object[0]),
@@ -50,6 +71,13 @@ public class GenericEagerSegmentTree<T> implements SegmentTree<T> {
         );
     }
 
+    /**
+     * Recursively builds the segment tree from the input array.
+     *
+     * @param start the start index in input
+     * @param end   the end index in input
+     * @param node  the current tree node index
+     */
     private void build(int start, int end, int node) {
         if (start == end) {
             tree[node] = input[start];
@@ -62,6 +90,16 @@ public class GenericEagerSegmentTree<T> implements SegmentTree<T> {
         tree[node] = operation.apply(tree[2 * node + 1], tree[2 * node + 2]);
     }
 
+    /**
+     * Queries the result of the operation over range [left, right].
+     *
+     * @param left  the starting index (inclusive)
+     * @param right the ending index (inclusive)
+     * @return the result of combining values in the range
+     * @throws IndexOutOfBoundsException if indices are out of range
+     *
+     * <p><b>Time Complexity:</b> O(log n)</p>
+     */
     @Override
     public T query(int left, int right) {
         if (left < 0 || right >= n || left > right)
@@ -80,11 +118,13 @@ public class GenericEagerSegmentTree<T> implements SegmentTree<T> {
     }
 
     /**
-     * Directly updates the value at a given index.
+     * Updates the value at a specific index.
      *
      * @param index the index to update
      * @param value the new value to set
-     * @throws IndexOutOfBoundsException if index is invalid
+     * @throws IndexOutOfBoundsException if the index is out of range
+     *
+     * <p><b>Time Complexity:</b> O(log n)</p>
      */
     @Override
     public void update(int index, T value) {
@@ -95,14 +135,18 @@ public class GenericEagerSegmentTree<T> implements SegmentTree<T> {
 
     /**
      * Updates the value at a given index using a transformation function.
-     * The function receives the current value at the index and must return the updated value.
      *
-     * @param index the index to update
-     * @param updater a function that transforms the existing value
-     * @throws IndexOutOfBoundsException if index is invalid
+     * @param index   the index to update
+     * @param updater a function that takes current value and returns updated value
+     * @throws IndexOutOfBoundsException if the index is out of range
+     * @throws IllegalArgumentException if updater is null
+     *
+     * <p><b>Time Complexity:</b> O(log n)</p>
      */
     @Override
     public void update(int index, Function<T, T> updater) {
+        if (updater == null)
+            throw new IllegalArgumentException("Update function must not be null.");
         T oldValue = query(index, index);
         T newValue = updater.apply(oldValue);
         update(index, newValue);
@@ -124,11 +168,70 @@ public class GenericEagerSegmentTree<T> implements SegmentTree<T> {
         tree[node] = operation.apply(tree[2 * node + 1], tree[2 * node + 2]);
     }
 
+    /**
+     * Applies a transformation function to all elements in the range [l, r].
+     *
+     * <p>Internally performs point-wise updates in range, rebuilding affected segments eagerly.</p>
+     *
+     * @param l    the left index of the range (inclusive)
+     * @param r    the right index of the range (inclusive)
+     * @param func the transformation function to apply
+     * @throws IllegalArgumentException if {@code func} is null
+     * @throws IndexOutOfBoundsException if indices are out of range
+     *
+     * <p><b>Time Complexity:</b> <p>O((r - l + 1) × log n)</p>
+     */
+    @Override
+    public void update(int l, int r, Function<T, T> func) {
+        if (l < 0 || r >= n || l > r)
+            throw new IndexOutOfBoundsException("Invalid update range: [" + l + ", " + r + "]");
+        if (func == null)
+            throw new IllegalArgumentException("Update function must not be null.");
+
+        for (int i = l; i <= r; i++) {
+            T current = query(i, i);
+            T updated = func.apply(current);
+            update(i, updated);
+        }
+    }
+
+    /**
+     * Applies the given value to all elements in the range [l, r] via direct replacement.
+     *
+     * <p>Each index in the range is updated individually, and the affected tree segments
+     * are rebuilt eagerly to maintain correctness.</p>
+     *
+     * @param l     the starting index of the range (inclusive)
+     * @param r     the ending index of the range (inclusive)
+     * @param value the value to assign at each index in the range
+     *
+     * @throws IndexOutOfBoundsException if {@code l < 0}, {@code r >= size()}, or {@code l > r}
+     *
+     * <p><b>Time Complexity:</b> O((r - l + 1) × log n)</p>
+     */
+    public void update(int l, int r, T value) {
+        if (l < 0 || r >= n || l > r)
+            throw new IndexOutOfBoundsException("Invalid update range: [" + l + ", " + r + "]");
+
+        for (int i = l; i <= r; i++) {
+            update(i, value);
+        }
+    }
+
+
+    /**
+     * Returns the number of elements in the segment tree.
+     *
+     * @return the size of the original input array
+     */
     @Override
     public int size() {
         return n;
     }
 
+    /**
+     * Prints the internal segment tree representation (for debugging).
+     */
     public void printTree() {
         System.out.println("Segment Tree: " + Arrays.toString(tree));
     }

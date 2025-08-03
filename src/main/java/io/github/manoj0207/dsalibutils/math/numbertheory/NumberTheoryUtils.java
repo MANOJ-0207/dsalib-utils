@@ -7,6 +7,8 @@ package io.github.manoj0207.dsalibutils.math.numbertheory;
 public class NumberTheoryUtils {
 
     /**
+     * <p><b>Time Complexity:</b> O(log min(a, b))</p>
+     *
      * Computes the Greatest Common Divisor (GCD) of two integers using the Euclidean algorithm.
      *
      * @param a the first number
@@ -23,6 +25,8 @@ public class NumberTheoryUtils {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(log min(a, b))</p>
+     *
      * Computes the Least Common Multiple (LCM) of two integers.
      *
      * @param a the first number
@@ -39,15 +43,19 @@ public class NumberTheoryUtils {
         return (int) lcm;
     }
 
-
     /**
      * A helper class representing the result of the Extended Euclidean Algorithm.
      * It contains the GCD of two integers, and the coefficients {@code x} and {@code y}
      * such that {@code a * x + b * y = gcd(a, b)}.
      */
     public static class GCDTriplet {
+        /** The greatest common divisor of the input integers. */
         public final int gcd;
+
+        /** Coefficient of the first integer (a). */
         public final int x;
+
+        /** Coefficient of the second integer (b). */
         public final int y;
 
         /**
@@ -65,7 +73,11 @@ public class NumberTheoryUtils {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(log min(a, b))</p>
+     *
      * Computes the Extended Euclidean Algorithm for two integers.
+     *
+     * <p>Finds {@code x}, {@code y}, and {@code gcd} such that: {@code a * x + b * y = gcd(a, b)}.</p>
      *
      * @param a the first integer
      * @param b the second integer
@@ -80,6 +92,8 @@ public class NumberTheoryUtils {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(log mod)</p>
+     *
      * Computes the modular inverse of {@code a} modulo {@code mod} using the Extended Euclidean Algorithm.
      * The modular inverse exists only if {@code gcd(a, mod) == 1}.
      *

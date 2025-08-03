@@ -116,7 +116,7 @@ class AdjMatrixSimpleGraphTest {
         graph.addEdge("A", "B");
         graph.addEdge("A", "C");
         graph.addEdge("C", "D");
-
+;
         List<String> visited = new ArrayList<>();
         graph.dfs("A", visited::add);
 
@@ -186,7 +186,7 @@ class AdjMatrixSimpleGraphTest {
 
     @Test
     void testTopologicalSortThrowsForUndirected() {
-        AdjMatrixSimpleGraph<String> graph = new AdjMatrixSimpleGraph<>(false);
+        AdjMatrixSimpleGraph<String> graph = new AdjMatrixSimpleGraph<>();
         graph.addEdge("A", "B");
 
         assertThrows(UnsupportedOperationException.class, graph::getTopologicalSort);

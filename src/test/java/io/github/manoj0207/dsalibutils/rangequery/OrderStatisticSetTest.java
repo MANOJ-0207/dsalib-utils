@@ -14,8 +14,8 @@ public class OrderStatisticSetTest {
 
     @BeforeEach
     void setUp() {
-        stringSet = new OrderStatisticSet<>(Set.of("apple", "banana", "cherry", "date", "fig"));
-        intSet = new OrderStatisticSet<>(Set.of(10, 20, 30, 40, 50));
+        stringSet = new OrderStatisticSet<>(Set.of("apple", "banana", "cherry", "date", "fig"), false);
+        intSet = new OrderStatisticSet<>(Set.of(10, 20, 30, 40, 50), false);
     }
 
     @Test
@@ -35,10 +35,10 @@ public class OrderStatisticSetTest {
         stringSet.insert("banana");
         stringSet.insert("cherry");
 
-        assertEquals(0, stringSet.countLessThan("apple"));
-        assertEquals(1, stringSet.countLessThan("banana"));
-        assertEquals(2, stringSet.countLessThan("cherry"));
-        assertEquals(3, stringSet.countLessThan("date"));
+        assertEquals(0, stringSet.orderOfKey("apple"));
+        assertEquals(1, stringSet.orderOfKey("banana"));
+        assertEquals(2, stringSet.orderOfKey("cherry"));
+        assertEquals(3, stringSet.orderOfKey("date"));
     }
 
     @Test
@@ -48,12 +48,12 @@ public class OrderStatisticSetTest {
         stringSet.insert("banana");
         stringSet.insert("apple");
 
-        assertEquals("apple", stringSet.kthSmallest(1));
-        assertEquals("banana", stringSet.kthSmallest(2));
-        assertEquals("banana", stringSet.kthSmallest(3));
-        assertEquals("fig", stringSet.kthSmallest(4));
-        assertNull(stringSet.kthSmallest(0));
-        assertNull(stringSet.kthSmallest(5));
+        assertEquals("apple", stringSet.findByOrder(1));
+        assertEquals("banana", stringSet.findByOrder(2));
+        assertEquals("banana", stringSet.findByOrder(3));
+        assertEquals("fig", stringSet.findByOrder(4));
+        assertNull(stringSet.findByOrder(0));
+        assertNull(stringSet.findByOrder(5));
     }
 
     @Test
@@ -67,11 +67,11 @@ public class OrderStatisticSetTest {
     void testRemoveAndEmptyBehavior() {
         stringSet.insert("apple");
         stringSet.insert("apple");
-        stringSet.remove("apple");
+        stringSet.erase("apple");
         assertTrue(stringSet.contains("apple"));
-        stringSet.remove("apple");
+        stringSet.erase("apple");
         assertFalse(stringSet.contains("apple"));
-        stringSet.remove("apple"); // underflow, should do nothing
+        stringSet.erase("apple"); // underflow, should do nothing
         assertEquals(0, stringSet.count("apple"));
     }
 
@@ -90,12 +90,12 @@ public class OrderStatisticSetTest {
     @Test
     void testConstructorWithList() {
         List<String> values = List.of("apple", "banana", "banana", "fig");
-        OrderStatisticSet<String> setFromList = new OrderStatisticSet<>(values);
+        OrderStatisticSet<String> setFromList = new OrderStatisticSet<>(values, true);
 
         assertEquals(4, setFromList.size());
         assertEquals(2, setFromList.count("banana"));
-        assertEquals("apple", setFromList.kthSmallest(1));
-        assertEquals("banana", setFromList.kthSmallest(2));
+        assertEquals("apple", setFromList.findByOrder(1));
+        assertEquals("banana", setFromList.findByOrder(2));
     }
 
     @Test
@@ -113,18 +113,18 @@ public class OrderStatisticSetTest {
         intSet.insert(30);
         intSet.insert(50);
 
-        assertEquals(10, intSet.kthSmallest(1));
-        assertEquals(10, intSet.kthSmallest(2));
-        assertEquals(30, intSet.kthSmallest(3));
-        assertEquals(50, intSet.kthSmallest(4));
+        assertEquals(10, intSet.findByOrder(1));
+        assertEquals(10, intSet.findByOrder(2));
+        assertEquals(30, intSet.findByOrder(3));
+        assertEquals(50, intSet.findByOrder(4));
 
-        intSet.remove(10);
-        assertEquals(10, intSet.kthSmallest(1));
-        intSet.remove(10);
-        assertEquals(30, intSet.kthSmallest(1));
-        intSet.remove(30);
-        intSet.remove(50);
-        assertNull(intSet.kthSmallest(1));
+        intSet.erase(10);
+        assertEquals(10, intSet.findByOrder(1));
+        intSet.erase(10);
+        assertEquals(30, intSet.findByOrder(1));
+        intSet.erase(30);
+        intSet.erase(50);
+        assertNull(intSet.findByOrder(1));
     }
 
     @Test
@@ -132,17 +132,17 @@ public class OrderStatisticSetTest {
         intSet.insert(10);
         intSet.insert(20);
         intSet.insert(30);
-        assertNull(intSet.kthSmallest(0));
-        assertNull(intSet.kthSmallest(-1));
-        assertNull(intSet.kthSmallest(10));
+        assertNull(intSet.findByOrder(0));
+        assertNull(intSet.findByOrder(-1));
+        assertNull(intSet.findByOrder(10));
     }
 
     @Test
     void testCountLessThanNonExisting() {
         intSet.insert(10);
         intSet.insert(20);
-        assertEquals(0, intSet.countLessThan(5));
-        assertEquals(2, intSet.countLessThan(30));
-        assertEquals(1, intSet.countLessThan(17));
+        assertEquals(0, intSet.orderOfKey(5));
+        assertEquals(2, intSet.orderOfKey(30));
+        assertEquals(1, intSet.orderOfKey(17));
     }
 }

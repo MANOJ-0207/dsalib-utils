@@ -3,16 +3,19 @@ package io.github.manoj0207.dsalibutils.math.numbertheory;
 /**
  * Utility class for performing modular arithmetic operations safely under a given modulus.
  *
- * <p>Assumes the modulus is a positive integer. For division and modular inverse,
- * this class assumes the modulus is a prime number (as it uses Fermat's little theorem).</p>
+ * <p>Supports modular addition, subtraction, multiplication, division, exponentiation,
+ * and modular inverse.</p>
  *
- * <p>All operations are guaranteed to return results in the range [0, mod - 1].</p>
+ * <p>Assumes the modulus is a positive integer. For division and modular inverse,
+ * this class assumes the modulus is a prime number (as it uses Fermat's Little Theorem).</p>
+ *
+ * <p>All returned values are guaranteed to be in the range [0, mod - 1].</p>
  */
 public class ModMath {
     private final int mod;
 
     /**
-     * Constructs a modular arithmetic utility for a given modulus.
+     * Constructs a modular arithmetic utility with a given modulus.
      *
      * @param mod the modulus to use (must be ≥ 1)
      * @throws IllegalArgumentException if {@code mod} is less than 1
@@ -25,6 +28,8 @@ public class ModMath {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(1)</p>
+     *
      * Performs modular addition: (a + b) % mod.
      *
      * @param a the first operand
@@ -36,6 +41,8 @@ public class ModMath {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(1)</p>
+     *
      * Performs modular subtraction: (a - b) % mod.
      *
      * @param a the minuend
@@ -47,6 +54,8 @@ public class ModMath {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(1)</p>
+     *
      * Performs modular multiplication: (a * b) % mod.
      *
      * @param a the first operand
@@ -58,10 +67,12 @@ public class ModMath {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(log mod)</p>
+     *
      * Performs modular division: (a / b) % mod.
      *
-     * <p>This is calculated as (a * b⁻¹) % mod, where b⁻¹ is the modular inverse of b.
-     * Only valid if mod is a prime number and b ≠ 0.</p>
+     * <p>This is computed as (a * b⁻¹) % mod, where b⁻¹ is the modular inverse of b.
+     * Only valid when {@code mod} is a prime number and b ≠ 0.</p>
      *
      * @param a the numerator
      * @param b the denominator (must not be 0)
@@ -76,7 +87,9 @@ public class ModMath {
     }
 
     /**
-     * Computes (base^exp) % mod using fast exponentiation.
+     * <p><b>Time Complexity:</b> O(log exp)</p>
+     *
+     * Computes (base^exp) % mod using binary exponentiation.
      *
      * @param base the base
      * @param exp  the exponent (must be non-negative)
@@ -101,10 +114,12 @@ public class ModMath {
     }
 
     /**
+     * <p><b>Time Complexity:</b> O(log mod)</p>
+     *
      * Computes the modular inverse of {@code a}, i.e., the number x such that (a * x) % mod == 1.
      *
-     * <p>Assumes {@code mod} is a prime number and {@code a ≠ 0}.
-     * Uses Fermat's little theorem: a⁻¹ ≡ a^(mod - 2) mod mod</p>
+     * <p>Uses Fermat's Little Theorem: a⁻¹ ≡ a^(mod - 2) mod mod.
+     * Assumes mod is prime and a ≠ 0.</p>
      *
      * @param a the number to find the inverse of
      * @return the modular inverse of {@code a}
@@ -118,7 +133,7 @@ public class ModMath {
     }
 
     /**
-     * Returns the modulus used in this utility.
+     * Returns the modulus being used for all operations.
      *
      * @return the modulus
      */

@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.function.BinaryOperator;
 
 /**
- * A generic 2D Sparse Table implementation for fast O(1) range queries
- * over static 2D data using any <b>idempotent</b> and <b>overlap-safe</b> binary operator
- * (e.g. min, max, gcd). Only supports static queries — no updates allowed.
+ * A generic 2D Sparse Table implementation for fast range queries over static 2D data.
  *
- * @param <T> the type of elements stored
+ * <p>Supports idempotent and overlap-safe operations like {@code min}, {@code max}, {@code gcd}.
+ * This structure is read-only and does not support updates after construction.</p>
+ *
+ * <p>Internally uses a 4D precomputed table for O(1) query time.</p>
+ *
+ * @param <T> the type of elements stored in the 2D matrix
  */
 public class Generic2DSparseTable<T> {
 
@@ -21,8 +24,12 @@ public class Generic2DSparseTable<T> {
      * Constructs the 2D Sparse Table from a rectangular 2D array using a binary idempotent operation.
      *
      * @param input     the input 2D array (non-null, non-empty, rectangular)
-     * @param operation an idempotent and overlap-safe binary operation (e.g., Math::min)
-     * @throws IllegalArgumentException if input is null, empty, or malformed
+     * @param operation an idempotent and overlap-safe binary operation (e.g., {@code Math::min})
+     *
+     * @throws IllegalArgumentException if input is null, empty, jagged, or operation is null
+     *
+     * <p><b>Time Complexity:</b> <br>
+     * <p>Preprocessing takes O(n × m × log n × log m)</p>
      */
     @SuppressWarnings("unchecked")
     public Generic2DSparseTable(T[][] input, BinaryOperator<T> operation) {
@@ -47,7 +54,7 @@ public class Generic2DSparseTable<T> {
 
         this.table = (T[][][][]) new Object[m][n][maxRowPow][maxColPow];
 
-        // Base initialization
+        // Base case initialization
         for (int i = 0; i < m; i++)
             for (int j = 0; j < n; j++)
                 table[i][j][0][0] = input[i][j];
@@ -80,24 +87,31 @@ public class Generic2DSparseTable<T> {
     }
 
     /**
-     * Alternate constructor for List of Lists.
+     * Alternate constructor that accepts a {@code List<List<T>>} instead of a 2D array.
      *
-     * @param input     2D list of values (non-null, rectangular)
-     * @param operation binary idempotent operation
+     * @param input     the input 2D list (non-null, rectangular)
+     * @param operation the idempotent and overlap-safe binary operation
+     *
+     * @throws IllegalArgumentException if input is null, empty, jagged, or operation is null
+     *
+     * <p><b>Time Complexity:</b> <p>Same as array-based constructor: O(n × m × log n × log m)</p>
      */
     public Generic2DSparseTable(List<List<T>> input, BinaryOperator<T> operation) {
         this(listTo2DArray(input), operation);
     }
 
     /**
-     * Returns the result of the operation over the submatrix from (x1, y1) to (x2, y2), inclusive.
+     * Queries the result of applying the operation over the submatrix from (x1, y1) to (x2, y2), inclusive.
      *
-     * @param x1 top-left row
-     * @param y1 top-left column
-     * @param x2 bottom-right row
-     * @param y2 bottom-right column
-     * @return the combined value
-     * @throws IndexOutOfBoundsException for invalid ranges
+     * @param x1 top-left row index
+     * @param y1 top-left column index
+     * @param x2 bottom-right row index
+     * @param y2 bottom-right column index
+     * @return the combined result of applying the operation on the submatrix
+     *
+     * @throws IndexOutOfBoundsException if indices are invalid or out of bounds
+     *
+     * <p><b>Time Complexity:</b> <p>O(1)</p> due to precomputed 4-cell aggregation</p>
      */
     public T query(int x1, int y1, int x2, int y2) {
         if (x1 < 0 || y1 < 0 || x2 >= rows || y2 >= cols || x1 > x2 || y1 > y2)
@@ -115,13 +129,15 @@ public class Generic2DSparseTable<T> {
     }
 
     /**
-     * Converts a List of Lists into a 2D array.
+     * Converts a List of Lists to a 2D array.
      *
-     * @param list input 2D list
-     * @param <T>  type of element
-     * @return 2D array version
-     * @throws IllegalArgumentException for null/invalid shape
+     * @param list the 2D list to convert
+     * @param <T>  the type of elements
+     * @return the equivalent 2D array
+     *
+     * @throws IllegalArgumentException if list is null, empty, or jagged
      */
+    @SuppressWarnings("unchecked")
     private static <T> T[][] listTo2DArray(List<List<T>> list) {
         if (list == null || list.isEmpty() || list.get(0) == null || list.get(0).isEmpty())
             throw new IllegalArgumentException("Input list must not be null or empty");

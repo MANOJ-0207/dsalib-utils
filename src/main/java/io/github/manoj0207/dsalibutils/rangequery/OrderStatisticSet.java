@@ -7,53 +7,73 @@ import java.util.*;
 /**
  * A generic order-statistics multiset data structure over a predefined, fixed universe of values.
  *
- * @param <T> the type of elements stored, must be Comparable
+ * <p>This data structure allows insertion, removal, frequency counting, and k-th smallest element
+ * queries in <b>O(log n)</b> time using a segment tree over a coordinate-compressed domain.</p>
+ *
+ * @param <T> the type of elements stored, must implement {@code Comparable}
  */
 public class OrderStatisticSet<T extends Comparable<T>> {
 
-    private final int maxIndex;
-    private final int[] freq;
-    private final GenericEagerSegmentTree<Integer> seg;
-    private final Map<T, Integer> valueToIndex;
-    private final List<T> indexToValue;
+    private int maxIndex;
+    private int[] freq;
+    private GenericEagerSegmentTree<Integer> seg;
+    private Map<T, Integer> valueToIndex;
+    private List<T> indexToValue;
 
     /**
-     * Constructs an OrderStatisticSet over a predefined universe of values.
+     * Constructs a new {@code OrderStatisticSet} over a fixed universe with no inserted elements.
      *
-     * @param universe a non-null, non-empty set of valid values (must be unique)
-     * @throws IllegalArgumentException if the universe is null or empty
+     * @param universe a non-null, non-empty set of valid values
+     * @throws IllegalArgumentException if {@code universe} is null or empty
+     *
+     * <p><b>Time Complexity:</b> <p>O(n log n)</p> for sorting and initialization
      */
     public OrderStatisticSet(Set<T> universe) {
+        this(universe, false);
+    }
+
+    /**
+     * Constructs a new {@code OrderStatisticSet} over a fixed universe and optionally inserts them.
+     *
+     * @param universe a non-null, non-empty set of valid values
+     * @param include  if {@code true}, inserts all elements from {@code universe} (acts like init-freq=1)
+     * @throws IllegalArgumentException if {@code universe} is null or empty
+     *
+     * <p><b>Time Complexity:</b> <p>O(n log n)</p>
+     */
+    public OrderStatisticSet(Set<T> universe, boolean include) {
         if (universe == null || universe.isEmpty()) {
             throw new IllegalArgumentException("Universe must be non-null and non-empty.");
         }
 
-        List<T> sorted = new ArrayList<>(universe);
-        Collections.sort(sorted);
-        this.indexToValue = Collections.unmodifiableList(sorted); // prevent mutation
-
-        this.valueToIndex = new HashMap<>();
-        for (int i = 0; i < sorted.size(); i++) {
-            valueToIndex.put(sorted.get(i), i);
-        }
-
-        this.maxIndex = sorted.size();
-        this.freq = new int[maxIndex];
-
-        this.seg = new GenericEagerSegmentTree<>(
-                Arrays.stream(freq).boxed().toArray(Integer[]::new),
-                Integer::sum,
-                0
-        );
+        List<T> list = new ArrayList<>(universe);
+        Collections.sort(list);
+        initialize(list, include ? list : Collections.emptyList());
     }
 
     /**
-     * Constructs an OrderStatisticSet from a list of values and initializes the multiset.
+     * Constructs a new {@code OrderStatisticSet} from a list of values (no elements are inserted).
+     * The universe will be built from the unique elements of the list.
      *
-     * @param values list of elements to insert (can contain duplicates)
-     * @throws IllegalArgumentException if values is null or empty
+     * @param values a list of values used to define the universe
+     * @throws IllegalArgumentException if {@code values} is null or empty
+     *
+     * <p><b>Time Complexity:</b> <p>O(n log n)</p>
      */
     public OrderStatisticSet(List<T> values) {
+        this(values, false);
+    }
+
+    /**
+     * Constructs a new {@code OrderStatisticSet} from a list and optionally inserts them.
+     *
+     * @param values  a list of values (duplicates allowed) to define and populate the multiset
+     * @param include if {@code true}, inserts all elements from {@code values}
+     * @throws IllegalArgumentException if {@code values} is null or empty
+     *
+     * <p><b>Time Complexity:</b> <p>O(n log n)</p>
+     */
+    public OrderStatisticSet(List<T> values, boolean include) {
         if (values == null || values.isEmpty()) {
             throw new IllegalArgumentException("Input list must be non-null and non-empty.");
         }
@@ -61,14 +81,19 @@ public class OrderStatisticSet<T extends Comparable<T>> {
         Set<T> universeSet = new HashSet<>(values);
         List<T> sorted = new ArrayList<>(universeSet);
         Collections.sort(sorted);
-        this.indexToValue = Collections.unmodifiableList(sorted);
+        initialize(sorted, include ? values : Collections.emptyList());
+    }
 
+    // Internal setup: compress values, build tree and optionally insert
+    private void initialize(List<T> sortedUniverse, List<T> initialValues) {
+        this.indexToValue = Collections.unmodifiableList(sortedUniverse);
         this.valueToIndex = new HashMap<>();
-        for (int i = 0; i < sorted.size(); i++) {
-            valueToIndex.put(sorted.get(i), i);
+
+        for (int i = 0; i < sortedUniverse.size(); i++) {
+            valueToIndex.put(sortedUniverse.get(i), i);
         }
 
-        this.maxIndex = sorted.size();
+        this.maxIndex = sortedUniverse.size();
         this.freq = new int[maxIndex];
 
         this.seg = new GenericEagerSegmentTree<>(
@@ -77,15 +102,17 @@ public class OrderStatisticSet<T extends Comparable<T>> {
                 0
         );
 
-        for (T val : values) {
+        for (T val : initialValues) {
             insert(val);
         }
     }
 
     /**
-     * Inserts a value into the multiset.
+     * Inserts one occurrence of a value into the multiset.
      *
-     * @param val the value to insert
+     * @param val the value to insert (must exist in the universe)
+     *
+     * <p><b>Time Complexity:</b> <p>O(log n)</p>
      */
     public void insert(T val) {
         Integer idx = valueToIndex.get(val);
@@ -95,11 +122,13 @@ public class OrderStatisticSet<T extends Comparable<T>> {
     }
 
     /**
-     * Removes one occurrence of a value from the multiset.
+     * Removes one occurrence of the value from the multiset, if present.
      *
      * @param val the value to remove
+     *
+     * <p><b>Time Complexity:</b> <p>O(log n)</p>
      */
-    public void remove(T val) {
+    public void erase(T val) {
         Integer idx = valueToIndex.get(val);
         if (idx == null || freq[idx] == 0) return;
         freq[idx]--;
@@ -107,10 +136,12 @@ public class OrderStatisticSet<T extends Comparable<T>> {
     }
 
     /**
-     * Returns the number of times a value appears in the multiset.
+     * Returns the frequency of a value in the multiset.
      *
-     * @param val the value to count
-     * @return number of occurrences; 0 if not present or not in universe
+     * @param val the value to check
+     * @return the number of times {@code val} occurs; 0 if not present
+     *
+     * <p><b>Time Complexity:</b> <p>O(1)</p>
      */
     public int count(T val) {
         Integer idx = valueToIndex.get(val);
@@ -120,22 +151,26 @@ public class OrderStatisticSet<T extends Comparable<T>> {
     /**
      * Returns the number of elements strictly less than the given value.
      *
-     * @param val the threshold value
-     * @return number of elements less than {@code val}
+     * @param val the upper bound value (exclusive)
+     * @return the number of elements less than {@code val}
+     *
+     * <p><b>Time Complexity:</b> <p>O(log n)</p>
      */
-    public int countLessThan(T val) {
+    public int orderOfKey(T val) {
         Integer idx = getIndexBefore(val);
         if (idx == null || idx < 0) return 0;
         return seg.query(0, idx);
     }
 
     /**
-     * Returns the k-th smallest value in the multiset (1-based indexing).
+     * Finds the k-th smallest element in the multiset.
      *
-     * @param k the rank (1-indexed)
-     * @return the value if found, or null if k is out of bounds
+     * @param k the 1-based index of the element to retrieve
+     * @return the k-th smallest element, or {@code null} if {@code k} is invalid
+     *
+     * <p><b>Time Complexity:</b> <p>O(log n)</p>
      */
-    public T kthSmallest(int k) {
+    public T findByOrder(int k) {
         if (k <= 0 || seg.query(0, maxIndex - 1) < k) return null;
 
         int low = 0, high = maxIndex - 1, ans = -1;
@@ -155,27 +190,33 @@ public class OrderStatisticSet<T extends Comparable<T>> {
     /**
      * Returns the total number of elements in the multiset (including duplicates).
      *
-     * @return the total size
+     * @return the total number of inserted elements
+     *
+     * <p><b>Time Complexity:</b> <p>O(1)</p>
      */
     public int size() {
         return seg.query(0, maxIndex - 1);
     }
 
     /**
-     * Checks if the multiset contains at least one occurrence of the value.
+     * Checks whether the multiset contains at least one occurrence of the value.
      *
      * @param val the value to check
-     * @return true if present, false otherwise
+     * @return {@code true} if the value is present, {@code false} otherwise
+     *
+     * <p><b>Time Complexity:</b> <p>O(1)</p>
      */
     public boolean contains(T val) {
         return count(val) > 0;
     }
 
     /**
-     * Helper method to get the compressed index of the largest element < val.
+     * Gets the index of the greatest element less than {@code val} in the compressed array.
      *
-     * @param val reference value
-     * @return index of predecessor in compressed array, or null if not found
+     * @param val the value to find the predecessor for
+     * @return index of predecessor, or {@code null} if none exists
+     *
+     * <p><b>Time Complexity:</b> <p>O(log n)</p>
      */
     private Integer getIndexBefore(T val) {
         int idx = Collections.binarySearch(indexToValue, val);

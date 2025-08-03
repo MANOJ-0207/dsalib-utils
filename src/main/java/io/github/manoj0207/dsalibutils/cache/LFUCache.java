@@ -15,19 +15,29 @@ import java.util.Map;
  */
 public class LFUCache<K, V> {
 
-    /** Maximum number of elements the cache can hold */
+    /**
+     * Maximum number of elements the cache can hold.
+     */
     private final int capacity;
 
-    /** Tracks the minimum frequency among all keys (used during eviction) */
+    /**
+     * Tracks the minimum frequency among all keys (used during eviction).
+     */
     private int minFreq = 0;
 
-    /** Stores key-value pairs */
+    /**
+     * Stores key-value pairs.
+     */
     private final Map<K, V> values;
 
-    /** Stores key to frequency mapping */
+    /**
+     * Stores key to frequency mapping.
+     */
     private final Map<K, Integer> freqs;
 
-    /** Maps frequency to keys with that frequency (preserving insertion order) */
+    /**
+     * Maps frequency to keys with that frequency (preserving insertion order).
+     */
     private final Map<Integer, LinkedHashSet<K>> freqList;
 
     /**
@@ -50,8 +60,10 @@ public class LFUCache<K, V> {
      * Retrieves the value for the given key and updates its frequency.
      *
      * @param key the key to retrieve
-     * @return the value associated with the key, or null if key doesn't exist
-     * @throws IllegalArgumentException if key is null
+     * @return the value associated with the key, or {@code null} if key doesn't exist
+     * @throws IllegalArgumentException if key is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1) average</p>
      */
     public V get(K key) {
         if (key == null) {
@@ -81,7 +93,9 @@ public class LFUCache<K, V> {
      *
      * @param key   the key to insert or update
      * @param value the value to associate with the key
-     * @throws IllegalArgumentException if key is null
+     * @throws IllegalArgumentException if key is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1) average</p>
      */
     public void put(K key, V value) {
         if (key == null) {
@@ -117,6 +131,8 @@ public class LFUCache<K, V> {
      * Returns the number of key-value pairs currently stored in the cache.
      *
      * @return current cache size
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public int size() {
         return values.size();
@@ -126,8 +142,10 @@ public class LFUCache<K, V> {
      * Checks whether the given key exists in the cache.
      *
      * @param key the key to check
-     * @return true if key exists, false otherwise
-     * @throws IllegalArgumentException if key is null
+     * @return {@code true} if key exists, {@code false} otherwise
+     * @throws IllegalArgumentException if key is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public boolean contains(K key) {
         if (key == null) {
@@ -140,7 +158,9 @@ public class LFUCache<K, V> {
      * Removes a key from the cache if it exists.
      *
      * @param key the key to remove
-     * @throws IllegalArgumentException if key is null
+     * @throws IllegalArgumentException if key is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1) average</p>
      */
     public void remove(K key) {
         if (key == null) {
@@ -167,6 +187,8 @@ public class LFUCache<K, V> {
 
     /**
      * Clears all entries from the cache.
+     *
+     * <p><b>Time Complexity:</b> O(n), where n is the number of entries</p>
      */
     public void clear() {
         values.clear();
@@ -180,6 +202,8 @@ public class LFUCache<K, V> {
      *
      * @param current the current frequency
      * @return the next minimum frequency if found, else 0
+     *
+     * <p><b>Time Complexity:</b> O(f), where f is the number of distinct frequencies</p>
      */
     private int findNextMinFreq(int current) {
         int next = Integer.MAX_VALUE;

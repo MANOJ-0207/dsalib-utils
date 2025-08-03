@@ -4,29 +4,45 @@ import java.util.*;
 
 /**
  * A Segmented LRU (SLRU) cache that splits the cache into two segments:
- * - A "recently used" segment where items enter on first put
- * - A "frequently used" segment where items get promoted on second access
+ * <ul>
+ *   <li><b>Recently Used:</b> New items are inserted here on first put</li>
+ *   <li><b>Frequently Used:</b> Items are promoted here upon second access</li>
+ * </ul>
  *
- * This structure helps prioritize items that are truly frequently accessed
- * over items that were added recently but never used.
+ * <p>This structure helps prioritize items that are frequently accessed
+ * over those that were only recently added.</p>
  *
- * @param <K> the key type
- * @param <V> the value type
+ * @param <K> the type of keys maintained by this cache
+ * @param <V> the type of mapped values
  */
-public class SegmentedLRUCache<K, V>{
+public class SegmentedLRUCache<K, V> {
 
+    /**
+     * Capacity of the recently used segment.
+     */
     private final int recentCapacity;
+
+    /**
+     * Capacity of the frequently used segment.
+     */
     private final int frequentCapacity;
 
+    /**
+     * Segment for recently used items.
+     */
     private final LinkedHashMap<K, V> recentlyUsedSegment;
+
+    /**
+     * Segment for frequently used items.
+     */
     private final LinkedHashMap<K, V> frequentlyUsedSegment;
 
     /**
      * Constructs a Segmented LRU cache.
      *
-     * @param totalCapacity the total maximum number of entries in the cache
+     * @param totalCapacity         the total maximum number of entries in the cache
      * @param frequentSegmentRatio the fraction of capacity allocated to the frequent segment (between 0 and 1)
-     * @throws IllegalArgumentException if totalCapacity <= 0 or ratio not in (0, 1)
+     * @throws IllegalArgumentException if totalCapacity &le; 0 or ratio not in (0, 1)
      */
     public SegmentedLRUCache(int totalCapacity, double frequentSegmentRatio) {
         if (totalCapacity <= 0) {
@@ -45,10 +61,12 @@ public class SegmentedLRUCache<K, V>{
 
     /**
      * Retrieves the value for a given key if present.
-     * If present in the recently used segment, promotes it to the frequently used segment.
+     * Promotes it to the frequently used segment if found in recently used.
      *
      * @param key the key to retrieve
-     * @return the value if present, otherwise null
+     * @return the value if present, otherwise {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public V get(K key) {
         if (frequentlyUsedSegment.containsKey(key)) {
@@ -66,11 +84,14 @@ public class SegmentedLRUCache<K, V>{
 
     /**
      * Inserts a key-value pair into the cache.
-     * If key already exists in any segment, it updates the value.
-     * Otherwise, inserts into the recently used segment and evicts if necessary.
+     * Updates the value if the key already exists in any segment.
+     * Evicts from recently used segment if necessary.
      *
-     * @param key the key to insert
+     * @param key   the key to insert
      * @param value the value to insert
+     * @throws IllegalArgumentException if key or value is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public void put(K key, V value) {
         if (key == null) throw new IllegalArgumentException("Key cannot be null.");
@@ -94,11 +115,13 @@ public class SegmentedLRUCache<K, V>{
     }
 
     /**
-     * Promotes a key-value pair to the frequently used segment.
-     * Evicts from the frequent segment if over capacity.
+     * Promotes a key-value pair from recently used to frequently used segment.
+     * Evicts the least recently used item in frequent segment if full.
      *
-     * @param key the key to promote
-     * @param value the value associated
+     * @param key   the key to promote
+     * @param value the value associated with the key
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     private void promoteToFrequent(K key, V value) {
         if (frequentlyUsedSegment.size() >= frequentCapacity) {
@@ -111,6 +134,8 @@ public class SegmentedLRUCache<K, V>{
      * Evicts the oldest entry from a given LRU-based segment.
      *
      * @param map the map segment to evict from
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     private void evictOldest(LinkedHashMap<K, V> map) {
         Iterator<Map.Entry<K, V>> it = map.entrySet().iterator();
@@ -122,20 +147,33 @@ public class SegmentedLRUCache<K, V>{
 
     /**
      * Returns the number of items currently in the cache.
+     *
+     * @return total size across both segments
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public int size() {
         return recentlyUsedSegment.size() + frequentlyUsedSegment.size();
     }
 
     /**
-     * Checks if a key exists in the cache (in either segment).
+     * Checks if a key exists in either segment of the cache.
+     *
+     * @param key the key to check
+     * @return {@code true} if key exists, {@code false} otherwise
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public boolean contains(K key) {
         return recentlyUsedSegment.containsKey(key) || frequentlyUsedSegment.containsKey(key);
     }
 
     /**
-     * Removes a key from the cache if present.
+     * Removes a key from both segments if it exists.
+     *
+     * @param key the key to remove
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public void remove(K key) {
         recentlyUsedSegment.remove(key);
@@ -143,7 +181,9 @@ public class SegmentedLRUCache<K, V>{
     }
 
     /**
-     * Clears all keys from both segments.
+     * Clears all entries from both segments.
+     *
+     * <p><b>Time Complexity:</b> O(n)</p>
      */
     public void clear() {
         recentlyUsedSegment.clear();

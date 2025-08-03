@@ -6,12 +6,16 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * A generic tree or DAG (Directed Acyclic Graph) structure with:
- * - Safe edge addition (cycle prevention for undirected trees or DAGs)
- * - DFS and BFS traversal with customizable action
- * - Binary lifting for Lowest Common Ancestor (LCA) queries
- * - Topological sort (for DAGs)
- * - Internal auto-computation of metadata (depth, LCA, subtree size) for ease of use
+ * A generic tree or DAG (Directed Acyclic Graph) structure.
+ * <p>
+ * Features:
+ * <ul>
+ *     <li>Safe edge addition with cycle prevention</li>
+ *     <li>DFS and BFS traversal with custom actions</li>
+ *     <li>Binary lifting for LCA queries</li>
+ *     <li>Topological sort for DAGs</li>
+ *     <li>Auto computation of depth, parent, subtree size, and LCA table</li>
+ * </ul>
  *
  * @param <K> the type of nodes in the tree/graph
  */
@@ -30,6 +34,12 @@ public class GenericTree<K> {
     private boolean computationNeeded = true;
     private K rootNode = null;
 
+    /**
+     * Constructs a generic tree.
+     *
+     * @param directed whether the tree is directed
+     * @param maxLift maximum depth for binary lifting (log2(max nodes))
+     */
     public GenericTree(boolean directed, int maxLift) {
         this.directed = directed;
         this.MAX_LIFT = maxLift;
@@ -65,42 +75,31 @@ public class GenericTree<K> {
     }
 
     /**
-     * Removes an edge between two nodes if allowed.
-     * For undirected trees, edge removal is only permitted if at least one of the nodes is a leaf
-     * (i.e., has only one connection), to avoid disconnecting the tree.
+     * Removes an edge safely. Allowed only if one endpoint is a leaf (undirected case).
      *
-     * @param u one endpoint
-     * @param v the other endpoint
-     * @return true if the edge was removed; false if it didn't exist or removal is unsafe
+     * @param u endpoint 1
+     * @param v endpoint 2
+     * @return true if edge removed, false otherwise
      */
     public boolean removeEdge(K u, K v) {
         List<K> listU = adj.get(u);
         List<K> listV = adj.get(v);
         if (listU == null || listV == null) return false;
         if (!listU.contains(v) && !listV.contains(u)) return false;
-
-        // Only allow removal if either u or v is a leaf
         if (listU.size() > 1 && listV.size() > 1) return false;
 
-        // Remove edge safely
         listU.remove(v);
         listV.remove(u);
         computationNeeded = true;
 
-        // Cleanup if node becomes completely disconnected
         if (listU.isEmpty()) adj.remove(u);
         if (listV.isEmpty()) adj.remove(v);
 
-        // Handle root reassignment
-        if (Objects.equals(rootNode, u)) {
-            rootNode = !listV.isEmpty() ? v : null;
-        } else if (Objects.equals(rootNode, v)) {
-            rootNode = !listU.isEmpty() ? u : null;
-        }
+        if (Objects.equals(rootNode, u)) rootNode = !listV.isEmpty() ? v : null;
+        else if (Objects.equals(rootNode, v)) rootNode = !listU.isEmpty() ? u : null;
 
         return true;
     }
-
 
     private void dfsForConnectivity(K node, Set<K> visited) {
         visited.add(node);
@@ -111,13 +110,12 @@ public class GenericTree<K> {
         }
     }
 
-
-
     /**
-     * Performs DFS from the given root with a consumer action.
+     * <b>Time Complexity:</b> <p>O(N)</p>
+     * Performs DFS from the root and applies a given action.
      *
-     * @param root the starting node
-     * @param action action to apply to each visited node
+     * @param root the root node
+     * @param action function to execute per node
      */
     public void dfs(K root, Consumer<K> action) {
         dfs(root, null, action);
@@ -138,10 +136,11 @@ public class GenericTree<K> {
     }
 
     /**
+     * <b>Time Complexity:</b> <p>O(N)</p>
      * Performs BFS from the given source node.
      *
      * @param source the starting node
-     * @param action action to apply to each visited node
+     * @param action function to execute per node
      */
     public void bfs(K source, Consumer<K> action) {
         if (!adj.containsKey(source)) return;
@@ -160,9 +159,6 @@ public class GenericTree<K> {
         }
     }
 
-    /**
-     * Ensures that DFS and LCA lifting table are built if needed.
-     */
     private void ensureComputed() {
         if (computationNeeded && rootNode != null) {
             parent.clear(); depth.clear(); subtreeSize.clear(); up.clear();
@@ -173,9 +169,10 @@ public class GenericTree<K> {
     }
 
     /**
-     * Builds binary lifting table for LCA computation.
+     * <b>Time Complexity:</b> <p>O(N log N)</p>
+     * Builds binary lifting table.
      *
-     * @param node the current node to start building from
+     * @param node starting node
      */
     public void buildLifting(K node) {
         computeBinaryLifting(node, parent.get(node));
@@ -213,11 +210,12 @@ public class GenericTree<K> {
     }
 
     /**
+     * <b>Time Complexity:</b> <p>O(log N)</p>
      * Returns the lowest common ancestor of two nodes.
      *
-     * @param u first node
-     * @param v second node
-     * @return the LCA node, or null if one is unreachable
+     * @param u node 1
+     * @param v node 2
+     * @return LCA of u and v, or null if unreachable
      */
     public K getLCA(K u, K v) {
         ensureComputed();
@@ -245,10 +243,8 @@ public class GenericTree<K> {
     }
 
     /**
-     * Returns depth of a node.
-     *
-     * @param node the node
-     * @return depth if available, -1 otherwise
+     * @param node the node to query
+     * @return depth of node, or -1 if unknown
      */
     public int getDepth(K node) {
         ensureComputed();
@@ -256,10 +252,8 @@ public class GenericTree<K> {
     }
 
     /**
-     * Returns the size of the subtree rooted at the given node.
-     *
-     * @param node the root node
-     * @return size of subtree or 0 if unknown
+     * @param node node whose subtree size is needed
+     * @return subtree size or 0 if unknown
      */
     public int getSubtreeSize(K node) {
         ensureComputed();
@@ -267,9 +261,10 @@ public class GenericTree<K> {
     }
 
     /**
-     * Returns a topological order of the DAG (only valid for directed graphs).
+     * <b>Time Complexity:</b> <p>O(N + E)</p>
+     * Returns a topological ordering of the DAG.
      *
-     * @return a list of nodes in topological order
+     * @return list of nodes in topological order
      */
     public List<K> getTopologicalOrder() {
         if (!directed) throw new UnsupportedOperationException("Topological sort only valid for DAGs");
@@ -296,15 +291,13 @@ public class GenericTree<K> {
     }
 
     /**
-     * Prints the adjacency list (mainly for debugging purposes).
+     * Prints adjacency list for debugging.
      */
     public void printAdjacencyList() {
         for (Map.Entry<K, List<K>> entry : adj.entrySet()) {
             System.out.println(entry.getKey() + " → " + entry.getValue());
         }
     }
-
-    // ---------------- Internal Utilities ------------------
 
     private boolean hasCycleDFS() {
         Set<K> visited = new HashSet<>();

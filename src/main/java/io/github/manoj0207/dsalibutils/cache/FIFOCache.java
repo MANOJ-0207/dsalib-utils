@@ -13,10 +13,14 @@ import java.util.Map;
  */
 public class FIFOCache<K, V> {
 
-    /** Maximum number of entries the cache can hold */
+    /**
+     * Maximum number of entries the cache can hold.
+     */
     private final int capacity;
 
-    /** Internal map maintaining insertion order */
+    /**
+     * Internal map maintaining insertion order.
+     */
     private final Map<K, V> map;
 
     /**
@@ -37,8 +41,10 @@ public class FIFOCache<K, V> {
      * Retrieves the value associated with the given key.
      *
      * @param key the key to look up
-     * @return the associated value, or null if not found
-     * @throws IllegalArgumentException if the key is null
+     * @return the associated value, or {@code null} if not found
+     * @throws IllegalArgumentException if the key is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public V get(K key) {
         if (key == null) {
@@ -54,7 +60,9 @@ public class FIFOCache<K, V> {
      *
      * @param key   the key to insert or update
      * @param value the value to associate with the key
-     * @throws IllegalArgumentException if the key is null
+     * @throws IllegalArgumentException if the key is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public void put(K key, V value) {
         if (key == null) {
@@ -78,6 +86,8 @@ public class FIFOCache<K, V> {
      * Returns the current size of the cache.
      *
      * @return number of entries in the cache
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public int size() {
         return map.size();
@@ -85,6 +95,8 @@ public class FIFOCache<K, V> {
 
     /**
      * Clears all entries in the cache.
+     *
+     * <p><b>Time Complexity:</b> O(n), where n is the number of entries in the cache</p>
      */
     public void clear() {
         map.clear();
@@ -94,8 +106,10 @@ public class FIFOCache<K, V> {
      * Checks whether the cache contains the given key.
      *
      * @param key the key to check
-     * @return true if the key exists, false otherwise
-     * @throws IllegalArgumentException if the key is null
+     * @return {@code true} if the key exists, {@code false} otherwise
+     * @throws IllegalArgumentException if the key is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public boolean contains(K key) {
         if (key == null) {

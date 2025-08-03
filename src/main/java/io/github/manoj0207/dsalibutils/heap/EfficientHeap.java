@@ -4,15 +4,18 @@ import java.util.*;
 
 /**
  * A highly flexible heap (priority queue) implementation that supports:
- * - Both min-heap and max-heap behavior via a comparator.
- * - Efficient value removal in O(log n) using an index map.
- * - Updates (removal + reinsertion) for arbitrary values.
- *
+ * <ul>
+ *     <li>Both min-heap and max-heap behavior via a comparator</li>
+ *     <li>Efficient value removal in <code>O(log n)</code> using an index map</li>
+ *     <li>Update operations (remove + reinsert) for arbitrary values</li>
+ * </ul>
  * Internally uses:
- * - An ArrayList for the heap structure.
- * - A Map from value to its set of indices for O(1) lookup on deletion.
+ * <ul>
+ *     <li>An ArrayList for heap structure</li>
+ *     <li>A map from value to set of indices for <code>O(1)</code> deletion support</li>
+ * </ul>
  *
- * @param <T> the type of elements maintained by this heap; must be Comparable
+ * @param <T> the type of elements in the heap; must be Comparable
  */
 public class EfficientHeap<T extends Comparable<T>> {
     private final List<T> heap = new ArrayList<>();
@@ -20,7 +23,7 @@ public class EfficientHeap<T extends Comparable<T>> {
     private final Comparator<T> comparator;
 
     /**
-     * Constructs an EfficientHeap with min-heap or max-heap ordering.
+     * Constructs an EfficientHeap with either min-heap or max-heap ordering.
      *
      * @param isMinHeap true for min-heap (default), false for max-heap
      */
@@ -39,8 +42,6 @@ public class EfficientHeap<T extends Comparable<T>> {
 
     /**
      * Constructs an EfficientHeap using natural ordering (min-heap).
-     *
-     * Requires that T implements Comparable<T>.
      */
     public EfficientHeap() {
         this(Comparator.naturalOrder());
@@ -49,7 +50,8 @@ public class EfficientHeap<T extends Comparable<T>> {
     /**
      * Checks if the heap is empty.
      *
-     * @return true if empty, false otherwise
+     * @return true if heap is empty, false otherwise
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public boolean isEmpty() {
         return heap.isEmpty();
@@ -60,6 +62,7 @@ public class EfficientHeap<T extends Comparable<T>> {
      *
      * @return the root element
      * @throws NoSuchElementException if the heap is empty
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public T peek() {
         if (isEmpty()) throw new NoSuchElementException("Heap is empty");
@@ -67,9 +70,10 @@ public class EfficientHeap<T extends Comparable<T>> {
     }
 
     /**
-     * Adds an element to the heap.
+     * Adds a value to the heap.
      *
-     * @param val the value to be added
+     * @param val the value to insert
+     * <p><b>Time Complexity:</b> O(log n)</p>
      */
     public void add(T val) {
         heap.add(val);
@@ -82,7 +86,8 @@ public class EfficientHeap<T extends Comparable<T>> {
      * Removes and returns the root of the heap.
      *
      * @return the root element
-     * @throws NoSuchElementException if the heap is empty
+     * @throws NoSuchElementException if heap is empty
+     * <p><b>Time Complexity:</b> O(log n)</p>
      */
     public T poll() {
         if (isEmpty()) throw new NoSuchElementException("Heap is empty");
@@ -93,10 +98,11 @@ public class EfficientHeap<T extends Comparable<T>> {
 
     /**
      * Removes a specific value from the heap.
-     * If multiple occurrences exist, removes only one.
+     * If multiple copies exist, removes only one.
      *
      * @param val the value to remove
-     * @return true if removed, false if not found
+     * @return true if the value was removed; false if not found
+     * <p><b>Time Complexity:</b> O(log n)</p>
      */
     public boolean remove(T val) {
         if (!valueToIndices.containsKey(val)) return false;
@@ -113,7 +119,7 @@ public class EfficientHeap<T extends Comparable<T>> {
             heap.remove(lastIndex);
             updateIndexMapAfterSwap(lastVal, lastIndex, index);
             heapifyDown(index);
-            heapifyUp(index); // Needed if lastVal is smaller than parent
+            heapifyUp(index); // Re-heapify if necessary
         } else {
             heap.remove(lastIndex);
         }
@@ -122,11 +128,12 @@ public class EfficientHeap<T extends Comparable<T>> {
     }
 
     /**
-     * Updates a value in the heap by removing the old value and adding the new one.
+     * Updates a value by removing the old value and inserting the new one.
      *
-     * @param oldVal the value to replace
-     * @param newVal the value to insert
-     * @return true if oldVal was found and updated, false otherwise
+     * @param oldVal the value to be replaced
+     * @param newVal the value to be added
+     * @return true if the value was updated; false if not found
+     * <p><b>Time Complexity:</b> O(log n)</p>
      */
     public boolean update(T oldVal, T newVal) {
         if (!remove(oldVal)) return false;
@@ -134,11 +141,16 @@ public class EfficientHeap<T extends Comparable<T>> {
         return true;
     }
 
-    // === Private Utility Methods === //
-
     /**
-     * Maintains the heap property by bubbling up the element at index i.
+     * Prints the current heap elements in array form (for debugging).
+     * <p><b>Time Complexity:</b> O(n)</p>
      */
+    public void printHeap() {
+        System.out.println(heap);
+    }
+
+    // ---------- Private Helper Methods (excluded from JavaDoc as per user request) ---------- //
+
     private void heapifyUp(int i) {
         while (i > 0) {
             int parent = (i - 1) / 2;
@@ -148,9 +160,6 @@ public class EfficientHeap<T extends Comparable<T>> {
         }
     }
 
-    /**
-     * Maintains the heap property by pushing down the element at index i.
-     */
     private void heapifyDown(int i) {
         int size = heap.size();
         while (true) {
@@ -168,9 +177,6 @@ public class EfficientHeap<T extends Comparable<T>> {
         }
     }
 
-    /**
-     * Swaps elements at two indices and updates the index map accordingly.
-     */
     private void swap(int i, int j) {
         T valI = heap.get(i), valJ = heap.get(j);
         heap.set(i, valJ);
@@ -179,25 +185,11 @@ public class EfficientHeap<T extends Comparable<T>> {
         updateIndexMapAfterSwap(valJ, j, i);
     }
 
-    /**
-     * Updates the value-to-indices map after a swap.
-     *
-     * @param val    the value that moved
-     * @param oldIdx the old index
-     * @param newIdx the new index
-     */
     private void updateIndexMapAfterSwap(T val, int oldIdx, int newIdx) {
         Set<Integer> indices = valueToIndices.get(val);
         if (indices != null) {
             indices.remove(oldIdx);
             indices.add(newIdx);
         }
-    }
-
-    /**
-     * Prints the current heap (useful for debugging).
-     */
-    public void printHeap() {
-        System.out.println(heap);
     }
 }

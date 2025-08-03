@@ -5,18 +5,21 @@ import java.util.List;
 
 /**
  * Z-Algorithm based pattern matcher.
+ * <p>
  * Efficiently finds all occurrences of a pattern in the text using
- * a linear-time Z-array technique on the concatenated string "pattern$text".
+ * a linear-time Z-array technique on the concatenated string {@code "pattern$text"}.
  */
 public class ZAlgorithmMatcher extends AbstractPatternMatcher {
 
     /**
+     * <b>Time Complexity:</b> <p>O(N)</p>, where N is the length of the input array.
+     * <p>
      * Computes the Z-array for a given character array.
-     * Each Z[i] stores the length of the longest substring starting at i
+     * Each {@code Z[i]} stores the length of the longest substring starting at {@code i}
      * that matches the prefix of the array.
      *
      * @param s the input character array (non-null)
-     * @return the Z-array
+     * @return the computed Z-array
      */
     private int[] computeZArray(char[] s) {
         int n = s.length;
@@ -42,11 +45,14 @@ public class ZAlgorithmMatcher extends AbstractPatternMatcher {
     }
 
     /**
+     * <b>Time Complexity:</b> <p>O(N + M)</p>,
+     * where N is the length of the text and M is the length of the pattern.
+     * <p>
      * Searches for all occurrences of the pattern in the given text using the Z-algorithm.
      *
      * @param text    the text to search in (non-null)
      * @param pattern the pattern to search for (non-null)
-     * @return list of starting indices where the pattern occurs
+     * @return list of starting indices where the pattern occurs in the text
      */
     @Override
     protected List<Integer> doSearch(char[] text, char[] pattern) {

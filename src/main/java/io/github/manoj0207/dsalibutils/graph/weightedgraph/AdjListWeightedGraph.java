@@ -12,9 +12,11 @@ import java.util.function.Consumer;
  * Supports both directed and undirected graphs, various shortest path algorithms,
  * minimum spanning trees, and strongly connected component (SCC) analysis.
  *
+ * Also supports bridge edge/node detection using Tarjan's algorithm (for undirected graphs).
+ *
  * @param <K> the type of the nodes (vertices)
  */
-public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
+public class AdjListWeightedGraph<K> implements WeightedGraph<K> {
     private final Map<K, List<WeightedEdge<K>>> adjacencyList = new HashMap<>();
     private final List<DetailedEdge<K>> allEdges = new ArrayList<>();
     private final boolean isDirected;
@@ -22,23 +24,44 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
     // SCC (Kosaraju) cache
     private boolean sccCacheValid = false;
     private List<List<K>> cachedSCCs = new ArrayList<>();
-    private Map<K, Integer> cachedSccMap = new HashMap<>();
+    private final Map<K, Integer> cachedSccMap = new HashMap<>();
+
+    // Tarjan cache (bridge detection) - Fixed implementation
+    private boolean bridgeInfoValid = false;
+    private Set<K> cachedArticulationPoints = new HashSet<>();
+    private Set<DetailedEdge<K>> cachedBridgeEdges = new HashSet<>();
+
+    // Tarjan variables
+    private int time;
+    private Map<K, Integer> tin, low;
+    private Set<K> visitedTarjan;
+    private List<DetailedEdge<K>> bridgeEdges;
+    private Set<K> articulationPoints;
 
     public AdjListWeightedGraph(boolean isDirected) {
         this.isDirected = isDirected;
     }
 
     /**
-     * Adds an edge to the graph. For undirected graphs, adds both directions.
-     * Invalidates cached SCC.
+     * Adds an edge between two nodes with the specified weight.
+     * In undirected graphs, adds both directions.
+     * Invalidates all caches.
+     *
+     * @param from   source node
+     * @param to     destination node
+     * @param weight edge weight
+     * @throws NullPointerException if from or to is null
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     @Override
     public void addEdge(K from, K to, int weight) {
-        // Ensure both nodes are in the map even if no outgoing edge
-        adjacencyList.computeIfAbsent(from, k -> new ArrayList<>());
-        adjacencyList.computeIfAbsent(to, k -> new ArrayList<>()); // ← fix here
+        Objects.requireNonNull(from, "Source node cannot be null");
+        Objects.requireNonNull(to, "Destination node cannot be null");
 
-        adjacencyList.get(from).add(new WeightedEdge<>(to, weight));
+        adjacencyList.computeIfAbsent(from, k -> new ArrayList<>()).add(new WeightedEdge<>(to, weight));
+        adjacencyList.computeIfAbsent(to, k -> new ArrayList<>());
+
         if (!isDirected) {
             adjacencyList.get(to).add(new WeightedEdge<>(from, weight));
         }
@@ -47,35 +70,214 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
         invalidateCache();
     }
 
-
     /**
-     * Removes an edge from the graph.
-     * Invalidates cached SCC.
+     * Removes an edge from the graph. If undirected, removes both directions.
+     * Cleans up empty adjacency lists to prevent memory leaks.
+     *
+     * @param from source node
+     * @param to   destination node
+     * @throws NullPointerException if from or to is null
+     *
+     * <p><b>Time Complexity:</b> O(deg(from) + deg(to) + E)</p>
      */
     @Override
     public void removeEdge(K from, K to) {
-        adjacencyList.getOrDefault(from, new ArrayList<>()).removeIf(e -> e.node().equals(to));
-        if (!isDirected) {
-            adjacencyList.getOrDefault(to, new ArrayList<>()).removeIf(e -> e.node().equals(from));
+        Objects.requireNonNull(from, "Source node cannot be null");
+        Objects.requireNonNull(to, "Destination node cannot be null");
+
+        List<WeightedEdge<K>> fromList = adjacencyList.get(from);
+        if (fromList != null) {
+            fromList.removeIf(e -> e.node().equals(to));
+            // Clean up empty adjacency list to prevent memory leaks
+            if (fromList.isEmpty()) {
+                adjacencyList.remove(from);
+            }
         }
+
+        if (!isDirected) {
+            List<WeightedEdge<K>> toList = adjacencyList.get(to);
+            if (toList != null) {
+                toList.removeIf(e -> e.node().equals(from));
+                // Clean up empty adjacency list to prevent memory leaks
+                if (toList.isEmpty()) {
+                    adjacencyList.remove(to);
+                }
+            }
+        }
+
+        // Remove from allEdges list
         allEdges.removeIf(e -> (e.source().equals(from) && e.dest().equals(to)) ||
                 (!isDirected && e.source().equals(to) && e.dest().equals(from)));
+
         invalidateCache();
     }
 
     /**
-     * Invalidates cached SCCs.
+     * Invalidates all cached computation results.
      */
     public void invalidateCache() {
         sccCacheValid = false;
+        bridgeInfoValid = false;
     }
 
     /**
-     * @return List of strongly connected components in the graph.
+     * Checks if an edge is a bridge (i.e., its removal increases components).
+     * For undirected graphs, checks both edge directions.
+     * Only valid for undirected graphs.
+     *
+     * @param u one end of the edge
+     * @param v the other end of the edge
+     * @return true if it is a bridge
+     * @throws NullPointerException if u or v is null
+     * @throws UnsupportedOperationException if graph is directed
+     */
+    public boolean isBridgeEdge(K u, K v) {
+        Objects.requireNonNull(u, "First node cannot be null");
+        Objects.requireNonNull(v, "Second node cannot be null");
+
+        if (isDirected) {
+            throw new UnsupportedOperationException("Bridge detection only supported for undirected graphs.");
+        }
+
+        computeTarjanIfNeeded();
+
+        // Check both directions for undirected graphs
+        for (DetailedEdge<K> bridge : cachedBridgeEdges) {
+            if ((bridge.source().equals(u) && bridge.dest().equals(v)) ||
+                    (bridge.source().equals(v) && bridge.dest().equals(u))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if a node is an articulation point (bridge node).
+     * Only valid for undirected graphs.
+     *
+     * @param node the node to check
+     * @return true if it's a bridge node
+     * @throws NullPointerException if node is null
+     * @throws UnsupportedOperationException if graph is directed
+     */
+    public boolean isBridgeNode(K node) {
+        Objects.requireNonNull(node, "Node cannot be null");
+
+        if (isDirected) {
+            throw new UnsupportedOperationException("Bridge detection only supported for undirected graphs.");
+        }
+
+        computeTarjanIfNeeded();
+        return cachedArticulationPoints.contains(node);
+    }
+
+    /**
+     * Returns all bridge edges in the graph.
+     * Only valid for undirected graphs.
+     *
+     * @return set of bridge edges
+     * @throws UnsupportedOperationException if graph is directed
+     */
+    public Set<DetailedEdge<K>> getBridgeEdges() {
+        if (isDirected) {
+            throw new UnsupportedOperationException("Bridge detection only supported for undirected graphs.");
+        }
+
+        computeTarjanIfNeeded();
+        return Collections.unmodifiableSet(cachedBridgeEdges);
+    }
+
+    /**
+     * Returns all articulation points in the graph.
+     * Only valid for undirected graphs.
+     *
+     * @return set of bridge nodes
+     * @throws UnsupportedOperationException if graph is directed
+     */
+    public Set<K> getBridgeNodes() {
+        if (isDirected) {
+            throw new UnsupportedOperationException("Bridge detection only supported for undirected graphs.");
+        }
+
+        computeTarjanIfNeeded();
+        return Collections.unmodifiableSet(cachedArticulationPoints);
+    }
+
+    /**
+     * Computes Tarjan's algorithm for bridge and articulation point detection.
+     * Uses the corrected logic from the working unweighted graph implementation.
+     */
+    private void computeTarjanIfNeeded() {
+        if (bridgeInfoValid) return;
+
+        time = 0;
+        tin = new HashMap<>();
+        low = new HashMap<>();
+        visitedTarjan = new HashSet<>();
+        bridgeEdges = new ArrayList<>();
+        articulationPoints = new HashSet<>();
+
+        for (K node : adjacencyList.keySet()) {
+            if (!visitedTarjan.contains(node)) {
+                dfsTarjan(node, null);
+            }
+        }
+
+        cachedArticulationPoints = new HashSet<>(articulationPoints);
+        cachedBridgeEdges = new HashSet<>(bridgeEdges);
+        bridgeInfoValid = true;
+    }
+
+    /**
+     * Tarjan's DFS implementation with corrected time increment logic.
+     * Adapted from the working unweighted graph implementation.
+     */
+    private void dfsTarjan(K u, K parent) {
+        visitedTarjan.add(u);
+        tin.put(u, time);
+        low.put(u, time);
+        time++; // Fixed: Separate time increment from assignment
+        int children = 0;
+
+        for (WeightedEdge<K> edge : adjacencyList.getOrDefault(u, List.of())) {
+            K v = edge.node();
+            if (v.equals(parent)) continue;
+
+            if (!visitedTarjan.contains(v)) {
+                children++;
+                dfsTarjan(v, u);
+                low.put(u, Math.min(low.get(u), low.get(v)));
+
+                // Articulation point check
+                if (parent != null && low.get(v) >= tin.get(u)) {
+                    articulationPoints.add(u);
+                }
+
+                // Bridge edge check
+                if (low.get(v) > tin.get(u)) {
+                    bridgeEdges.add(new DetailedEdge<>(u, v, edge.weight()));
+                }
+
+            } else {
+                // Back edge case
+                low.put(u, Math.min(low.get(u), tin.get(v)));
+            }
+        }
+
+        // Root articulation point check
+        if (parent == null && children > 1) {
+            articulationPoints.add(u);
+        }
+    }
+
+    /**
+     * Computes strongly connected components using Kosaraju's algorithm.
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     @Override
-    public List<List<K>> getStronglyConnectedComponents()
-    {
+    public List<List<K>> getStronglyConnectedComponents() {
         if (!isDirected) {
             throw new UnsupportedOperationException("SCC is not defined for undirected graphs.");
         }
@@ -90,7 +292,6 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
             }
         }
 
-        // Transpose graph
         Map<K, List<K>> transpose = new HashMap<>();
         for (K u : adjacencyList.keySet()) {
             for (WeightedEdge<K> e : adjacencyList.get(u)) {
@@ -119,7 +320,8 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
     }
 
     /**
-     * @return true if graph is strongly connected (i.e. only 1 SCC).
+     * @return true if graph is strongly connected (only one SCC).
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     @Override
     public boolean isStronglyConnected() {
@@ -128,6 +330,7 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
 
     /**
      * @return number of strongly connected components.
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     @Override
     public int getSCCCount() {
@@ -135,11 +338,12 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
     }
 
     /**
-     * @return a map from each node to its SCC ID.
+     * @return map from each node to its SCC ID.
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     @Override
     public Map<K, Integer> getSCCMap() {
-        getStronglyConnectedComponents(); // ensures cache is built
+        getStronglyConnectedComponents();
         return Collections.unmodifiableMap(cachedSccMap);
     }
 
@@ -164,10 +368,19 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
     }
 
     /**
-     * Performs BFS with an action on each visited node.
+     * Performs breadth-first traversal.
+     *
+     * @param start  the starting node
+     * @param action action to perform on each visited node
+     * @throws NullPointerException if start or action is null
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     @Override
     public void bfs(K start, Consumer<K> action) {
+        Objects.requireNonNull(start, "Start node cannot be null");
+        Objects.requireNonNull(action, "Action cannot be null");
+
         Set<K> visited = new HashSet<>();
         Queue<K> queue = new LinkedList<>();
         visited.add(start);
@@ -185,10 +398,19 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
     }
 
     /**
-     * Performs DFS with an action on each visited node.
+     * Performs depth-first traversal.
+     *
+     * @param start  the starting node
+     * @param action action to perform on each visited node
+     * @throws NullPointerException if start or action is null
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     @Override
     public void dfs(K start, Consumer<K> action) {
+        Objects.requireNonNull(start, "Start node cannot be null");
+        Objects.requireNonNull(action, "Action cannot be null");
+
         Set<K> visited = new HashSet<>();
         dfsHelper(start, visited, action);
     }
@@ -202,18 +424,24 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
             }
         }
     }
+
     /**
-     * Computes the shortest path from source to destination using Dijkstra's algorithm.
-     * Only valid for graphs with non-negative edge weights.
+     * Dijkstra's algorithm for shortest path with non-negative weights.
      *
-     * @param source      starting node
-     * @param destination destination node
-     * @return shortest path cost or -1 if unreachable or nodes are invalid
+     * @param source      the starting node
+     * @param destination the target node
+     * @return shortest distance, or null if unreachable or nodes don't exist
+     * @throws NullPointerException if source or destination is null
+     *
+     * <p><b>Time Complexity:</b> O((V + E) log V)</p>
      */
     @Override
-    public int dijkstra(K source, K destination) {
-        if (source == null || destination == null || !adjacencyList.containsKey(source) || !adjacencyList.containsKey(destination)) {
-            return -1;
+    public Integer dijkstra(K source, K destination) {
+        Objects.requireNonNull(source, "Source node cannot be null");
+        Objects.requireNonNull(destination, "Destination node cannot be null");
+
+        if (!adjacencyList.containsKey(source) || !adjacencyList.containsKey(destination)) {
+            return null;
         }
 
         Map<K, Integer> dist = new HashMap<>();
@@ -229,11 +457,11 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
             WeightedEdge<K> current = pq.poll();
             K u = current.node();
 
-            if (current.weight() > dist.get(u)) continue; // Skip outdated
+            if (current.weight() > dist.get(u)) continue;
 
             for (WeightedEdge<K> neighbor : adjacencyList.getOrDefault(u, List.of())) {
                 if (neighbor.weight() < 0) {
-                    throw new IllegalArgumentException("Graph contains negative edge weights. Dijkstra's algorithm cannot handle them.");
+                    throw new IllegalArgumentException("Graph contains negative edge weights.");
                 }
 
                 int newDist = dist.get(u) + neighbor.weight();
@@ -244,23 +472,26 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
             }
         }
 
-        return dist.get(destination) == Integer.MAX_VALUE ? -1 : dist.get(destination);
+        return dist.get(destination) == Integer.MAX_VALUE ? null : dist.get(destination);
     }
 
     /**
-     * Computes shortest distances from the source node to all other nodes using the Bellman-Ford algorithm.
-     * Can handle negative weights and detects negative weight cycles.
+     * Bellman-Ford algorithm for shortest paths, allows negative weights.
      *
      * @param source the starting node
-     * @return a map of shortest distances from source to all nodes
-     * @throws IllegalArgumentException if source is null or not in the graph
-     * @throws IllegalStateException if the graph contains a negative weight cycle
+     * @return map of shortest distances from source to all nodes
+     * @throws IllegalArgumentException  if source is invalid
+     * @throws IllegalStateException     if negative weight cycle exists
+     * @throws NullPointerException     if source is null
+     *
+     * <p><b>Time Complexity:</b> O(V * E)</p>
      */
-
     @Override
     public Map<K, Integer> bellmanFord(K source) {
-        if (source == null || !adjacencyList.containsKey(source)) {
-            throw new IllegalArgumentException("Source node is invalid or not present in the graph.");
+        Objects.requireNonNull(source, "Source node cannot be null");
+
+        if (!adjacencyList.containsKey(source)) {
+            throw new IllegalArgumentException("Source node is invalid.");
         }
 
         Map<K, Integer> dist = new HashMap<>();
@@ -270,26 +501,19 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
         dist.put(source, 0);
 
         int V = adjacencyList.size();
-
-        // Relax all edges V - 1 times
         for (int i = 0; i < V - 1; i++) {
             for (DetailedEdge<K> edge : allEdges) {
-                K u = edge.source();
-                K v = edge.dest();
+                K u = edge.source(), v = edge.dest();
                 int w = edge.weight();
-
                 if (dist.get(u) != Integer.MAX_VALUE && dist.get(u) + w < dist.get(v)) {
                     dist.put(v, dist.get(u) + w);
                 }
             }
         }
 
-        // Check for negative weight cycles
         for (DetailedEdge<K> edge : allEdges) {
-            K u = edge.source();
-            K v = edge.dest();
+            K u = edge.source(), v = edge.dest();
             int w = edge.weight();
-
             if (dist.get(u) != Integer.MAX_VALUE && dist.get(u) + w < dist.get(v)) {
                 throw new IllegalStateException("Graph contains a negative weight cycle.");
             }
@@ -299,13 +523,11 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
     }
 
     /**
-     * Computes the shortest distances between all pairs of nodes using the Floyd-Warshall algorithm.
-     * This algorithm works for graphs with positive or negative edge weights (but no negative cycles).
-     * It uses dynamic programming to find the minimum distance between every pair of nodes.
+     * Floyd-Warshall algorithm for all-pairs shortest paths.
      *
-     * @return a map where each key is a source node, and its value is another map representing
-     *         the shortest distance to every destination node. If a destination is unreachable,
-     *         the corresponding distance will be {@link Integer#MAX_VALUE}.
+     * @return map of shortest distances between all pairs of nodes
+     *
+     * <p><b>Time Complexity:</b> O(V³)</p>
      */
     @Override
     public Map<K, Map<K, Integer>> floydWarshall() {
@@ -314,22 +536,16 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
         for (K u : adjacencyList.keySet()) {
             dist.put(u, new HashMap<>());
             for (K v : adjacencyList.keySet()) {
-                if (u.equals(v)) {
-                    dist.get(u).put(v, 0);
-                } else {
-                    dist.get(u).put(v, Integer.MAX_VALUE);
-                }
+                dist.get(u).put(v, u.equals(v) ? 0 : Integer.MAX_VALUE);
             }
         }
 
-        // Step 2: Edge weights
         for (K u : adjacencyList.keySet()) {
             for (WeightedEdge<K> edge : adjacencyList.get(u)) {
                 dist.get(u).put(edge.node(), edge.weight());
             }
         }
 
-        // Step 3: Floyd-Warshall core
         for (K k : adjacencyList.keySet()) {
             for (K i : adjacencyList.keySet()) {
                 for (K j : adjacencyList.keySet()) {
@@ -346,12 +562,19 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
         return dist;
     }
 
-
     /**
-     * Prim's algorithm to find Minimum Spanning Tree.
+     * Prim's algorithm for Minimum Spanning Tree.
+     *
+     * @param start the starting node
+     * @return total weight of the MST
+     * @throws NullPointerException if start is null
+     *
+     * <p><b>Time Complexity:</b> O((V + E) log V)</p>
      */
     @Override
-    public int primsMST(K start) {
+    public Integer primsMST(K start) {
+        Objects.requireNonNull(start, "Start node cannot be null");
+
         Set<K> visited = new HashSet<>();
         PriorityQueue<WeightedEdge<K>> pq = new PriorityQueue<>();
         int totalCost = 0;
@@ -375,10 +598,14 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
     }
 
     /**
-     * Kruskal's algorithm to find MST (only valid for undirected graphs).
+     * Kruskal's algorithm to compute MST.
+     *
+     * @return total weight of the MST
+     *
+     * <p><b>Time Complexity:</b> O(E log E)</p>
      */
     @Override
-    public int kruskalMST() {
+    public Integer kruskalMST() {
         DisjointSet<K> dsu = new DisjointSet<>(adjacencyList.keySet());
         List<DetailedEdge<K>> sorted = new ArrayList<>(allEdges);
         sorted.sort(Comparator.comparingInt(DetailedEdge::weight));
@@ -394,11 +621,23 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
     }
 
     /**
-     * @return true if node `to` is reachable from node `from`.
+     * Checks if node 'to' is reachable from node 'from'.
+     *
+     * @param from start node
+     * @param to   destination node
+     * @return true if reachable
+     * @throws NullPointerException if from or to is null
+     *
+     * <p><b>Time Complexity:</b> O(V + E)</p>
      */
     @Override
     public boolean isReachable(K from, K to) {
-        if (!adjacencyList.containsKey(from)) return false;
+        Objects.requireNonNull(from, "Source node cannot be null");
+        Objects.requireNonNull(to, "Destination node cannot be null");
+
+        if (!adjacencyList.containsKey(from) || !adjacencyList.containsKey(to)) return false;
+        if (from.equals(to)) return true; // Optimization for same node
+
         Set<K> visited = new HashSet<>();
         Queue<K> queue = new LinkedList<>();
         visited.add(from);
@@ -417,9 +656,8 @@ public class AdjListWeightedGraph<K> implements WeightedGraph<K>{
         return false;
     }
 
-
     /**
-     * Prints the adjacency list.
+     * Prints the adjacency list of the graph.
      */
     @Override
     public void printGraph() {

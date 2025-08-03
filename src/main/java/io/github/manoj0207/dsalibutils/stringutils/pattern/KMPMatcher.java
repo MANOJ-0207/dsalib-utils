@@ -5,12 +5,16 @@ import java.util.List;
 
 /**
  * Knuth-Morris-Pratt (KMP) pattern matcher.
+ * <p>
  * Efficiently finds all occurrences of a pattern in the text using
- * preprocessed longest prefix suffix (LPS) information.
+ * preprocessed Longest Prefix Suffix (LPS) information.
  */
 public class KMPMatcher extends AbstractPatternMatcher {
 
     /**
+     * <b>Time Complexity:</b> <p>O(N + M)</p>
+     * where N is the length of the text and M is the length of the pattern.
+     * <p>
      * Performs the actual KMP pattern matching logic using character arrays.
      *
      * @param text    the input text (non-null)
@@ -53,10 +57,12 @@ public class KMPMatcher extends AbstractPatternMatcher {
     }
 
     /**
+     * <b>Time Complexity:</b> <p>O(M)</p>, where M is the length of the pattern.
+     * <p>
      * Builds the Longest Prefix Suffix (LPS) array for the pattern.
      * The LPS array helps to skip unnecessary comparisons during the search phase.
      *
-     * @param pattern the pattern as a char array (non-null)
+     * @param pattern the pattern as a character array (non-null)
      * @return the LPS array
      */
     private int[] buildLPS(char[] pattern) {

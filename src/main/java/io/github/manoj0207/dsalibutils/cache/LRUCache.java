@@ -15,10 +15,14 @@ import java.util.Map;
  */
 public class LRUCache<K, V> extends AbstractCache<K, V> {
 
-    /** Maps keys to their corresponding linked list nodes */
+    /**
+     * Maps keys to their corresponding linked list nodes.
+     */
     private final Map<K, Node<K, V>> nodeMap;
 
-    /** Doubly linked list to maintain LRU order */
+    /**
+     * Doubly linked list to maintain LRU order.
+     */
     private final DoublyLinkedList<K, V> dll;
 
     /**
@@ -41,8 +45,10 @@ public class LRUCache<K, V> extends AbstractCache<K, V> {
      * Moves the entry to the front (most recently used).
      *
      * @param key the key to access
-     * @return the value if present, or null otherwise
-     * @throws IllegalArgumentException if key is null
+     * @return the value if present, or {@code null} otherwise
+     * @throws IllegalArgumentException if key is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     @Override
     public V get(K key) {
@@ -64,7 +70,9 @@ public class LRUCache<K, V> extends AbstractCache<K, V> {
      *
      * @param key   the key to insert/update
      * @param value the value to associate with the key
-     * @throws IllegalArgumentException if key is null
+     * @throws IllegalArgumentException if key is {@code null}
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     @Override
     public void put(K key, V value) {
@@ -154,7 +162,7 @@ public class LRUCache<K, V> extends AbstractCache<K, V> {
         /**
          * Removes and returns the least recently used node (tail).
          *
-         * @return the removed node, or null if the list is empty
+         * @return the removed node, or {@code null} if the list is empty
          */
         Node<K, V> removeTail() {
             if (tail == null) return null;

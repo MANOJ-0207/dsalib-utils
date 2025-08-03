@@ -5,12 +5,26 @@ import java.util.Map;
 
 /**
  * A generic implementation of the Disjoint Set Union (Union-Find) data structure.
- * Supports union by rank and path compression for near constant-time operations.
+ * <p>
+ * Supports:
+ * <ul>
+ *   <li>Union by rank</li>
+ *   <li>Path compression</li>
+ * </ul>
+ * for near constant-time operations.
  *
  * @param <K> the type of the elements in the disjoint set
  */
 public class DisjointSet<K> {
+
+    /**
+     * Maps each element to its parent.
+     */
     private final Map<K, K> parent = new HashMap<>();
+
+    /**
+     * Stores the rank (approximate tree height) of each root node.
+     */
     private final Map<K, Integer> rank = new HashMap<>();
 
     /**
@@ -23,6 +37,8 @@ public class DisjointSet<K> {
      * Initializes the disjoint set with the given iterable of nodes.
      *
      * @param nodes the initial elements to be added as individual sets
+     *
+     * <p><b>Time Complexity:</b> O(n)</p>
      */
     public DisjointSet(Iterable<K> nodes) {
         for (K node : nodes) {
@@ -35,6 +51,8 @@ public class DisjointSet<K> {
      * If the element already exists, this method does nothing.
      *
      * @param x the element to add
+     *
+     * <p><b>Time Complexity:</b> O(1)</p>
      */
     public void makeSet(K x) {
         parent.putIfAbsent(x, x);
@@ -48,6 +66,8 @@ public class DisjointSet<K> {
      *
      * @param x the element to find
      * @return the root representative of the set containing {@code x}
+     *
+     * <p><b>Time Complexity:</b> O(α(n)) — nearly constant using path compression</p>
      */
     public K find(K x) {
         if (!parent.containsKey(x)) {
@@ -68,7 +88,9 @@ public class DisjointSet<K> {
      *
      * @param x one element
      * @param y the other element
-     * @return true if the sets were different and have been merged; false if already in the same set
+     * @return {@code true} if the sets were different and have been merged; {@code false} if already in the same set
+     *
+     * <p><b>Time Complexity:</b> O(α(n)) — nearly constant</p>
      */
     public boolean union(K x, K y) {
         K rootX = find(x);
@@ -99,7 +121,9 @@ public class DisjointSet<K> {
      *
      * @param x one element
      * @param y the other element
-     * @return true if both elements belong to the same set, false otherwise
+     * @return {@code true} if both elements belong to the same set, {@code false} otherwise
+     *
+     * <p><b>Time Complexity:</b> O(α(n))</p>
      */
     public boolean isConnected(K x, K y) {
         return find(x).equals(find(y));
@@ -110,6 +134,8 @@ public class DisjointSet<K> {
      * Useful for debugging or visualization.
      *
      * @return a copy of the parent map
+     *
+     * <p><b>Time Complexity:</b> O(n)</p>
      */
     public Map<K, K> getParentMap() {
         return new HashMap<>(parent);
