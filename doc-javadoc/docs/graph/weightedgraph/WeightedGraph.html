@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WeightedGraph - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Theme Toggle -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Header -->
+      <header>
+        <h1>WeightedGraph</h1>
+        <p class="class-type">
+          Type: <span class="tag interface-tag">Interface</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>WeightedGraph&lt;K&gt;</code> is an interface for representing
+          weighted graphs. It supports both adjacency list and matrix-based
+          implementations, and provides APIs for traversal, shortest path, MST,
+          and SCC algorithms.
+        </p>
+        <ul>
+          <li>
+            <strong>Supports:</strong> BFS, DFS, Dijkstra, Bellman-Ford,
+            Floyd-Warshall
+          </li>
+          <li><strong>MST Algorithms:</strong> Prim’s, Kruskal’s</li>
+          <li><strong>SCC:</strong> Kosaraju or Tarjan internally</li>
+        </ul>
+      </section>
+
+      <!-- Method Contracts -->
+      <section class="doc-section">
+        <h2>Method Contracts</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>addEdge(from, to, weight)</code></td>
+              <td>Adds a weighted edge between nodes</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>removeEdge(from, to)</code></td>
+              <td>Removes the edge between nodes</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>bfs(start, action)</code></td>
+              <td>Performs BFS from start</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>dfs(start, action)</code></td>
+              <td>Performs DFS from start</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;List&lt;K&gt;&gt;</code></td>
+              <td><code>getStronglyConnectedComponents()</code></td>
+              <td>Returns all SCCs as lists</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isStronglyConnected()</code></td>
+              <td>Returns true if all nodes are reachable from each other</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>getSCCCount()</code></td>
+              <td>Returns number of SCCs</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Integer&gt;</code></td>
+              <td><code>getSCCMap()</code></td>
+              <td>Maps each node to its SCC ID</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isReachable(from, to)</code></td>
+              <td>Checks if a path exists</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>dijkstra(source, destination)</code></td>
+              <td>Returns shortest path using Dijkstra's algorithm</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Integer&gt;</code></td>
+              <td><code>bellmanFord(source)</code></td>
+              <td>Returns shortest paths using Bellman-Ford algorithm</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Integer&gt;</code></td>
+              <td><code>floydWarshall()</code></td>
+              <td>Computes all-pairs shortest paths</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>primsMST(start)</code></td>
+              <td>Returns total weight of MST using Prim’s algorithm</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>kruskalMST()</code></td>
+              <td>Returns total weight of MST using Kruskal’s algorithm</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>printGraph()</code></td>
+              <td>Prints current graph structure</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Implementations -->
+      <section class="doc-section">
+        <h2>Implementations</h2>
+        <ul>
+          <li>
+            <code
+              ><a
+                href="AdjListWeightedGraph.html"
+                target="_blank"
+                class="doc-link"
+                >AdjListWeightedGraph</a
+              ></code
+            >
+            – Adjacency list-based implementation
+          </li>
+          <li>
+            <code
+              ><a
+                href="AdjMatrixWeightedGraph.html"
+                target="_blank"
+                class="doc-link"
+                >AdjMatrixWeightedGraph</a
+              ></code
+            >
+            – Matrix-based implementation
+          </li>
+        </ul>
+      </section>
+
+      <!-- Usage -->
+      <section class="doc-section">
+        <h2>Basic Usage</h2>
+        <pre class="code-block"><code>
+// Using the weighted graph interface
+WeightedGraph&lt;String&gt; graph = new AdjListWeightedGraph&lt;&gt;();
+
+graph.addEdge("A", "B", 4);
+graph.addEdge("B", "C", 2);
+
+// Dijkstra shortest path
+int shortest = graph.dijkstra("A", "C");
+System.out.println(shortest); // Output: 6
+
+// Get all SCCs
+List&lt;List&lt;String&gt;&gt; sccs = graph.getStronglyConnectedComponents();
+System.out.println(sccs);
+</code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WeightedEdge - Docs</title>
+    <link rel="stylesheet" href="../../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>WeightedEdge</h1>
+        <p class="class-type">
+          Type: <span class="tag record-tag">Record</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>WeightedEdge&lt;K&gt;</code> represents a <strong>weighted edge</strong> pointing
+          to a target node with a specified weight. It is most commonly used in adjacency lists
+          of weighted graphs.
+        </p>
+        <p>This structure is used in:</p>
+        <ul>
+          <li><strong>Dijkstra's Algorithm</strong></li>
+          <li><strong>Prim's Minimum Spanning Tree</strong></li>
+          <li>Any graph traversal involving weights to neighbors</li>
+        </ul>
+        <p>
+          As a <code>record</code>, this class offers:
+        </p>
+        <ul>
+          <li>Immutable and thread-safe design</li>
+          <li>Auto-generated <code>equals()</code>, <code>hashCode()</code>, and <code>toString()</code></li>
+          <li>Custom <strong>equality</strong>: only considers the target node</li>
+          <li><strong>Comparable</strong> — ordered by weight (ascending)</li>
+        </ul>
+      </section>
+
+      <!-- Fields -->
+      <section class="doc-section">
+        <h2>Fields</h2>
+        <ul>
+          <li><code>K node</code> — the target node this edge points to</li>
+          <li><code>int weight</code> — the weight of the edge</li>
+        </ul>
+      </section>
+
+      <!-- Method Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>WeightedEdge(K node, int weight)</code></td>
+              <td>Creates a weighted edge pointing to a target node</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>compareTo(WeightedEdge&lt;K&gt; other)</code></td>
+              <td>Compares this edge with another based on weight</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>String</code></td>
+              <td><code>toString()</code></td>
+              <td>Returns a string in the format: <code>node (wt: weight)</code></td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>equals(Object obj)</code></td>
+              <td>Returns true if the other object points to the same node (ignores weight)</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>hashCode()</code></td>
+              <td>Generates hash code based on the target node</td>
+              <td>O(1)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Basic Usage</h2>
+        <pre class="code-block"><code>
+WeightedEdge&lt;String&gt; e1 = new WeightedEdge<>("B", 3);
+WeightedEdge&lt;String&gt; e2 = new WeightedEdge<>("B", 7);
+WeightedEdge&lt;String&gt; e3 = new WeightedEdge<>("C", 2);
+
+// Equality check (ignores weight)
+System.out.println(e1.equals(e2)); // true
+
+// Comparison by weight
+System.out.println(e3.compareTo(e1)); // -1 (since 2 &lt; 3)
+
+// Output
+System.out.println(e1); // B (wt: 3)
+        </code></pre>
+      </section>
+    </div>
+
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../../scripts/docs.js"></script>
+  </body>
+</html>

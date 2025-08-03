@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GenericTree - Docs</title>
+    <link rel="stylesheet" href="../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../assets/sun.png" />
+      <img id="icon-moon" src="../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>GenericTree</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>GenericTree&lt;K&gt;</code> is a generic tree or DAG (Directed
+          Acyclic Graph) structure that provides advanced graph operations with
+          cycle prevention, efficient traversals, and LCA (Lowest Common
+          Ancestor) queries. Features include safe edge addition with cycle
+          prevention, DFS and BFS traversal with custom actions, binary lifting
+          for LCA queries, topological sort for DAGs, and auto computation of
+          depth, parent, subtree size, and LCA table.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Building file system hierarchies and directory trees</li>
+          <li>Representing organizational charts and management structures</li>
+          <li>Dependency graphs and task scheduling systems</li>
+          <li>Game development for scene graphs and entity hierarchies</li>
+          <li>Network routing and shortest path algorithms</li>
+          <li>
+            Compiler design for abstract syntax trees and dependency analysis
+          </li>
+          <li>LCA queries for range minimum queries and tree algorithms</li>
+        </ul>
+      </section>
+
+      <!-- Public API and Time Complexity -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>GenericTree(boolean directed, int maxLift)</code></td>
+              <td>
+                Constructs a generic tree with direction and max lifting depth.
+              </td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>addEdge(K u, K v)</code></td>
+              <td>Adds an edge with automatic cycle prevention.</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>removeEdge(K u, K v)</code></td>
+              <td>Safely removes an edge if one endpoint is a leaf.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>dfs(K root, Consumer&lt;K&gt; action)</code></td>
+              <td>Performs DFS traversal with custom action.</td>
+              <td>O(N)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>bfs(K source, Consumer&lt;K&gt; action)</code></td>
+              <td>Performs BFS traversal with custom action.</td>
+              <td>O(N)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>buildLifting(K node)</code></td>
+              <td>Builds binary lifting table for LCA queries.</td>
+              <td>O(N log N)</td>
+            </tr>
+            <tr>
+              <td><code>K</code></td>
+              <td><code>getLCA(K u, K v)</code></td>
+              <td>Returns the lowest common ancestor of two nodes.</td>
+              <td>O(log N)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>getDepth(K node)</code></td>
+              <td>Returns the depth of a node from root.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>getSubtreeSize(K node)</code></td>
+              <td>Returns the size of subtree rooted at node.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;K&gt;</code></td>
+              <td><code>getTopologicalOrder()</code></td>
+              <td>Returns topological ordering for DAGs.</td>
+              <td>O(N + E)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>printAdjacencyList()</code></td>
+              <td>Prints adjacency list for debugging purposes.</td>
+              <td>O(N + E)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>
+          The <code>GenericTree</code> class represents a tree or DAG structure
+          with rich features such as LCA queries, traversal operations, and
+          topological sorting.
+        </p>
+        <ul>
+          <li>
+            <strong>Edge Management:</strong> Supports both directed and
+            undirected structures, with cycle prevention using a disjoint set
+            for undirected graphs and DFS for DAGs.
+          </li>
+          <li>
+            <strong>Traversals:</strong> DFS and BFS traversal are available
+            with custom actions for each visited node.
+          </li>
+          <li>
+            <strong>Binary Lifting:</strong> Precomputes ancestors of each node
+            for fast Lowest Common Ancestor (LCA) queries in O(log N) time.
+          </li>
+          <li>
+            <strong>Topological Sorting:</strong> Available for DAGs using
+            postorder DFS.
+          </li>
+          <li>
+            <strong>Internal Data Structures:</strong>
+            <ul>
+              <li>
+                <code>Map&lt;K, List&lt;K&gt;&gt;</code> for adjacency list
+              </li>
+              <li><code>Map&lt;K, K&gt;</code> for parent mapping</li>
+              <li>
+                <code>Map&lt;K, Integer&gt;</code> for depth and subtree sizes
+              </li>
+              <li>
+                <code>Map&lt;K, List&lt;K&gt;&gt;</code> for binary lifting
+                (LCA)
+              </li>
+              <li>
+                <code>List&lt;K&gt;</code> for topological order (in DAGs)
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <p>
+          <strong>Space Complexity:</strong> O(N × log N), where
+          <code>N</code> is the number of nodes in the tree or graph. The
+          dominant term arises from the binary lifting table stored for each
+          node.
+        </p>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+
+        <h3>Basic Tree Construction</h3>
+        <pre class="code-block"><code>
+// Create an undirected tree with max lifting depth of 20
+GenericTree&lt;String&gt; tree = new GenericTree&lt;&gt;(false, 20);
+
+// Build a simple tree structure
+tree.addEdge("root", "child1");
+tree.addEdge("root", "child2");
+tree.addEdge("child1", "grandchild1");
+tree.addEdge("child1", "grandchild2");
+tree.addEdge("child2", "grandchild3");
+
+// Print the adjacency list
+tree.printAdjacencyList();
+// Output: root → [child1, child2], child1 → [root, grandchild1, grandchild2], etc.</code></pre>
+
+        <h3>DFS Traversal with Custom Action</h3>
+        <pre class="code-block"><code>
+GenericTree&lt;Integer&gt; tree = new GenericTree&lt;&gt;(false, 10);
+tree.addEdge(1, 2);
+tree.addEdge(1, 3);
+tree.addEdge(2, 4);
+tree.addEdge(2, 5);
+
+// DFS with custom action to print nodes with their depth
+tree.dfs(1, node -&gt; {
+    int depth = tree.getDepth(node);
+    System.out.println("Node: " + node + ", Depth: " + depth);
+});
+// Output: Node: 1, Depth: 0
+//         Node: 2, Depth: 1
+//         Node: 4, Depth: 2
+//         Node: 5, Depth: 2
+//         Node: 3, Depth: 1</code></pre>
+
+        <h3>BFS Traversal</h3>
+        <pre class="code-block"><code>
+GenericTree&lt;Character&gt; tree = new GenericTree&lt;&gt;(false, 15);
+tree.addEdge('A', 'B');
+tree.addEdge('A', 'C');
+tree.addEdge('B', 'D');
+tree.addEdge('B', 'E');
+tree.addEdge('C', 'F');
+
+// BFS traversal to visit nodes level by level
+List&lt;Character&gt; bfsOrder = new ArrayList&lt;&gt;();
+tree.bfs('A', node -&gt; {
+    bfsOrder.add(node);
+    System.out.println("Visiting: " + node);
+});
+// Output: Visiting: A, Visiting: B, Visiting: C, Visiting: D, Visiting: E, Visiting: F</code></pre>
+
+        <h3>LCA Queries</h3>
+        <pre class="code-block"><code>
+GenericTree&lt;String&gt; familyTree = new GenericTree&lt;&gt;(false, 20);
+familyTree.addEdge("grandparent", "parent1");
+familyTree.addEdge("grandparent", "parent2");
+familyTree.addEdge("parent1", "child1");
+familyTree.addEdge("parent1", "child2");
+familyTree.addEdge("parent2", "child3");
+familyTree.addEdge("parent2", "child4");
+
+// Build lifting table for efficient LCA queries
+familyTree.buildLifting("grandparent");
+
+// Find LCA of two cousins
+String lca1 = familyTree.getLCA("child1", "child3");
+System.out.println("LCA of child1 and child3: " + lca1); // Output: grandparent
+
+// Find LCA of siblings
+String lca2 = familyTree.getLCA("child1", "child2");
+System.out.println("LCA of child1 and child2: " + lca2); // Output: parent1</code></pre>
+
+        <h3>Subtree Size Queries</h3>
+        <pre class="code-block"><code>
+GenericTree&lt;Integer&gt; tree = new GenericTree&lt;&gt;(false, 15);
+tree.addEdge(1, 2);
+tree.addEdge(1, 3);
+tree.addEdge(2, 4);
+tree.addEdge(2, 5);
+tree.addEdge(3, 6);
+
+// Get subtree sizes after DFS computation
+tree.dfs(1, node -&gt; {}); // Trigger computation
+
+System.out.println("Subtree size of node 1: " + tree.getSubtreeSize(1)); // Output: 6
+System.out.println("Subtree size of node 2: " + tree.getSubtreeSize(2)); // Output: 3
+System.out.println("Subtree size of node 4: " + tree.getSubtreeSize(4)); // Output: 1</code></pre>
+
+        <h3>DAG and Topological Sort</h3>
+        <pre class="code-block"><code>
+// Create a directed acyclic graph for task dependencies
+GenericTree&lt;String&gt; taskGraph = new GenericTree&lt;&gt;(true, 10);
+
+// Add task dependencies
+taskGraph.addEdge("requirements", "design");
+taskGraph.addEdge("requirements", "testing_plan");
+taskGraph.addEdge("design", "implementation");
+taskGraph.addEdge("implementation", "testing");
+taskGraph.addEdge("testing_plan", "testing");
+taskGraph.addEdge("testing", "deployment");
+
+// Get topological order for task execution
+List&lt;String&gt; executionOrder = taskGraph.getTopologicalOrder();
+System.out.println("Task execution order: " + executionOrder);
+// Output: [requirements, design, testing_plan, implementation, testing, deployment]</code></pre>
+
+        <h3>Cycle Prevention</h3>
+        <pre class="code-block"><code>
+GenericTree&lt;Integer&gt; graph = new GenericTree&lt;&gt;(true, 10);
+
+// Add edges successfully
+boolean success1 = graph.addEdge(1, 2);
+boolean success2 = graph.addEdge(2, 3);
+System.out.println("Added 1-&gt;2: " + success1); // Output: true
+System.out.println("Added 2-&gt;3: " + success2); // Output: true
+
+// Try to create a cycle - this will be prevented
+boolean cycleAttempt = graph.addEdge(3, 1);
+System.out.println("Added 3-&gt;1 (creates cycle): " + cycleAttempt); // Output: false</code></pre>
+
+        <h3>Safe Edge Removal</h3>
+        <pre class="code-block"><code>
+GenericTree&lt;String&gt; tree = new GenericTree&lt;&gt;(false, 10);
+tree.addEdge("root", "branch1");
+tree.addEdge("root", "branch2");
+tree.addEdge("branch1", "leaf1");
+
+// Can remove edge if one endpoint is a leaf
+boolean removed1 = tree.removeEdge("branch1", "leaf1");
+System.out.println("Removed branch1-leaf1: " + removed1); // Output: true
+
+// Cannot remove edge between internal nodes
+boolean removed2 = tree.removeEdge("root", "branch1");
+System.out.println("Removed root-branch1: " + removed2); // Output: false</code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../scripts/docs.js"></script>
+  </body>
+</html>

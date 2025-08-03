@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RabinKarpMatcher - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>RabinKarpMatcher</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>RabinKarpMatcher</code> is a Rabin-Karp algorithm based pattern
+          matcher that extends <a href="AbstractPatternMatcher.html" target="_blank" class="doc-link">AbstractPatternMatcher</a>. It uses
+          rolling hash technique to efficiently find pattern occurrences by
+          comparing hash values before performing character-by-character
+          verification. The algorithm uses configurable base and modulus
+          parameters for hash computation, making it suitable for various
+          applications with different collision probability requirements.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Multiple pattern search in large text corpora</li>
+          <li>Plagiarism detection and document similarity analysis</li>
+          <li>Data deduplication and file synchronization systems</li>
+          <li>Network intrusion detection and packet filtering</li>
+          <li>Version control systems for content-based diffing</li>
+          <li>Search engines and information retrieval systems</li>
+          <li>Cryptographic applications and hash-based protocols</li>
+          <li>Real-time text streaming and pattern monitoring</li>
+        </ul>
+      </section>
+
+      <!-- Public API and Time Complexity -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>RabinKarpMatcher(int base, int mod)</code></td>
+              <td>Constructs matcher with custom hash parameters</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(String text, String pattern)</code></td>
+              <td>Inherited from AbstractPatternMatcher with validation</td>
+              <td>O(N × M) worst, O(N + M) avg</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(char[] text, char[] pattern)</code></td>
+              <td>Inherited from AbstractPatternMatcher with validation</td>
+              <td>O(N × M) worst, O(N + M) avg</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>doSearch(char[] text, char[] pattern)</code></td>
+              <td>Core Rabin-Karp rolling hash implementation</td>
+              <td>O(N × M) worst, O(N + M) avg</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Algorithm Details -->
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>The Rabin-Karp algorithm works through:</p>
+        <ul>
+          <li>
+            <strong>Hash Computation:</strong> Calculates hash for pattern and
+            initial text window
+          </li>
+          <li>
+            <strong>Rolling Hash:</strong> Efficiently updates hash for sliding
+            window in O(1) time
+          </li>
+          <li>
+            <strong>Hash Comparison:</strong> Quick hash matching before
+            expensive character verification
+          </li>
+          <li>
+            <strong>Collision Handling:</strong> Character-by-character
+            verification on hash matches
+          </li>
+        </ul>
+        <p>
+          <strong>Space Complexity:</strong> O(1) auxiliary space.<br />
+          <strong>Hash Formula:</strong> hash = (hash × base + char) % mod
+        </p>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+
+        <h3>Basic Construction and Usage</h3>
+        <pre class="code-block"><code>
+// Create matcher with common hash parameters
+RabinKarpMatcher matcher = new RabinKarpMatcher(31, 1000000007);
+
+// Find pattern occurrences
+String text = "abcdefabcdefabcdef";
+String pattern = "def";
+List&lt;Integer&gt; matches = matcher.search(text, pattern);
+System.out.println("Pattern found at positions: " + matches);
+// Output: [3, 9, 15]</code></pre>
+
+        <h3>Plagiarism Detection</h3>
+        <pre class="code-block"><code>
+// High-quality hash parameters for plagiarism detection
+RabinKarpMatcher plagiarismDetector = new RabinKarpMatcher(101, 1000000009);
+
+String document1 = "The quick brown fox jumps over the lazy dog";
+String document2 = "A quick brown fox was jumping over a lazy dog yesterday";
+String suspiciousPhrase = "quick brown fox";
+
+List&lt;Integer&gt; doc1Matches = plagiarismDetector.search(document1, suspiciousPhrase);
+List&lt;Integer&gt; doc2Matches = plagiarismDetector.search(document2, suspiciousPhrase);
+
+System.out.println("Phrase found in document 1: " + !doc1Matches.isEmpty());
+System.out.println("Phrase found in document 2: " + !doc2Matches.isEmpty());
+// Both return true, indicating potential plagiarism</code></pre>
+
+        <h3>Multiple Pattern Search</h3>
+        <pre class="code-block"><code>
+RabinKarpMatcher multiSearcher = new RabinKarpMatcher(37, 1000000021);
+
+String logData = "ERROR: Connection timeout. INFO: Retry attempt. " +
+                "ERROR: Authentication failed. WARN: Memory usage high.";
+
+// Search for multiple error types
+String[] patterns = {"ERROR:", "WARN:", "INFO:"};
+for (String pattern : patterns) {
+    List&lt;Integer&gt; occurrences = multiSearcher.search(logData, pattern);
+    System.out.println(pattern + " found " + occurrences.size() + " times at " + occurrences);
+}
+// Output: 
+// ERROR: found 2 times at [0, 47]
+// WARN: found 1 times at [78]
+// INFO: found 1 times at [27]</code></pre>
+
+        <h3>DNA Sequence Matching</h3>
+        <pre class="code-block"><code>
+// Specialized hash parameters for DNA (4-character alphabet)
+RabinKarpMatcher dnaAnalyzer = new RabinKarpMatcher(4, 1000000007);
+
+String dnaSequence = "ATCGATCGATGCATGCATGCATCGATCGATCG";
+String codingSequence = "ATGC";
+
+List&lt;Integer&gt; codingRegions = dnaAnalyzer.search(dnaSequence, codingSequence);
+System.out.println("Coding regions start at: " + codingRegions);
+
+// Analyze reverse complement
+String reverseComplement = "GCAT";
+List&lt;Integer&gt; reverseRegions = dnaAnalyzer.search(dnaSequence, reverseComplement);
+System.out.println("Reverse complement regions: " + reverseRegions);</code></pre>
+
+        <h3>Character Array Processing</h3>
+        <pre class="code-block"><code>
+RabinKarpMatcher arrayProcessor = new RabinKarpMatcher(256, 1000000007);
+
+// Process binary data or character arrays directly
+char[] binaryData = {0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64}; // "Hello World"
+char[] signature = {0x57, 0x6F, 0x72}; // "Wor"
+
+List&lt;Integer&gt; signatureMatches = arrayProcessor.search(binaryData, signature);
+System.out.println("Binary signature found at: " + signatureMatches);
+// Output: [6]</code></pre>
+
+        <h3>Network Packet Analysis</h3>
+        <pre class="code-block"><code>
+// Specialized for network protocol analysis
+RabinKarpMatcher packetAnalyzer = new RabinKarpMatcher(127, 1000000007);
+
+String httpPacket = "GET /index.html HTTP/1.1\r\nHost: example.com\r\n" +
+                   "User-Agent: Mozilla/5.0\r\nConnection: keep-alive\r\n\r\n";
+
+// Detect different HTTP components
+String[] httpPatterns = {"GET ", "POST ", "HTTP/1.1", "Host:", "User-Agent:"};
+
+System.out.println("HTTP Packet Analysis:");
+for (String httpPattern : httpPatterns) {
+    List&lt;Integer&gt; matches = packetAnalyzer.search(httpPacket, httpPattern);
+    if (!matches.isEmpty()) {
+        System.out.println("  " + httpPattern.trim() + " detected at position " + matches.get(0));
+    }
+}
+
+// Check for security patterns
+String[] securityPatterns = {"&lt;script&gt;", "DROP TABLE", "../", "eval"};
+for (String secPattern : securityPatterns) {
+    List&lt;Integer&gt; threats = packetAnalyzer.search(httpPacket, secPattern);
+    if (!threats.isEmpty()) {
+        System.out.println("  SECURITY ALERT: " + secPattern + " detected!");
+    }
+}</code></pre>
+
+        <h3>Hash Parameter Selection</h3>
+        <pre class="code-block"><code>
+// Demonstrate impact of hash parameter choice
+public class HashParameterDemo {
+    public static void demonstrateCollisions() {
+        // Small modulus (more collisions, faster for small inputs)
+        RabinKarpMatcher smallMod = new RabinKarpMatcher(31, 1009);
+        
+        // Large modulus (fewer collisions, better for large inputs)
+        RabinKarpMatcher largeMod = new RabinKarpMatcher(31, 1000000007);
+        
+        String text = "abcdefghijklmnopqrstuvwxyz".repeat(1000);
+        String pattern = "xyz";
+        
+        // Both should find same results, but with different performance characteristics
+        System.out.println("Small mod results: " + smallMod.search(text, pattern).size());
+        System.out.println("Large mod results: " + largeMod.search(text, pattern).size());
+    }
+}</code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

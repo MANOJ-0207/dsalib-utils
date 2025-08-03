@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AdjListWeightedGraph - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>AdjListWeightedGraph</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>AdjListWeightedGraph&lt;K&gt;</code> implements
+          <a href="WeightedGraph.html" target="_blank" class="doc-link"
+            >WeightedGraph</a
+          >
+          interface. It is a generic graph using adjacency lists that supports
+          weighted edges and directed or undirected configurations. Provides
+          common algorithms including Dijkstra, Bellman-Ford, Floyd-Warshall,
+          Prim, and Kruskal, as well as SCC detection and Tarjan's algorithm for
+          articulation points and bridges.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Single-source or all-pairs shortest paths</li>
+          <li>Minimum spanning tree computation</li>
+          <li>Strongly connected component analysis (directed only)</li>
+          <li>
+            Bridge edge and articulation point detection (undirected only)
+          </li>
+          <li>Traversals and edge operations in weighted graphs</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>addEdge(from, to, weight)</code></td>
+              <td>Adds weighted edge</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>removeEdge(from, to)</code></td>
+              <td>Removes edge</td>
+              <td>O(deg(from) + deg(to) + E)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>invalidateCache()</code></td>
+              <td>Clears SCC and Tarjan cache</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;List&lt;K&gt;&gt;</code></td>
+              <td><code>getStronglyConnectedComponents()</code></td>
+              <td>Kosaraju's SCC detection</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isStronglyConnected()</code></td>
+              <td>Checks if single SCC</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Integer&gt;</code></td>
+              <td><code>getSCCMap()</code></td>
+              <td>Node to SCC ID map</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>bfs(start, action)</code></td>
+              <td>Breadth-first traversal</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>dfs(start, action)</code></td>
+              <td>Depth-first traversal</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>Integer</code></td>
+              <td><code>dijkstra(src, dest)</code></td>
+              <td>
+                Shortest path, non-negative weights; returns
+                <code>null</code> if unreachable
+              </td>
+              <td>O((V + E) log V)</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Integer&gt;</code></td>
+              <td><code>bellmanFord(src)</code></td>
+              <td>
+                Shortest paths from <code>src</code>; allows negatives;
+                unreachable nodes map to <code>null</code>
+              </td>
+              <td>O(V * E)</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Map&lt;K, Integer&gt;&gt;</code></td>
+              <td><code>floydWarshall()</code></td>
+              <td>
+                All-pairs shortest paths; unreachable pairs map to
+                <code>null</code>
+              </td>
+              <td>O(V³)</td>
+            </tr>
+            <tr>
+              <td><code>Integer</code></td>
+              <td><code>primsMST(start)</code></td>
+              <td>Minimum spanning tree (connected component only)</td>
+              <td>O((V + E) log V)</td>
+            </tr>
+            <tr>
+              <td><code>Integer</code></td>
+              <td><code>kruskalMST()</code></td>
+              <td>Minimum spanning tree total weight</td>
+              <td>O(E log E)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isReachable(from, to)</code></td>
+              <td>Checks reachability</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isBridgeEdge(u, v)</code></td>
+              <td>Checks if edge is a bridge</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isBridgeNode(node)</code></td>
+              <td>Checks if node is an articulation point</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>Set&lt;DetailedEdge&lt;K&gt;&gt;</code></td>
+              <td><code>getBridgeEdges()</code></td>
+              <td>Returns all bridge edges</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>Set&lt;K&gt;</code></td>
+              <td><code>getBridgeNodes()</code></td>
+              <td>Returns all articulation points</td>
+              <td>O(V + E)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>printGraph()</code></td>
+              <td>Displays adjacency list</td>
+              <td>O(V + E)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Implementation Details</h2>
+        <p>
+          <code>AdjListWeightedGraph&lt;K&gt;</code> is a generic,
+          <strong>adjacency list–based weighted graph</strong> designed for
+          efficient traversal and edge operations in sparse graphs. Edges are
+          stored using a map of lists, with support for both directed and
+          undirected configurations.
+        </p>
+
+        <p><strong>Core Data Structures:</strong></p>
+        <ul>
+          <li>
+            <strong>Adjacency List</strong> –
+            <code>Map&lt;K, List&lt;WeightedEdge&lt;K&gt;&gt;&gt;</code>
+            maps each node to its list of outgoing weighted edges
+          </li>
+          <li>
+            <strong>Edge Storage</strong> –
+            <code>List&lt;DetailedEdge&lt;K&gt;&gt;</code> tracks all graph
+            edges (used in Kruskal, Bellman-Ford)
+          </li>
+          <li>
+            <strong>SCC Mapping</strong> –
+            <code>List&lt;List&lt;K&gt;&gt;</code> and
+            <code>Map&lt;K, Integer&gt;</code>
+            store components and per-node SCC IDs from Kosaraju's algorithm
+          </li>
+          <li>
+            <strong>Bridge Cache</strong> –
+            <code>Set&lt;DetailedEdge&lt;K&gt;&gt;</code> and
+            <code>Set&lt;K&gt;</code> for bridge edges and articulation points
+            from Tarjan's algorithm
+          </li>
+        </ul>
+
+        <p><strong>Memory Management:</strong></p>
+        <ul>
+          <li>
+            <strong>Dynamic Growth</strong> – Data structures expand naturally
+            via Java collections
+          </li>
+          <li>
+            <strong>Edge Cleanup</strong> – Empty adjacency lists are removed on
+            deletion to avoid leaks
+          </li>
+          <li>
+            <strong>No Preallocation</strong> – Unlike matrix graphs,
+            nodes/edges are added as needed
+          </li>
+        </ul>
+
+        <p><strong>Bridge Detection Optimization:</strong></p>
+        <ul>
+          <li>
+            <strong>Tarjan’s Algorithm</strong> – Single DFS computes both
+            bridges and articulation points
+          </li>
+          <li>
+            <strong>Lazy Evaluation</strong> – Runs only on first query; results
+            are cached
+          </li>
+          <li>
+            <strong>Cache Invalidation</strong> – Cache is reset automatically
+            on any structural mutation
+          </li>
+          <li>
+            <strong>Bidirectional Check</strong> – Bridge lookup matches either
+            direction (undirected)
+          </li>
+        </ul>
+
+        <p><strong>Algorithm Implementations:</strong></p>
+        <ul>
+          <li>
+            <strong>Dijkstra’s</strong> – Priority queue–based traversal over
+            adjacency lists
+          </li>
+          <li>
+            <strong>Bellman-Ford</strong> – Full edge list relaxation with
+            negative weight support
+          </li>
+          <li>
+            <strong>Floyd-Warshall</strong> – Triple nested iteration using
+            adjacency list as initializer
+          </li>
+          <li>
+            <strong>Prim’s MST</strong> – Priority queue with visited set over
+            list neighbors
+          </li>
+          <li>
+            <strong>Kruskal’s MST</strong> – Edge list sorting with Disjoint Set
+            backing
+          </li>
+          <li>
+            <strong>Kosaraju’s SCC</strong> – Two-pass DFS with reversed graph
+            built from adjacency map
+          </li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Detailed Usage Examples</h2>
+        <pre class="code-block"><code>
+// Undirected weighted graph example
+AdjListWeightedGraph&lt;String&gt; g = new AdjListWeightedGraph&lt;&gt;(false);
+g.addEdge("A", "B", 4);
+g.addEdge("B", "C", 1);
+g.addEdge("A", "C", 3);
+g.addEdge("C", "D", 2);
+g.addEdge("B", "D", 5);
+
+g.bfs("A", node -&gt; System.out.println("Visited BFS: " + node));
+// Visited BFS: A
+// Visited BFS: B
+// Visited BFS: C
+// Visited BFS: D
+
+g.dfs("A", node -&gt; System.out.println("Visited DFS: " + node));
+// Visited DFS: A
+// Visited DFS: B
+// Visited DFS: C
+// Visited DFS: D
+
+System.out.println("Shortest path from A to D (Dijkstra): " + g.dijkstra("A", "D"));
+// Shortest path from A to D (Dijkstra): 5
+
+System.out.println("Shortest paths from A (Bellman-Ford): " + g.bellmanFord("A"));
+// Shortest paths from A (Bellman-Ford): {A=0, B=4, C=3, D=5}
+
+System.out.println("All pairs shortest paths (Floyd-Warshall): " + g.floydWarshall());
+// All pairs shortest paths: {A={A=0, B=4, C=3, D=5}, B={...}, ...}
+
+System.out.println("Minimum Spanning Tree total cost (Prim's): " + g.primsMST("A"));
+// Minimum Spanning Tree total cost (Prim's): 7
+
+System.out.println("Minimum Spanning Tree total cost (Kruskal's): " + g.kruskalMST());
+// Minimum Spanning Tree total cost (Kruskal's): 7
+
+System.out.println("Is D reachable from A? " + g.isReachable("A", "D"));
+// Is D reachable from A? true
+
+g.printGraph();
+// A -> [(B, 4), (C, 3)]
+// B -> [(A, 4), (C, 1), (D, 5)]
+// C -> [(B, 1), (A, 3), (D, 2)]
+// D -> [(C, 2), (B, 5)]
+  </code></pre>
+
+        <h3>Strongly Connected Components</h3>
+        <pre class="code-block"><code>
+AdjListWeightedGraph&lt;Integer&gt; dg = new AdjListWeightedGraph&lt;&gt;(true);
+dg.addEdge(1, 2, 1);
+dg.addEdge(2, 3, 1);
+dg.addEdge(3, 1, 1);
+dg.addEdge(3, 4, 1);
+
+System.out.println("SCC Count: " + dg.getSCCCount());
+// SCC Count: 2
+
+System.out.println("Is strongly connected? " + dg.isStronglyConnected());
+// Is strongly connected? false
+
+System.out.println("SCCs: " + dg.getStronglyConnectedComponents());
+// SCCs: [[4], [1, 2, 3]] (order may vary)
+  </code></pre>
+
+        <h3>Bridge &amp; Articulation Point Detection</h3>
+        <pre class="code-block"><code>
+AdjListWeightedGraph&lt;Integer&gt; g = new AdjListWeightedGraph&lt;&gt;(false);
+g.addEdge(1, 2, 1);
+g.addEdge(2, 3, 1);
+g.addEdge(3, 4, 1);
+g.addEdge(4, 5, 1);
+g.addEdge(3, 5, 1);
+
+System.out.println("Bridge edges: " + g.getBridgeEdges());
+// Bridge edges: [(1,2)] or similar
+
+System.out.println("Articulation points: " + g.getBridgeNodes());
+// Articulation points: [2, 3] or similar
+
+System.out.println("Is edge (2,3) a bridge? " + g.isBridgeEdge(2, 3));
+// Is edge (2,3) a bridge? false
+
+System.out.println("Is node 3 a bridge node? " + g.isBridgeNode(3));
+// Is node 3 a bridge node? true
+  </code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+AdjListWeightedGraph&lt;Integer&gt; g = new AdjListWeightedGraph&lt;&gt;(false);
+g.addEdge(1, 2, 10);
+g.addEdge(2, 3, 5);
+g.addEdge(3, 4, 8);
+
+System.out.println(g.dijkstra(1, 4));  // Output: 23
+System.out.println(g.kruskalMST());    // Output: 23
+  </code></pre>
+      </section>
+    </div>
+
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

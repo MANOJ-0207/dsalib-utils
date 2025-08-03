@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AdjMatrixSimpleGraph - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>AdjMatrixSimpleGraph</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>AdjMatrixSimpleGraph&lt;K&gt;</code> which implements <a href="SimpleGraph.html" target="_blank" class="doc-link"
+            >SimpleGraph</a
+          > interface is a dynamic, matrix-based
+          graph implementation that supports both directed and undirected
+          configurations. It is especially efficient for dense graphs or when
+          fast edge-existence queries are needed.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Fast O(1) edge lookups in dense graphs</li>
+          <li>BFS/DFS traversal using adjacency matrix</li>
+          <li>Topological sorting for DAGs</li>
+          <li>Bridge/articulation detection using Tarjan’s algorithm</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>AdjMatrixSimpleGraph()</code></td>
+              <td>Constructs a undirected adjacency matrix graph</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>AdjMatrixSimpleGraph(boolean isDirected)</code></td>
+              <td>
+                Constructs a adjacency matrix graph directed/undirected based on
+                isDirected flag
+              </td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>addEdge(K from, K to)</code></td>
+              <td>Adds an edge (resizes if needed).</td>
+              <td>O(1) amortized</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>removeEdge(K from, K to)</code></td>
+              <td>Removes an edge, if present.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>bfs(K source, Consumer&lt;K&gt;)</code></td>
+              <td>Breadth-first traversal from node.</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>dfs(K source, Consumer&lt;K&gt;)</code></td>
+              <td>Depth-first traversal from node.</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;K&gt;</code></td>
+              <td><code>getTopologicalSort()</code></td>
+              <td>Topological sort (only DAG).</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Integer&gt;</code></td>
+              <td><code>shortestDistances(K source)</code></td>
+              <td>Shortest distances via BFS.</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isReachable(K from, K to)</code></td>
+              <td>Checks if path exists.</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isConnected()</code></td>
+              <td>Checks if entire graph is connected.</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isBridgeEdge(K u, K v)</code></td>
+              <td>Returns true if edge is a bridge.</td>
+              <td>O(1) after preprocessing</td>
+            </tr>
+            <tr>
+              <td><code>Set&lt;Edge&lt;K&gt;&gt;</code></td>
+              <td><code>getBridgeEdges()</code></td>
+              <td>Returns all bridge edges.</td>
+              <td>O(1) after preprocessing</td>
+            </tr>
+            <tr>
+              <td><code>Set&lt;K&gt;</code></td>
+              <td><code>getBridgeNodes()</code></td>
+              <td>Returns all articulation points.</td>
+              <td>O(1) after preprocessing</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isBridgeNode(K node)</code></td>
+              <td>Returns true if node is articulation point.</td>
+              <td>O(1) after preprocessing</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>
+          <code>AdjMatrixSimpleGraph&lt;K&gt;</code> is an adjacency
+          <strong>matrix–based graph</strong> implementation supporting both
+          <strong>directed</strong> and <strong>undirected</strong> edges. It
+          provides <strong>constant-time</strong> edge lookup and is
+          particularly suited for <strong>dense graphs</strong>.
+        </p>
+
+        <p><strong>Bridge and Articulation Detection:</strong></p>
+        <ul>
+          <li>
+            Uses <strong>Tarjan's algorithm</strong> with time-in and low-link
+            values
+          </li>
+          <li>Automatically cached and recomputed upon graph updates</li>
+          <li>
+            Applies undirected logic for cut edges and nodes even in directed
+            graphs
+          </li>
+        </ul>
+
+        <p><strong>Space Complexity:</strong></p>
+        <ul>
+          <li>
+            O(V²) due to the dynamic <code>boolean[][]</code> matrix
+            representation
+          </li>
+          <li>O(V) for node-index mappings</li>
+        </ul>
+
+        <p><strong>Use Cases:</strong></p>
+        <ul>
+          <li>Graphs with many edges (dense networks)</li>
+          <li>Quick edge existence checks</li>
+          <li>Connectivity analysis using articulation points and bridges</li>
+          <li>Basic graph traversal (BFS/DFS) and topological sorting</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Detailed Usage Examples</h2>
+        <pre class="code-block"><code>
+AdjMatrixSimpleGraph&lt;Integer&gt; g = new AdjMatrixSimpleGraph&lt;&gt;(); // Undirected
+g.addEdge(1, 2);
+g.addEdge(2, 3);
+g.addEdge(3, 1);
+g.addEdge(3, 4);
+
+g.bfs(1, node -&gt; System.out.println("Visited BFS: " + node));
+g.dfs(1, node -&gt; System.out.println("Visited DFS: " + node));
+
+System.out.println("Shortest distances from 1: " + g.shortestDistances(1)); // {1=0, 2=1, 3=1, 4=2}
+System.out.println("Is reachable from 1 to 4? " + g.isReachable(1, 4)); // true
+System.out.println("Is connected? " + g.isConnected()); // true
+System.out.println("Is edge (3,4) a bridge? " + g.isBridgeEdge(3, 4)); // true
+System.out.println("Bridge nodes: " + g.getBridgeNodes()); // [3]
+        </code></pre>
+
+        <h3>Topological Sort</h3>
+        <pre class="code-block"><code>
+AdjMatrixSimpleGraph&lt;String&gt; dg = new AdjMatrixSimpleGraph&lt;&gt;(true);
+dg.addEdge("A", "B");
+dg.addEdge("B", "C");
+System.out.println("Topological order: " + dg.getTopologicalSort()); // [C, B, A]
+        </code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Implementation Notes</h2>
+        <ul>
+          <li>Initial capacity is 10×10; dynamically doubles as needed.</li>
+          <li>
+            Matrix access gives O(1) edge checks: <code>matrix[i][j]</code>.
+          </li>
+          <li>Topological sort is valid only on DAGs; throws otherwise.</li>
+          <li>
+            Bridge/articulation points are computed via Tarjan’s algorithm,
+            cached for efficiency.
+          </li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+AdjMatrixSimpleGraph&lt;Integer&gt; g = new AdjMatrixSimpleGraph&lt;&gt;();
+g.addEdge(1, 2);
+g.addEdge(2, 3);
+g.addEdge(3, 4);
+System.out.println(g.isConnected()); // true
+System.out.println(g.getBridgeEdges()); // [(2,3), (3,4)]
+        </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KMPMatcher - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>KMPMatcher</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>KMPMatcher</code> is a Knuth-Morris-Pratt (KMP) pattern matcher
+          that extends <a href="AbstractPatternMatcher.html" target="_blank" class="doc-link">AbstractPatternMatcher</a>. It efficiently finds
+          all occurrences of a pattern in text using preprocessed Longest Prefix
+          Suffix (LPS) information, achieving linear time complexity by avoiding
+          unnecessary character comparisons.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>
+            Text processing applications requiring efficient pattern search
+          </li>
+          <li>DNA sequence analysis and bioinformatics</li>
+          <li>Large document search and indexing systems</li>
+          <li>Code editors for find operations on large files</li>
+          <li>Log file analysis and real-time text streaming</li>
+          <li>Data mining and text analytics</li>
+        </ul>
+      </section>
+
+      <!-- Public API and Time Complexity -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(String text, String pattern)</code></td>
+              <td>Inherited from AbstractPatternMatcher with validation</td>
+              <td>O(N + M)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(char[] text, char[] pattern)</code></td>
+              <td>Inherited from AbstractPatternMatcher with validation</td>
+              <td>O(N + M)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>doSearch(char[] text, char[] pattern)</code></td>
+              <td>Core KMP algorithm implementation</td>
+              <td>O(N + M)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Algorithm Details -->
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>The KMP algorithm works in two phases:</p>
+        <ul>
+          <li>
+            <strong>Preprocessing:</strong> Builds LPS (Longest Prefix Suffix)
+            array in O(M) time
+          </li>
+          <li>
+            <strong>Searching:</strong> Uses LPS array to avoid redundant
+            comparisons in O(N) time
+          </li>
+        </ul>
+        <p>
+          <strong>Space Complexity:</strong> O(M) for the LPS array, where M is
+          pattern length.
+        </p>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+
+        <h3>Basic Pattern Matching</h3>
+        <pre class="code-block"><code>
+KMPMatcher kmpMatcher = new KMPMatcher();
+
+// Find all occurrences of "hello" in text
+String text = "hello world hello there hello again";
+String pattern = "hello";
+List&lt;Integer&gt; matches = kmpMatcher.search(text, pattern);
+System.out.println("Matches found at positions: " + matches);
+// Output: [0, 12, 24]</code></pre>
+
+        <h3>DNA Sequence Analysis</h3>
+        <pre class="code-block"><code>
+KMPMatcher dnaSearcher = new KMPMatcher();
+
+// Search for specific DNA sequence
+String dnaSequence = "ATCGATCGATCGATGCATGCATGCATCGATCG";
+String targetGene = "ATGC";
+List&lt;Integer&gt; genePositions = dnaSearcher.search(dnaSequence, targetGene);
+System.out.println("Gene sequence found at: " + genePositions);
+// Output: [15, 19, 23]</code></pre>
+
+        <h3>Large Text Processing</h3>
+        <pre class="code-block"><code>
+KMPMatcher textProcessor = new KMPMatcher();
+
+// Process large documents efficiently
+String largeDocument = "The quick brown fox jumps over the lazy dog. " +
+                      "The fox is quick and the dog is lazy...";
+String searchTerm = "the";
+
+List&lt;Integer&gt; occurrences = textProcessor.search(largeDocument.toLowerCase(), searchTerm);
+System.out.println("Found '" + searchTerm + "' " + occurrences.size() + " times");
+System.out.println("At positions: " + occurrences);</code></pre>
+
+        <h3>Character Array Usage</h3>
+        <pre class="code-block"><code>
+KMPMatcher charMatcher = new KMPMatcher();
+
+// Work directly with character arrays for performance
+char[] textArray = "abcabcabcabc".toCharArray();
+char[] patternArray = "abcabc".toCharArray();
+
+List&lt;Integer&gt; results = charMatcher.search(textArray, patternArray);
+System.out.println("Pattern matches at: " + results);
+// Output: [0, 3, 6]</code></pre>
+
+        <h3>Repeating Pattern Detection</h3>
+        <pre class="code-block"><code>
+KMPMatcher patternDetector = new KMPMatcher();
+
+// Detect overlapping patterns
+String repeatingText = "aaaaaaa";
+String overlappingPattern = "aaa";
+
+List&lt;Integer&gt; overlappingMatches = patternDetector.search(repeatingText, overlappingPattern);
+System.out.println("Overlapping matches: " + overlappingMatches);
+// Output: [0, 1, 2, 3, 4] - KMP handles overlapping patterns correctly</code></pre>
+
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

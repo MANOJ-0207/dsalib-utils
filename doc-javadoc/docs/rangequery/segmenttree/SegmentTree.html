@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SegmentTree - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme" id="theme-toggle">
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Header -->
+      <header>
+        <h1>SegmentTree</h1>
+        <p class="class-type">Type: <span class="tag interface-tag">Interface</span></p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>SegmentTree&lt;T&gt;</code> is a generic abstraction for performing efficient
+          range queries and updates over arrays. It supports:
+          <strong>point updates</strong>, <strong>range updates</strong>,
+          and <strong>range queries</strong> using strategies such as eager propagation
+          or lazy propagation depending on the implementation.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Range sum, min, or max queries</li>
+          <li>Dynamic prefix/suffix queries</li>
+          <li>Range increments or functional transformations</li>
+          <li>Lazy propagation in interval-heavy problems</li>
+        </ul>
+      </section>
+
+      <!-- Method Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>T</code></td>
+              <td><code>query(int left, int right)</code></td>
+              <td>Returns the merged result over the inclusive range [left, right].</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>update(int index, T value)</code></td>
+              <td>Replaces the element at the given index with a new value.</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>update(int index, Function&lt;T, T&gt; updater)</code></td>
+              <td>Applies a function to the element at the specified index.</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>update(int l, int r, Function&lt;T, T&gt; updater)</code></td>
+              <td>Applies a function to all elements in the inclusive range [l, r].</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>size()</code></td>
+              <td>Returns the number of elements maintained by the tree.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Concrete Implementations -->
+      <section class="doc-section">
+        <h2>Available Concrete Implementations</h2>
+        <ul>
+          <li>
+            <code><a href="GenericEagerSegmentTree.html" target="_blank" class="doc-link">GenericEagerSegmentTree</a></code> - Generic Eager Segment Tree
+          </li>
+          <li>
+            <code><a href="GenericLazySegmentTree.html" target="_blank" class="doc-link">GenericLazySegmentTree</a></code> - Generic Lazy propagation Segment Tree.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Detailed Usage Examples -->
+      <section class="doc-section">
+        <h2>Detailed Usage Examples</h2>
+
+        <h3><code>query(int left, int right)</code></h3>
+        <p>Returns the aggregate value over the specified range.</p>
+        <pre class="code-block"><code>
+SegmentTree&lt;Integer&gt; st = new GenericEagerSegmentTree&lt;&gt;(
+    List.of(1, 3, 5, 7, 9),
+    Integer::sum,
+    0
+);
+int sum = st.query(1, 3); // returns 15 (3 + 5 + 7)
+        </code></pre>
+
+        <h3><code>update(int index, T value)</code></h3>
+        <p>Sets the element at the given index to a new value.</p>
+        <pre class="code-block"><code>
+st.update(2, 10);  // changes index 2 value from 5 to 10
+        </code></pre>
+
+        <h3><code>update(int index, Function&lt;T, T&gt; updater)</code></h3>
+        <p>Applies a transformation function to a single index.</p>
+        <pre class="code-block"><code>
+st.update(0, x -> x * 2);  // doubles the value at index 0
+        </code></pre>
+
+        <h3><code>update(int l, int r, Function&lt;T, T&gt; updater)</code></h3>
+        <p>Applies a function to all values in a given range.</p>
+        <pre class="code-block"><code>
+st.update(1, 3, x -> x + 1);  // increments values from index 1 to 3
+        </code></pre>
+
+        <h3><code>size()</code></h3>
+        <p>Returns the number of elements managed by the tree.</p>
+        <pre class="code-block"><code>
+System.out.println(st.size()); // prints 5
+        </code></pre>
+      </section>
+
+      <!-- Implementation Notes -->
+      <section class="doc-section">
+        <h2>Implementation Notes</h2>
+        <ul>
+          <li>This is an interface; actual tree logic is implemented in classes like <code>GenericEagerSegmentTree</code> or <code>GenericLazySegmentTree</code>.</li>
+          <li>Query behavior depends on the user-defined merge function (e.g., sum, min, max).</li>
+          <li>All update operations are safe and bounds-checked. Index violations throw <code>IndexOutOfBoundsException</code>.</li>
+          <li><code>null</code> updater functions result in a <code>NullPointerException</code>.</li>
+        </ul>
+      </section>
+
+      <!-- Quick Example -->
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+SegmentTree&lt;Integer&gt; tree = new GenericEagerSegmentTree&lt;&gt;(
+    List.of(4, 2, 1, 6),
+    Integer::min,
+    Integer.MAX_VALUE
+);
+
+System.out.println(tree.query(0, 2)); // Output: 1
+tree.update(1, val -> val + 3);       // 2 → 5
+System.out.println(tree.query(0, 2)); // Output: 1
+tree.update(2, 7);                    // set index 2 to 7
+System.out.println(tree.query(0, 2)); // Output: 4
+        </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

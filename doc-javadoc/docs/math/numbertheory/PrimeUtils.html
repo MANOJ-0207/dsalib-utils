@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PrimeUtils - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>PrimeUtils</h1>
+        <p class="class-type">
+          Type: <span class="tag utility-tag">Utility Class</span>
+        </p>
+      </header>
+
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>PrimeUtils</code> provides efficient static methods for prime
+          number generation, factorization, and testing. This includes
+          <strong>Sieve of Eratosthenes</strong>,
+          <strong>Segmented Sieve</strong>,
+          <strong>Smallest Prime Factor (SPF)</strong> computation, and
+          <strong>trial division</strong> checks.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>boolean[]</code></td>
+              <td><code>simpleSieve(int n)</code></td>
+              <td>
+                Computes primality for all numbers up to <code>n</code> using
+                Sieve of Eratosthenes
+              </td>
+              <td>O(n log log n)</td>
+            </tr>
+            <tr>
+              <td><code>int[]</code></td>
+              <td><code>sieveForPrimeFactorization(int n)</code></td>
+              <td>
+                Computes smallest prime factor (SPF) for each number ≤
+                <code>n</code>
+              </td>
+              <td>O(n log log n)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>getPrimeFactors(int x, int[] spf)</code></td>
+              <td>Returns list of prime factors of <code>x</code> using SPF</td>
+              <td>O(log x)</td>
+            </tr>
+            <tr>
+              <td><code>boolean[]</code></td>
+              <td><code>segmentedSieve(int m, int n)</code></td>
+              <td>
+                Finds all primes in the range <code>[m, n]</code> using
+                Segmented Sieve
+              </td>
+              <td>O((n - m + 1) log log n)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isPrime(int x)</code></td>
+              <td>
+                Checks whether <code>x</code> is prime by searching for a factor
+                before √x
+              </td>
+              <td>O(√x)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Detailed Method Descriptions</h2>
+
+        <h3><code>simpleSieve(int n)</code></h3>
+        <p>
+          Returns a boolean array of size <code>n + 1</code> where each index
+          indicates whether the number is prime.
+        </p>
+        <pre class="code-block"><code>
+boolean[] isPrime = PrimeUtils.simpleSieve(10);
+// true values at indices 2, 3, 5, 7
+        </code></pre>
+
+        <h3><code>sieveForPrimeFactorization(int n)</code></h3>
+        <p>
+          Precomputes smallest prime factor (SPF) for all numbers ≤
+          <code>n</code>.
+        </p>
+        <pre class="code-block"><code>
+int[] spf = PrimeUtils.sieveForPrimeFactorization(20);
+// spf[15] = 3, since 3 is the smallest prime factor of 15
+        </code></pre>
+
+        <h3><code>getPrimeFactors(int x, int[] spf)</code></h3>
+        <p>
+          Decomposes a number into its prime factors using a precomputed SPF
+          array.
+        </p>
+        <pre class="code-block"><code>
+int[] spf = PrimeUtils.sieveForPrimeFactorization(100);
+List&lt;Integer&gt; factors = PrimeUtils.getPrimeFactors(60, spf);
+// Output: [2, 2, 3, 5]
+        </code></pre>
+
+        <h3><code>segmentedSieve(int m, int n)</code></h3>
+        <p>
+          Finds all prime numbers in the range <code>[m, n]</code> using the
+          Segmented Sieve technique. Useful for large ranges where regular sieve
+          would be too memory-intensive.
+        </p>
+        <pre class="code-block"><code>
+boolean[] rangePrime = PrimeUtils.segmentedSieve(10, 20);
+// rangePrime[0] = false (10), rangePrime[1] = true (11), ...
+        </code></pre>
+
+        <h3><code>isPrime(int x)</code></h3>
+        <p>
+          Checks whether a given number is prime using simple trial division up
+          to √x.
+        </p>
+        <pre class="code-block"><code>
+boolean result = PrimeUtils.isPrime(29); // true
+        </code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Notes</h2>
+        <ul>
+          <li>
+            All methods are <strong>static</strong> and
+            <strong>side-effect free</strong>.
+          </li>
+          <li>
+            <code>getPrimeFactors</code> requires a precomputed SPF array (use
+            <code>sieveForPrimeFactorization</code>).
+          </li>
+          <li>
+            <code>segmentedSieve</code> is best suited for large prime ranges.
+          </li>
+          <li>Handles invalid inputs with clear exceptions.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+boolean[] isPrime = PrimeUtils.simpleSieve(30);
+System.out.println(isPrime[29]); // true
+
+int[] spf = PrimeUtils.sieveForPrimeFactorization(100);
+System.out.println(PrimeUtils.getPrimeFactors(60, spf)); // [2, 2, 3, 5]
+
+boolean[] segment = PrimeUtils.segmentedSieve(50, 60);
+// segment[1] = true => 51 is prime? false (but check for others)
+
+System.out.println(PrimeUtils.isPrime(97)); // true
+        </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

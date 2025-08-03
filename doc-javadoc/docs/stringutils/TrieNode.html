@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TrieNode - Docs</title>
+  <link rel="stylesheet" href="../../styles/docs.css" />
+  <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+</head>
+<body>
+  <!-- Toggle Button -->
+  <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme" id="theme-toggle">
+    <img id="icon-sun" src="../../assets/sun.png" />
+    <img id="icon-moon" src="../../assets/moon.png" />
+  </div>
+
+  <div class="doc-container">
+    <!-- Heading -->
+    <header>
+      <h1>TrieNode</h1>
+      <p class="class-type">Type: <span class="tag class-tag">Package-Private Class</span></p>
+    </header>
+
+    <!-- Description -->
+    <section class="doc-section">
+      <h2>Description</h2>
+      <p>
+        <code>TrieNode</code> is a helper node class used internally by the <a href="Trie.html" target="_blank" class="doc-link">Trie</a> data structure.
+        It represents a single character in a word and maintains metadata useful for prefix-based operations.
+      </p>
+    </section>
+
+    <!-- Node Structure -->
+    <section class="doc-section">
+      <h2>Node Structure</h2>
+      <ul>
+        <li><strong>children:</strong> Map of characters to their corresponding child nodes</li>
+        <li><strong>isEndOfWord:</strong> Flag indicating if this node marks the end of a valid word</li>
+        <li><strong>wordCount:</strong> Number of complete words ending at this node</li>
+        <li><strong>prefixCount:</strong> Number of words passing through this node as a prefix</li>
+      </ul>
+    </section>
+
+    <!-- Constructor -->
+    <section class="doc-section">
+      <h2>Constructor</h2>
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>Constructor</th>
+            <th>Description</th>
+            <th>Time Complexity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>TrieNode()</code></td>
+            <td>Initializes an empty node with no children and zero counts</td>
+            <td>O(1)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+  <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+  <script src="../../scripts/docs.js"></script>
+</body>
+</html>

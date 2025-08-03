@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edge - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../assets/sun.png" />
+      <img id="icon-moon" src="../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>Edge</h1>
+        <p class="class-type">
+          Type: <span class="tag record-tag">Record</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>Edge&lt;K&gt;</code> is an immutable data record representing an
+          edge between two nodes in a graph. It can represent both directed and
+          undirected edges based on the <code>isDirected</code> flag.
+        </p>
+        <p>
+          For undirected edges, <code>(u, v)</code> is considered equal to
+          <code>(v, u)</code>. For directed edges, <code>(u → v)</code> is only
+          equal to another edge with the same direction and nodes.
+        </p>
+      </section>
+
+      <!-- Fields -->
+      <section class="doc-section">
+        <h2>Fields</h2>
+        <ul>
+          <li>
+            <code>K u</code> — the source node (or one endpoint in an undirected
+            graph)
+          </li>
+          <li>
+            <code>K v</code> — the destination node (or the other endpoint in an
+            undirected graph)
+          </li>
+          <li>
+            <code>boolean isDirected</code> — whether the edge is directed
+            (<code>true</code>) or undirected (<code>false</code>)
+          </li>
+        </ul>
+      </section>
+
+      <!-- Method Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>Edge(K u, K v, boolean isDirected)</code></td>
+              <td>Constructs a directed/ undirected edge from u to v based on isDirected flag</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>equals(Object o)</code></td>
+              <td>
+                Compares this edge to another object. For directed edges, both
+                direction and endpoints must match. For undirected edges, the
+                order of endpoints does not matter.
+              </td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>hashCode()</code></td>
+              <td>
+                Computes the hash code of the edge. For directed edges, the hash
+                is order-sensitive. For undirected edges, it is
+                order-insensitive to maintain symmetry.
+              </td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>String</code></td>
+              <td><code>toString()</code></td>
+              <td>
+                Returns a string representation of the edge. Uses
+                <code>(u → v)</code> for directed and <code>(u — v)</code> for
+                undirected edges.
+              </td>
+              <td>O(1)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Basic Usage</h2>
+        <pre class="code-block"><code>
+// Undirected edge
+Edge&lt;Integer&gt; e1 = new Edge<>(1, 2, false);
+Edge&lt;Integer&gt; e2 = new Edge<>(2, 1, false);
+
+System.out.println(e1.equals(e2)); // true
+System.out.println(e1.hashCode() == e2.hashCode()); // true
+System.out.println(e1); // (1 — 2)
+
+// Directed edge
+Edge&lt;String&gt; e3 = new Edge<>("A", "B", true);
+Edge&lt;String&gt; e4 = new Edge<>("B", "A", true);
+
+System.out.println(e3.equals(e4)); // false
+System.out.println(e3); // (A → B)
+        </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

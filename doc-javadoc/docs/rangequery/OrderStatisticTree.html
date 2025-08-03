@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>OrderStatisticTree - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>OrderStatisticTree</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>OrderStatisticTree</code> is a self-balancing AVL multiset tree
+          supporting duplicates and order-statistics operations like counting
+          elements less than a key and retrieving the k-th smallest element.
+        </p>
+        <p>
+          Each operation maintains <b>O(log n)</b> complexity via AVL balancing.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Track k-th smallest/largest element in real-time stream</li>
+          <li>Efficient frequency-aware sorted multiset</li>
+          <li>Dynamic rank queries on custom ordered types</li>
+          <li>Useful in simulations, games, leaderboards with fast updates</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Constructors -->
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>OrderStatisticTree()</code></td>
+              <td>Creates an empty order-statistic multiset</td>
+              <td><b>O(1)</b></td>
+            </tr>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>OrderStatisticTree(List&lt;T&gt; values)</code></td>
+              <td>
+                Initializes the tree and inserts all elements from the given
+                list
+              </td>
+              <td><b>O(n log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>OrderStatisticTree(Set&lt;T&gt; values)</code></td>
+              <td>
+                Initializes the tree and inserts all elements from the given set
+              </td>
+              <td><b>O(n log n)</b></td>
+            </tr>
+
+            <!-- Methods -->
+            <tr>
+              <td><code>void</code></td>
+              <td><code>insert(T val)</code></td>
+              <td>
+                Inserts the value into the tree (duplicate count supported)
+              </td>
+              <td><b>O(log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>erase(T val)</code></td>
+              <td>Removes one occurrence of the value if present</td>
+              <td><b>O(log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>count(T val)</code></td>
+              <td>Returns frequency count of the given value</td>
+              <td><b>O(log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>orderOfKey(T val)</code></td>
+              <td>
+                Returns number of elements strictly less than the given value
+              </td>
+              <td><b>O(log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>T</code></td>
+              <td><code>findByOrder(int k)</code></td>
+              <td>Returns the k-th smallest element (0-based indexing)</td>
+              <td><b>O(log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>size()</code></td>
+              <td>Total number of elements including duplicates</td>
+              <td><b>O(1)</b></td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>contains(T val)</code></td>
+              <td>Checks if the element is present at least once</td>
+              <td><b>O(log n)</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>
+          The <code>OrderStatisticTree</code> is an AVL-based self-balancing
+          binary search tree that supports:
+        </p>
+        <ul>
+          <li>Multiset operations with duplicate handling (via count)</li>
+          <li>Efficient insertion and deletion in <code>O(log n)</code></li>
+          <li>
+            <code>findByOrder(k)</code> to get the k-th smallest element
+            (0-based)
+          </li>
+          <li>
+            <code>orderOfKey(x)</code> to count elements strictly less than
+            <code>x</code>
+          </li>
+        </ul>
+
+        <p><strong>Key Invariants:</strong></p>
+        <ul>
+          <li>
+            Each node stores: <code>val</code>, <code>count</code>,
+            <code>size</code>, <code>height</code>, and pointers to children
+          </li>
+          <li>
+            AVL rotations are used to maintain <code>O(log n)</code> height
+            after updates
+          </li>
+        </ul>
+
+        <p><strong>Space Complexity:</strong> O(U), where:</p>
+        <ul>
+          <li>
+            <code>U</code> is the number of <strong>unique</strong> elements
+            inserted into the multiset
+          </li>
+          <li>
+            Each node stores a value and metadata (count, size, height), but
+            duplicate values do not create new nodes
+          </li>
+          <li>
+            In the worst case (all elements are unique), the tree holds
+            <code>O(n)</code> nodes
+          </li>
+        </ul>
+
+        <p>
+          This data structure is especially useful in range queries, ranked data
+          queries, and situations where both frequency and order are important.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Examples</h2>
+
+        <h4>Using List Constructor</h4>
+        <pre class="code-block"><code>
+List&lt;Integer&gt; values = List.of(10, 20, 10);
+OrderStatisticTree&lt;Integer&gt; tree = new OrderStatisticTree&lt;&gt;(values);
+
+System.out.println(tree.count(10));  // 2
+System.out.println(tree.count(20));  // 1
+System.out.println(tree.count(30));  // 0
+  </code></pre>
+
+        <h4>Using Set Constructor</h4>
+        <pre class="code-block"><code>
+Set&lt;Integer&gt; unique = Set.of(10, 20, 30);
+OrderStatisticTree&lt;Integer&gt; tree = new OrderStatisticTree&lt;&gt;(unique);
+
+System.out.println(tree.count(10)); // 1
+System.out.println(tree.orderOfKey(25)); // 2 (10, 20 are &lt; 25)
+System.out.println(tree.findByOrder(1)); // 20 (0:10, 1:20, 2:30)
+  </code></pre>
+
+        <h4>Basic Insertion and Frequency Query</h4>
+        <pre class="code-block"><code>
+OrderStatisticTree&lt;Integer&gt; tree = new OrderStatisticTree&lt;&gt;();
+tree.insert(10);
+tree.insert(20);
+tree.insert(10);
+
+System.out.println(tree.count(10)); // 2
+System.out.println(tree.count(20)); // 1
+System.out.println(tree.count(30)); // 0
+  </code></pre>
+
+        <h4>Order and Rank Queries</h4>
+        <pre class="code-block"><code>
+tree.insert(30);
+tree.insert(15);
+
+System.out.println(tree.orderOfKey(20));  // 2 (10, 15)
+System.out.println(tree.findByOrder(2));  // 20
+  </code></pre>
+
+        <h4>Erasing Elements and Maintaining Tree</h4>
+        <pre class="code-block"><code>
+tree.erase(10);       // one occurrence removed
+System.out.println(tree.count(10)); // 1
+
+tree.erase(10);       // now fully removed
+System.out.println(tree.contains(10)); // false
+  </code></pre>
+
+        <h4>Handling Custom Objects</h4>
+        <pre class="code-block"><code>
+class Person implements Comparable&lt;Person&gt; {
+  String name;
+  int age;
+  public Person(String name, int age) {
+    this.name = name;
+    this.age = age;
+  }
+  public int compareTo(Person other) {
+    return Integer.compare(this.age, other.age);
+  }
+}
+
+OrderStatisticTree&lt;Person&gt; people = new OrderStatisticTree&lt;&gt;(
+  List.of(new Person("Alice", 25), new Person("Bob", 30))
+);
+
+System.out.println(people.findByOrder(1).name);  // "Bob"
+  </code></pre>
+      </section>
+    </div>
+
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

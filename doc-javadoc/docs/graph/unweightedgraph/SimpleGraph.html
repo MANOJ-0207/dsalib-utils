@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SimpleGraph - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../assets/sun.png" />
+      <img id="icon-moon" src="../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>SimpleGraph</h1>
+        <p class="class-type">
+          Type: <span class="tag interface-tag">Interface</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>SimpleGraph&lt;K&gt;</code> defines the contract for unweighted
+          graph implementations, including operations like edge manipulation,
+          traversal, reachability, and bridge detection.
+        </p>
+      </section>
+
+      <!-- Method Contracts -->
+      <section class="doc-section">
+        <h2>Method Contracts</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>addEdge(K from, K to)</code></td>
+              <td>
+                Adds an edge between two nodes (auto-creates nodes if absent)
+              </td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>removeEdge(K from, K to)</code></td>
+              <td>Removes an edge if it exists</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>bfs(K source, Consumer&lt;K&gt; action)</code></td>
+              <td>
+                Performs breadth-first traversal from source; given action is
+                performed on each visited node
+              </td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>dfs(K source, Consumer&lt;K&gt; action)</code></td>
+              <td>
+                Performs depth-first traversal from source; given action is
+                performed on each visited node
+              </td>
+            </tr>
+            <tr>
+              <td><code>List&lt;K&gt;</code></td>
+              <td><code>getTopologicalSort()</code></td>
+              <td>Returns topological order of nodes (only valid for DAGs)</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Integer&gt;</code></td>
+              <td><code>shortestDistances(K source)</code></td>
+              <td>Returns shortest unweighted distances from source node</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isReachable(K from, K to)</code></td>
+              <td>Checks if a path exists between two nodes</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isConnected()</code></td>
+              <td>Checks if the graph is fully connected</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isBridgeEdge(K u, K v)</code></td>
+              <td>Checks if the edge is a bridge (cut-edge)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isBridgeNode(K node)</code></td>
+              <td>Checks if the node is a bridge node (articulation point)</td>
+            </tr>
+            <tr>
+              <td><code>Set&lt;Edge&lt;K&gt;&gt;</code></td>
+              <td><code>getBridgeEdges()</code></td>
+              <td>Returns all bridge edges in the graph</td>
+            </tr>
+            <tr>
+              <td><code>Set&lt;K&gt;</code></td>
+              <td><code>getBridgeNodes()</code></td>
+              <td>Returns all articulation points (bridge nodes)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Available Implementations -->
+      <section class="doc-section">
+        <h2>Available Implementations</h2>
+        <ul>
+          <li>
+            <code><a href="AdjListSimpleGraph.html" target="_blank" class="doc-link">AdjListSimpleGraph</a></code> - Adjacency list-based
+            implementation
+          </li>
+          <li>
+            <code><a href="AdjMatrixSimpleGraph.html" target="_blank" class="doc-link">AdjMatrixSimpleGraph</a></code> - Adjacency matrix-based
+            implementation
+          </li>
+        </ul>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

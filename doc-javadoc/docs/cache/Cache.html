@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cache - Docs</title>
+    <link rel="stylesheet" href="../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../assets/sun.png" />
+      <img id="icon-moon" src="../../assets/moon.png" />
+    </div>
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>Cache</h1>
+        <p class="class-type">
+          Type: <span class="tag interface-tag">Interface</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>Cache&lt;K, V&gt;</code> is a generic interface representing the
+          basic operations for a key-value based caching system. It abstracts
+          common cache functionality such as retrieval, insertion, deletion, and
+          containment checks.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>
+            Blueprint for implementing caching mechanisms like LRU, LFU, or FIFO
+          </li>
+          <li>
+            Interface for pluggable cache strategies in frameworks or
+            applications
+          </li>
+          <li>
+            Reduces recomputation by storing previously calculated results
+          </li>
+        </ul>
+      </section>
+
+      <!-- Public API Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>V</code></td>
+              <td><code>get(K key)</code></td>
+              <td>
+                Retrieves the value for the given key, or <code>null</code> if
+                not present
+              </td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>put(K key, V value)</code></td>
+              <td>Inserts or updates the value associated with the key</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>contains(K key)</code></td>
+              <td>Checks whether the key exists in the cache</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>remove(K key)</code></td>
+              <td>Removes the entry associated with the key</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>size()</code></td>
+              <td>Returns the total number of entries</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>clear()</code></td>
+              <td>Clears all key-value pairs from the cache</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+        <pre class="code-block"><code>
+// Example using a concrete implementation like LRUCache
+Cache&lt;Integer, String&gt; cache = new LRUCache&lt;&gt;(3);
+cache.put(1, "One");
+cache.put(2, "Two");
+
+System.out.println(cache.get(1)); // Output: "One"
+System.out.println(cache.contains(2)); // Output: true
+
+cache.remove(2);
+System.out.println(cache.size()); // Output: 1
+
+cache.clear();</code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Available Implementations</h2>
+        <ul>
+          <li>
+            <code><a href="AbstractCache.html" target="_blank" class="doc-link">AbstractCache</a></code> - Abstract base class for cache
+            implementation
+          </li>
+        </ul>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+
+    <script src="../../scripts/docs.js"></script>
+  </body>
+</html>

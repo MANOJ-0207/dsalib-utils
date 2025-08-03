@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NumberTheoryUtils - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>NumberTheoryUtils</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Utility Class</span>
+        </p>
+      </header>
+
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>NumberTheoryUtils</code> provides efficient static methods for
+          common number theory operations such as <strong>GCD</strong>,
+          <strong>LCM</strong>, the
+          <strong>Extended Euclidean Algorithm</strong>, and
+          <strong>Modular Inverse</strong>.
+        </p>
+        <p>
+          These functions are fundamental for modular arithmetic, cryptography,
+          and algorithmic number theory.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>gcd(int a, int b)</code></td>
+              <td>
+                Computes the Greatest Common Divisor of <code>a</code> and
+                <code>b</code>
+              </td>
+              <td>O(log min(a, b))</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>lcm(int a, int b)</code></td>
+              <td>
+                Computes the Least Common Multiple of <code>a</code> and
+                <code>b</code>
+              </td>
+              <td>O(log min(a, b))</td>
+            </tr>
+            <tr>
+              <td><code>GCDTriplet</code></td>
+              <td><code>extendedGCD(int a, int b)</code></td>
+              <td>
+                Finds <code>x</code>, <code>y</code> such that
+                <code>a·x + b·y = gcd(a, b)</code>
+              </td>
+              <td>O(log min(a, b))</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>modInverse(int a, int mod)</code></td>
+              <td>
+                Computes modular inverse of <code>a</code> under modulus
+                <code>mod</code>
+              </td>
+              <td>O(log mod)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Detailed Method Descriptions</h2>
+
+        <h3><code>gcd(int a, int b)</code></h3>
+        <p>
+          Computes the <strong>greatest common divisor</strong> of two integers
+          using the <em>Euclidean algorithm</em>.
+        </p>
+        <pre class="code-block"><code>
+int result = NumberTheoryUtils.gcd(48, 18); // result = 6
+        </code></pre>
+
+        <h3><code>lcm(int a, int b)</code></h3>
+        <p>
+          Computes the <strong>least common multiple</strong> using the
+          formula:<br />
+          <code>lcm(a, b) = abs(a × b) / gcd(a, b)</code>.
+        </p>
+        <p>
+          Overflow-safe using <code>long</code> internally. Throws an exception
+          if the result exceeds <code>Integer.MAX_VALUE</code>.
+        </p>
+        <pre class="code-block"><code>
+int result = NumberTheoryUtils.lcm(12, 15); // result = 60
+        </code></pre>
+
+        <h3><code>extendedGCD(int a, int b)</code></h3>
+        <p>
+          Computes coefficients <code>x</code>, <code>y</code> and
+          <code>gcd</code> such that <code>a·x + b·y = gcd(a, b)</code>.
+        </p>
+        <p>
+          Useful for finding modular inverses or solving Diophantine equations.
+        </p>
+        <pre class="code-block"><code>
+NumberTheoryUtils.GCDTriplet result = NumberTheoryUtils.extendedGCD(30, 20);
+// result.gcd = 10, result.x = 1, result.y = -1
+        </code></pre>
+
+        <h3><code>modInverse(int a, int mod)</code></h3>
+        <p>
+          Computes the <strong>modular inverse</strong> of <code>a</code> under
+          modulus <code>mod</code>
+          using the extended Euclidean algorithm.
+        </p>
+        <p>
+          Valid only when <code>gcd(a, mod) == 1</code>. Throws an exception
+          otherwise.
+        </p>
+        <pre class="code-block"><code>
+int inverse = NumberTheoryUtils.modInverse(3, 11); // inverse = 4, since (3 × 4) % 11 == 1
+        </code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Nested Class - GCDTriplet</h2>
+        <p>
+          Helper class to hold the result of the Extended Euclidean Algorithm.
+        </p>
+        <ul>
+          <li><code>int gcd</code>: The greatest common divisor</li>
+          <li><code>int x</code>: Coefficient of the first number</li>
+          <li><code>int y</code>: Coefficient of the second number</li>
+        </ul>
+        <pre class="code-block"><code>
+NumberTheoryUtils.GCDTriplet triplet = NumberTheoryUtils.extendedGCD(10, 6);
+System.out.println(triplet.gcd); // 2
+System.out.println(triplet.x);   // -1
+System.out.println(triplet.y);   // 2
+        </code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Notes</h2>
+        <ul>
+          <li>
+            All methods are <strong>static</strong> and
+            <strong>side-effect free</strong>.
+          </li>
+          <li>
+            Recommended for use in modular inverse problems, CRT, and number
+            theory applications.
+          </li>
+          <li>Handles edge cases like zero and negative inputs.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+System.out.println(NumberTheoryUtils.gcd(42, 30));         // 6
+System.out.println(NumberTheoryUtils.lcm(12, 18));         // 36
+System.out.println(NumberTheoryUtils.modInverse(3, 7));    // 5
+        </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

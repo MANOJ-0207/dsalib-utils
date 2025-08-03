@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PascalTriangleUtils - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>PascalTriangleUtils</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Utility Class</span>
+        </p>
+      </header>
+
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>PascalTriangleUtils</code> is a lightweight utility class for
+          working with <strong>Pascal's Triangle</strong> in combinatorics. It
+          supports:
+        </p>
+        <ul>
+          <li>Building Pascal’s triangle up to <code>n</code> rows</li>
+          <li>Fetching any <code>n</code>th row directly</li>
+          <li>
+            Computing individual binomial coefficients: <code>C(n, k)</code>
+          </li>
+          <li>Finding the peak value in a row</li>
+        </ul>
+        <p>
+          All computations are performed in <code>long</code> internally to
+          reduce overflow risk, but returned as <code>int</code> with
+          appropriate safety checks.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Constant Summary</h2>
+        <ul>
+          <li>
+            <code>MAX_SAFE_N = 33</code> — Upper bound to avoid integer overflow
+            (nCr(33, 16) &lt;= 2³¹−1).
+          </li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>List&lt;List&lt;Integer&gt;&gt;</code></td>
+              <td><code>buildTriangle(int n)</code></td>
+              <td>Builds full Pascal’s triangle up to n rows.</td>
+              <td>O(n²)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>getNthRow(int n)</code></td>
+              <td>Generates the nth row of Pascal’s triangle directly.</td>
+              <td>O(n)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>getValue(int row, int col)</code></td>
+              <td>Computes C(row, col) directly without full triangle.</td>
+              <td>O(k)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>getPeak(int row)</code></td>
+              <td>Returns the maximum value in the given row.</td>
+              <td>O(row)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Detailed Method Descriptions</h2>
+
+        <h3><code>buildTriangle(n)</code></h3>
+        <p>
+          Constructs Pascal’s triangle with <code>n</code> rows (0-based). Row
+          <code>i</code> contains <code>i + 1</code> elements.
+        </p>
+        <p>
+          Throws <code>ArithmeticException</code> if any value exceeds
+          <code>Integer.MAX_VALUE</code>.
+        </p>
+        <pre class="code-block"><code>
+List&lt;List&lt;Integer&gt;&gt; triangle = PascalTriangleUtils.buildTriangle(5);
+System.out.println(triangle);
+// [
+//   [1],
+//   [1, 1],
+//   [1, 2, 1],
+//   [1, 3, 3, 1],
+//   [1, 4, 6, 4, 1]
+// ]
+        </code></pre>
+
+        <h3><code>getNthRow(n)</code></h3>
+        <p>
+          Computes the <code>n</code>th row (0-indexed) using iterative binomial
+          logic without building the full triangle.
+        </p>
+        <pre class="code-block"><code>
+List&lt;Integer&gt; row7 = PascalTriangleUtils.getNthRow(7);
+// [1, 7, 21, 35, 35, 21, 7, 1]
+        </code></pre>
+
+        <h3><code>getValue(row, col)</code></h3>
+        <p>
+          Computes the binomial coefficient C(row, col), or returns 0 if col is
+          out of bounds. Computed using multiplicative formula:
+        </p>
+        <pre class="code-block"><code>
+int val = PascalTriangleUtils.getValue(5, 2); // 10
+        </code></pre>
+
+        <h3><code>getPeak(row)</code></h3>
+        <p>
+          The largest value in Pascal’s Triangle row is at <code>row / 2</code>.
+        </p>
+        <pre class="code-block"><code>
+int peak = PascalTriangleUtils.getPeak(6); // 20
+        </code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Mathematical Notes</h2>
+        <ul>
+          <li>
+            <strong>Binomial Formula:</strong> C(n, k) = n! / (k!(n − k)!)
+          </li>
+          <li>Each row starts and ends with 1</li>
+          <li>Overflow protection is enforced via <code>MAX_SAFE_N</code></li>
+          <li>Symmetry: C(n, k) = C(n, n − k)</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+System.out.println(PascalTriangleUtils.getValue(10, 3));    // 120
+System.out.println(PascalTriangleUtils.getPeak(10));        // 252
+System.out.println(PascalTriangleUtils.getNthRow(5));       // [1, 5, 10, 10, 5, 1]
+        </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

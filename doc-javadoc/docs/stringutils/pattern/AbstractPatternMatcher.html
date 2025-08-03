@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AbstractPatternMatcher - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>AbstractPatternMatcher</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Abstract Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>AbstractPatternMatcher</code> is an abstract base class that
+          implements the <a href="PatternMatcher.html" target="_blank" class="doc-link">PatternMatcher</a> interface. It provides
+          shared validation and input normalization logic for pattern matching
+          algorithms using the template method pattern. Subclasses only need to
+          implement the core matching logic in the
+          <code>doSearch(char[], char[])</code> method.
+        </p>
+      </section>
+
+      <!-- Implemented Methods -->
+      <section class="doc-section">
+        <h2>Implemented Methods</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Implementation Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(String text, String pattern)</code></td>
+              <td>Validates string inputs and converts to char arrays</td>
+              <td>
+                Null validation, converts strings to char[], delegates to
+                doSearch()
+              </td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(char[] text, char[] pattern)</code></td>
+              <td>Validates char array inputs</td>
+              <td>Null validation for arrays, delegates to doSearch()</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Abstract Methods -->
+      <section class="doc-section">
+        <h2>Abstract Methods</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>doSearch(char[] text, char[] pattern)</code></td>
+              <td>
+                Core pattern matching logic to be implemented by subclasses
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Concrete Implementations -->
+      <section class="doc-section">
+        <h2>Available Concrete Implementations</h2>
+        <ul>
+          <li>
+            <code><a href="KMPMatcher.html" target="_blank" class="doc-link">KMPMatcher</a></code> - Knuth-Morris-Pratt algorithm
+            implementation
+          </li>
+          <li>
+            <code><a href="RabinKarpMatcher.html" target="_blank" class="doc-link">RabinKarpMatcher</a></code> - Rabin-Karp rolling hash
+            algorithm
+          </li>
+          <li>
+            <code><a href="ZAlgorithmMatcher.html" target="_blank" class="doc-link">ZAlgorithmMatcher</a></code> - Z-algorithm-based linear time pattern matching
+          </li>
+        </ul>
+      </section>
+
+      <!-- Usage Example -->
+      <section class="doc-section">
+        <h2>Basic Usage</h2>
+        <pre class="code-block"><code>
+// Example of extending AbstractPatternMatcher
+public class MyPatternMatcher extends AbstractPatternMatcher {
+    @Override
+    protected List&lt;Integer&gt; doSearch(char[] text, char[] pattern) {
+        // Implement your pattern matching algorithm here
+        // Input validation is already handled by the base class
+        List&lt;Integer&gt; matches = new ArrayList&lt;&gt;();
+        // ... matching logic ...
+        return matches;
+    }
+}
+
+// Usage
+PatternMatcher matcher = new MyPatternMatcher();
+List&lt;Integer&gt; results = matcher.search("hello world", "world");
+</code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

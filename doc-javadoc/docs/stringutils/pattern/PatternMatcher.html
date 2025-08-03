@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PatternMatcher - Docs</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>PatternMatcher</h1>
+        <p class="class-type">
+          Type: <span class="tag interface-tag">Interface</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>PatternMatcher</code> is an interface for string pattern
+          matching algorithms. It provides overloaded methods to support both
+          <code>String</code> and <code>char[]</code> inputs. Implementations
+          should return all starting indices where the pattern occurs in the
+          text.
+        </p>
+      </section>
+
+      <!-- Method Contracts -->
+      <section class="doc-section">
+        <h2>Method Contracts</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Expected Behavior</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(String text, String pattern)</code></td>
+              <td>Searches for pattern in text string</td>
+              <td>
+                Returns list of starting indices; throws
+                IllegalArgumentException if inputs are null
+              </td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(char[] text, char[] pattern)</code></td>
+              <td>Searches for pattern in character array</td>
+              <td>
+                Returns list of starting indices; throws
+                IllegalArgumentException if inputs are null
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Available Implementations -->
+      <section class="doc-section">
+        <h2>Available Implementations</h2>
+        <ul>
+          <li>
+            <code><a href="AbstractPatternMatcher.html" target="_blank" class="doc-link">AbstractPatternMatcher</a></code> - Abstract base class with input
+            validation
+          </li>
+        </ul>
+      </section>
+      <!-- Usage Example -->
+      <section class="doc-section">
+        <h2>Basic Usage</h2>
+        <pre class="code-block"><code>
+// Using any implementation
+PatternMatcher matcher = new KMPPatternMatcher();
+
+// Search with strings
+List&lt;Integer&gt; positions = matcher.search("hello world hello", "hello");
+System.out.println(positions); // Output: [0, 12]
+
+// Search with character arrays
+char[] text = "abcdefabcdef".toCharArray();
+char[] pattern = "def".toCharArray();
+List&lt;Integer&gt; charResults = matcher.search(text, pattern);
+System.out.println(charResults); // Output: [3, 9]
+</code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

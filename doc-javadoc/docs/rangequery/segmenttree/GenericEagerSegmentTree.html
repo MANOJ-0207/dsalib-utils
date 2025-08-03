@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GenericEagerSegmentTree - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Theme Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Header -->
+      <header>
+        <h1>GenericEagerSegmentTree</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>GenericEagerSegmentTree&lt;T&gt;</code> which implements
+          <a href="SegmentTree.html" target="_blank" class="doc-link"
+            >SegmentTree</a
+          >
+          is a generic implementation of a segment tree that uses
+          <strong>eager propagation</strong>. It supports efficient point
+          updates and range queries over an array. Unlike lazy segment trees, it
+          does not defer operations, making it ideal for situations where
+          updates are sparse or infrequent and eager propagation is preferred
+          for simplicity.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>
+            Range queries (e.g., sum/min/max) with direct or functional point
+            updates
+          </li>
+          <li>
+            Applications with fewer range updates or frequent point
+            modifications
+          </li>
+          <li>Prefix/suffix calculations in immutable data</li>
+          <li>Teaching, prototyping, and competitive programming use cases</li>
+        </ul>
+      </section>
+
+      <!-- Method Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>T</code></td>
+              <td><code>query(int left, int right)</code></td>
+              <td>
+                Returns the result of the aggregation over the specified range.
+              </td>
+              <td>O(log n)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>update(int index, T value)</code></td>
+              <td>
+                Updates the value at a specific index using direct assignment.
+              </td>
+              <td>O(log n)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td>
+                <code>update(int index, Function&lt;T, T&gt; updater)</code>
+              </td>
+              <td>Transforms the value at a given index using a function.</td>
+              <td>O(log n)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td>
+                <code>update(int l, int r, Function&lt;T, T&gt; func)</code>
+              </td>
+              <td>
+                Applies transformation function to all values in range
+                <code>[l, r]</code>.
+              </td>
+              <td>O((r - l + 1) × log n)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>update(int l, int r, T value)</code></td>
+              <td>
+                Directly replaces all values in range <code>[l, r]</code> with
+                the given value.
+              </td>
+              <td>O((r - l + 1) × log n)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>size()</code></td>
+              <td>Returns the number of elements in the segment tree.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>printTree()</code></td>
+              <td>Prints the internal segment tree array (for debugging).</td>
+              <td>O(n)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Implementation Details</h2>
+        <p>
+          <code>GenericEagerSegmentTree&lt;T&gt;</code> is a generic,
+          <strong>eager propagation–based segment tree</strong> designed for
+          efficient range queries and point updates. It operates over immutable
+          or safely mutable data using a user-defined
+          <code>BinaryOperator&lt;T&gt;</code> and identity value.
+        </p>
+
+        <p><strong>Core Data Structures:</strong></p>
+        <ul>
+          <li>
+            <strong>Segment Tree Array</strong> – <code>T[] tree</code> stores
+            the tree nodes in a flattened array (size ≈ 2×nextPowerOfTwo(n) - 1)
+          </li>
+          <li>
+            <strong>Input Copy</strong> – <code>T[] input</code> holds the
+            original data, duplicated during construction to support rebuilding
+          </li>
+          <li>
+            <strong>Merge Operation</strong> –
+            <code>BinaryOperator&lt;T&gt;</code> defines the associative
+            function (e.g., sum, min, max)
+          </li>
+          <li>
+            <strong>Default Value</strong> – <code>T defaultValue</code> acts as
+            the identity element (e.g., 0 for sum, ∞ for min)
+          </li>
+        </ul>
+
+        <p><strong>Tree Construction:</strong></p>
+        <ul>
+          <li>
+            <strong>Recursive Build</strong> – Recursively constructs the
+            segment tree from input array in <code>O(n)</code> time
+          </li>
+          <li>
+            <strong>Index Mapping</strong> – Internal tree nodes built using
+            child values at <code>2 * node + 1</code> and
+            <code>2 * node + 2</code>
+          </li>
+          <li>
+            <strong>Heap-Like Layout</strong> – Tree stored as array in
+            heap-style structure for efficient parent-child traversal
+          </li>
+        </ul>
+
+        <p><strong>Update Mechanisms:</strong></p>
+        <ul>
+          <li>
+            <strong>Point Update (Direct)</strong> – Replaces a value at index
+            and updates affected segments in <code>O(log n)</code>
+          </li>
+          <li>
+            <strong>Point Update (Function)</strong> – Applies a transformer
+            function to the element at index, then rebuilds affected tree paths
+          </li>
+          <li>
+            <strong>Range Update (Eager)</strong> – Applies transformation
+            across the range <code>[l, r]</code> via repeated point updates,
+            triggering eager segment recalculation
+          </li>
+        </ul>
+
+        <p><strong>Query Evaluation:</strong></p>
+        <ul>
+          <li>
+            <strong>Range Query</strong> – Uses a divide-and-conquer approach
+            over <code>[left, right]</code> to return the combined result in
+            <code>O(log n)</code>
+          </li>
+          <li>
+            <strong>Partial Overlap Handling</strong> – Combines subintervals
+            recursively using default value for non-overlapping branches
+          </li>
+        </ul>
+
+        <p><strong>Memory & Safety:</strong></p>
+        <ul>
+          <li>
+            <strong>Safe Copying</strong> – Input is defensively copied to
+            prevent external mutation issues
+          </li>
+          <li>
+            <strong>Typed Tree</strong> – Segment tree is typed as
+            <code>T[]</code> with explicit unchecked cast for generic array
+            allocation
+          </li>
+          <li>
+            <strong>Debugging Support</strong> – Includes
+            <code>printTree()</code> to visualize internal tree structure
+          </li>
+        </ul>
+      </section>
+
+      <!-- Detailed Usage Examples -->
+      <section class="doc-section">
+        <h2>Detailed Usage Examples</h2>
+
+        <h3>Construction</h3>
+        <pre class="code-block"><code>
+GenericEagerSegmentTree&lt;Integer&gt; tree = new GenericEagerSegmentTree&lt;&gt;(
+    List.of(1, 3, 5, 7, 9),
+    Integer::sum,
+    0
+);
+        </code></pre>
+
+        <h3><code>query(int l, int r)</code></h3>
+        <p>
+          Returns the sum/min/max over the specified range <code>[l, r]</code>.
+        </p>
+        <pre class="code-block"><code>
+int sum = tree.query(1, 3); // returns 3 + 5 + 7 = 15
+        </code></pre>
+
+        <h3><code>update(int index, T value)</code></h3>
+        <p>Replaces the value at the given index.</p>
+        <pre class="code-block"><code>
+tree.update(2, 10); // sets index 2 from 5 to 10
+        </code></pre>
+
+        <h3><code>update(int index, Function&lt;T, T&gt; updater)</code></h3>
+        <p>Transforms the value at index 0.</p>
+        <pre class="code-block"><code>
+tree.update(0, x -> x * 2); // doubles value at index 0
+        </code></pre>
+
+        <h3><code>update(int l, int r, Function&lt;T, T&gt; func)</code></h3>
+        <p>
+          Applies a transformation function to each value in range
+          <code>[1, 3]</code>.
+        </p>
+        <pre class="code-block"><code>
+tree.update(1, 3, x -> x + 1); // increments values in range by 1
+        </code></pre>
+
+        <h3><code>update(int l, int r, T value)</code></h3>
+        <p>Sets all values in the range to a fixed value.</p>
+        <pre class="code-block"><code>
+tree.update(0, 2, 5); // sets values at indices 0, 1, 2 to 5
+        </code></pre>
+
+        <h3><code>size()</code></h3>
+        <p>Returns the size of the underlying data structure.</p>
+        <pre class="code-block"><code>
+int size = tree.size(); // returns 5
+        </code></pre>
+
+        <h3><code>printTree()</code></h3>
+        <p>Prints the segment tree for debugging purposes.</p>
+        <pre class="code-block"><code>
+tree.printTree(); // outputs internal array of segment nodes
+        </code></pre>
+      </section>
+
+      <!-- Implementation Notes -->
+      <section class="doc-section">
+        <h2>Implementation Notes</h2>
+        <ul>
+          <li>
+            This implementation does <strong>not use lazy propagation</strong>.
+          </li>
+          <li>
+            Range updates are implemented eagerly using repeated point updates.
+          </li>
+          <li>All indices are 0-based and inclusive in range functions.</li>
+          <li>
+            Internally uses a binary tree structure sized to
+            <code>2 * 2^⌈log₂n⌉ - 1</code>.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Quick Example -->
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+GenericEagerSegmentTree&lt;Integer&gt; st = new GenericEagerSegmentTree&lt;&gt;(
+    List.of(2, 4, 6, 8),
+    Integer::sum,
+    0
+);
+
+System.out.println(st.query(0, 2)); // 2 + 4 + 6 = 12
+st.update(1, x -> x * 2);           // index 1 becomes 8
+st.update(0, 2, 5);                 // set indices 0 to 2 to 5
+System.out.println(st.query(0, 3)); // 5 + 5 + 5 + 8 = 23
+        </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

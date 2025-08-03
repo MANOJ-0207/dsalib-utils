@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZAlgorithmMatcher - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>ZAlgorithmMatcher</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>ZAlgorithmMatcher</code> is a Z-Algorithm based pattern matcher
+          that extends <a href="AbstractPatternMatcher.html" target="_blank" class="doc-link">AbstractPatternMatcher</a>. It efficiently finds
+          all occurrences of a pattern in text using a linear-time Z-array
+          technique on the concatenated string "pattern$text". The Z-algorithm
+          computes an array where each element represents the length of the
+          longest substring starting at that position which matches the prefix.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>String matching in large text documents and databases</li>
+          <li>Genomic sequence analysis and pattern identification</li>
+          <li>Data compression and deduplication algorithms</li>
+          <li>Text editors with efficient find/replace functionality</li>
+          <li>Network packet analysis and pattern detection</li>
+          <li>Log file processing and monitoring systems</li>
+          <li>Regular expression engines and string processing libraries</li>
+        </ul>
+      </section>
+
+      <!-- Public API and Time Complexity -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(String text, String pattern)</code></td>
+              <td>Inherited from AbstractPatternMatcher with validation</td>
+              <td>O(N + M)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>search(char[] text, char[] pattern)</code></td>
+              <td>Inherited from AbstractPatternMatcher with validation</td>
+              <td>O(N + M)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;Integer&gt;</code></td>
+              <td><code>doSearch(char[] text, char[] pattern)</code></td>
+              <td>Core Z-algorithm implementation</td>
+              <td>O(N + M)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Algorithm Details -->
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>The Z-algorithm works by:</p>
+        <ul>
+          <li>
+            <strong>Concatenation:</strong> Creates "pattern$text" string with
+            separator
+          </li>
+          <li>
+            <strong>Z-array computation:</strong> Builds array in linear time
+            using sliding window technique
+          </li>
+          <li>
+            <strong>Pattern detection:</strong> Identifies positions where Z[i]
+            equals pattern length
+          </li>
+        </ul>
+        <p>
+          <strong>Space Complexity:</strong> O(N + M) for the concatenated array
+          and Z-array.
+        </p>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+
+        <h3>Basic Pattern Matching</h3>
+        <pre class="code-block"><code>
+ZAlgorithmMatcher zMatcher = new ZAlgorithmMatcher();
+
+// Find all occurrences of pattern
+String text = "abcabcabcabc";
+String pattern = "abc";
+List&lt;Integer&gt; matches = zMatcher.search(text, pattern);
+System.out.println("Pattern found at positions: " + matches);
+// Output: [0, 3, 6, 9]</code></pre>
+
+        <h3>DNA Sequence Analysis</h3>
+        <pre class="code-block"><code>
+ZAlgorithmMatcher dnaAnalyzer = new ZAlgorithmMatcher();
+
+// Search for specific gene sequences
+String genome = "ATCGATCGATGCATGCATGCATCGATCGATCG";
+String geneMarker = "ATGC";
+List&lt;Integer&gt; geneLocations = dnaAnalyzer.search(genome, geneMarker);
+System.out.println("Gene markers found at: " + geneLocations);
+// Output: [10, 14, 18]</code></pre>
+
+        <h3>Text Document Processing</h3>
+        <pre class="code-block"><code>
+ZAlgorithmMatcher documentSearcher = new ZAlgorithmMatcher();
+
+// Efficient search in large documents
+String document = "The algorithm performs well. The algorithm is efficient. " +
+                 "Algorithm design is important.";
+String keyword = "algorithm";
+
+List&lt;Integer&gt; occurrences = documentSearcher.search(
+    document.toLowerCase(), keyword);
+System.out.println("'" + keyword + "' found " + occurrences.size() + " times");
+System.out.println("At positions: " + occurrences);
+// Output: [4, 33, 63]</code></pre>
+
+        <h3>Overlapping Pattern Detection</h3>
+        <pre class="code-block"><code>
+ZAlgorithmMatcher overlapDetector = new ZAlgorithmMatcher();
+
+// Handle overlapping patterns effectively
+String repeatingText = "aaaaaaa";
+String overlappingPattern = "aaa";
+
+List&lt;Integer&gt; overlaps = overlapDetector.search(repeatingText, overlappingPattern);
+System.out.println("Overlapping matches at: " + overlaps);
+// Output: [0, 1, 2, 3, 4]</code></pre>
+
+        <h3>Log File Analysis</h3>
+        <pre class="code-block"><code>
+ZAlgorithmMatcher logAnalyzer = new ZAlgorithmMatcher();
+
+// Monitor error patterns in log files
+String logEntry = "INFO: System started. ERROR: Connection failed. " +
+                 "INFO: Retrying. ERROR: Timeout occurred. INFO: Success.";
+String errorPattern = "ERROR:";
+
+List&lt;Integer&gt; errorPositions = logAnalyzer.search(logEntry, errorPattern);
+System.out.println("Errors found at positions: " + errorPositions);
+// Extract error messages
+for (int pos : errorPositions) {
+    int endPos = logEntry.indexOf('.', pos);
+    if (endPos != -1) {
+        String errorMsg = logEntry.substring(pos, endPos);
+        System.out.println("Error: " + errorMsg);
+    }
+}</code></pre>
+
+        <h3>Network Packet Analysis</h3>
+        <pre class="code-block"><code>
+ZAlgorithmMatcher packetAnalyzer = new ZAlgorithmMatcher();
+
+// Detect specific patterns in network data
+String packetData = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n" +
+                   "HTTP/1.1 404 Not Found\r\nHTTP/1.1 200 OK\r\n";
+String httpOkPattern = "HTTP/1.1 200 OK";
+
+List&lt;Integer&gt; httpOkResponses = packetAnalyzer.search(packetData, httpOkPattern);
+System.out.println("HTTP 200 responses at: " + httpOkResponses);
+// Output: [0, 59]
+
+// Analyze response distribution
+int totalResponses = packetData.split("HTTP/1.1").length - 1;
+System.out.println("Success rate: " + httpOkResponses.size() + "/" + totalResponses);</code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

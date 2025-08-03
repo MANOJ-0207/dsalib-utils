@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SegmentedLRUCache - Docs</title>
+    <link rel="stylesheet" href="../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../assets/sun.png" />
+      <img id="icon-moon" src="../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>SegmentedLRUCache</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>SegmentedLRUCache&lt;K, V&gt;</code> which extends
+          <a href="AbstractCache.html" target="_blank" class="doc-link"
+            >AbstractCache</a
+          >
+          is a two-tier LRU cache that divides capacity into
+          <b>recently used</b> and <b>frequently used</b> segments. On the first
+          access, an entry goes to the recently used segment. On the second
+          access, it is promoted to the frequently used segment. This
+          segmentation helps distinguish frequently used items from those that
+          are only accessed once.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Advanced web caches with tiered eviction strategies</li>
+          <li>Database page caches with read-heat distinction</li>
+          <li>Hybrid LRU-LFU replacement policies</li>
+        </ul>
+      </section>
+
+      <!-- Method Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>V</code></td>
+              <td><code>get(K key)</code></td>
+              <td>
+                Retrieves a value and promotes to frequently used if needed.
+              </td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>put(K key, V value)</code></td>
+              <td>Inserts or updates a key-value pair in the cache.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>remove(K key)</code></td>
+              <td>Removes the key from both segments if it exists.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>clear()</code></td>
+              <td>Clears both segments of the cache.</td>
+              <td>O(n)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>contains(K key)</code></td>
+              <td>Checks if the key exists in any segment.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>size()</code></td>
+              <td>Returns the total number of items in both segments.</td>
+              <td>O(1)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>
+          The <code>SegmentedLRUCache</code> improves traditional LRU by
+          splitting the cache into two segments:
+        </p>
+        <ul>
+          <li>
+            <strong>Recently Used Segment:</strong> New entries are inserted
+            here initially. Eviction happens if this segment exceeds its
+            capacity.
+          </li>
+          <li>
+            <strong>Frequently Used Segment:</strong> Entries that are accessed
+            a second time are promoted here. Prioritized during evictions, as
+            they indicate repeated usage.
+          </li>
+          <li>
+            <strong>Eviction Policy:</strong> Both segments use LRU (Least
+            Recently Used) eviction independently when their capacity is
+            exceeded.
+          </li>
+          <li>
+            <strong>Internal Data Structures:</strong> Uses two
+            <code>LinkedHashMap</code> instances with access-order enabled to
+            maintain LRU behavior in each segment.
+          </li>
+        </ul>
+        <p>
+          <strong>Space Complexity:</strong> O(n), where <code>n</code> is the
+          total cache capacity. Each entry is stored in exactly one of the two
+          segments.
+        </p>
+      </section>
+
+      <!-- Sample Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+        <pre class="code-block"><code>
+SegmentedLRUCache&lt;String, Integer&gt; cache = new SegmentedLRUCache&lt;&gt;(4, 0.5);
+cache.put("A", 1); // Recently used
+cache.put("B", 2);
+cache.get("A");     // Promotes A to frequent
+cache.put("C", 3);  // Evicts oldest from recent if full
+System.out.println(cache.contains("A")); // true
+System.out.println(cache.contains("B")); // true or false depending on eviction
+      </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../scripts/docs.js"></script>
+  </body>
+</html>

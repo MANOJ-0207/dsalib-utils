@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FactorialUtils - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>FactorialUtils</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Utility Class</span>
+        </p>
+      </header>
+
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>FactorialUtils</code> is a high-performance utility for
+          combinatorics operations such as <code>nCr</code>, <code>nPr</code>,
+          <code>Catalan numbers</code>, and <code>derangements</code> under a
+          given modulus.
+        </p>
+        <p>
+          Internally uses
+          <strong>precomputed factorial and inverse factorial tables</strong>
+          modulo a prime, relying on Fermat's Little Theorem for modular inverse
+          calculations.
+        </p>
+        <p>
+          Built on top of <code>ModMath</code>, which handles modular arithmetic
+          safely.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Constructor Summary</h2>
+        <ul>
+          <li>
+            <code>FactorialUtils(int mod, int max)</code> — Initializes tables
+            for <code>n ∈ [0, max]</code> under given modulus. <br /><b
+              >Time Complexity:</b
+            >
+            O(max)
+          </li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>FactorialUtils(int mod, int max)</code></td>
+              <td>
+                Constructs a utility for modular factorials and binomial
+                coefficients with precomputation.
+              </td>
+              <td>O(max)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>factorial(int n)</code></td>
+              <td>Returns n! % mod</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>inverseFactorial(int n)</code></td>
+              <td>Returns (n!)⁻¹ % mod</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>nCr(int n, int r)</code></td>
+              <td>Computes n choose r mod m: nCr = n! / (r!(n−r)!)</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>nPr(int n, int r)</code></td>
+              <td>Computes n permute r mod m: nPr = n! / (n−r)!</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>catalan(int n)</code></td>
+              <td>
+                Returns nth Catalan number: C(n) = (1 / (n + 1)) * C(2n, n)
+              </td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>derangement(int n)</code></td>
+              <td>
+                Computes D(n): number of permutations where no element is in
+                original position
+              </td>
+              <td>O(n)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Detailed Method Descriptions</h2>
+
+        <h3><code>factorial(n)</code></h3>
+        <p>Returns n! % mod for precomputed n.</p>
+        <pre class="code-block"><code>
+FactorialUtils f = new FactorialUtils(1_000_000_007, 1000);
+int f5 = f.factorial(5); // 120
+        </code></pre>
+
+        <h3><code>inverseFactorial(n)</code></h3>
+        <p>
+          Returns modular inverse of n! using Fermat's Theorem:
+          <code>a⁻¹ ≡ a^(mod−2) % mod</code>.
+        </p>
+        <pre class="code-block"><code>
+int invF5 = f.inverseFactorial(5); // 120⁻¹ mod 1e9+7
+        </code></pre>
+
+        <h3><code>nCr(n, r)</code></h3>
+        <p>
+          Computes n choose r under mod:
+          <br /><code>nCr = n! / (r! (n−r)!)</code>
+        </p>
+        <pre class="code-block"><code>
+int result = f.nCr(10, 3); // 120
+        </code></pre>
+
+        <h3><code>nPr(n, r)</code></h3>
+        <p>
+          Computes n permute r under mod:
+          <br /><code>nPr = n! / (n−r)!</code>
+        </p>
+        <pre class="code-block"><code>
+int result = f.nPr(10, 3); // 720
+        </code></pre>
+
+        <h3><code>catalan(n)</code></h3>
+        <p>
+          Computes nth Catalan number:
+          <br />
+          <code>C(n) = C(2n, n) / (n + 1) ≡ nCr(2n, n) * (n+1)⁻¹ % mod</code>
+        </p>
+        <pre class="code-block"><code>
+int cat3 = f.catalan(3); // 5
+        </code></pre>
+
+        <h3><code>derangement(n)</code></h3>
+        <p>Computes D(n) — number of derangements:</p>
+        <ul>
+          <li>D(0) = 1</li>
+          <li>D(1) = 0</li>
+          <li>D(n) = (n - 1) * (D(n - 1) + D(n - 2))</li>
+        </ul>
+        <pre class="code-block"><code>
+int d4 = f.derangement(4); // 9
+        </code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Implementation Notes</h2>
+        <ul>
+          <li>Works only with prime mod due to use of Fermat’s inverse.</li>
+          <li>All combinatorial results are precomputed up to given max.</li>
+          <li>Modular division is safely handled via <code>ModMath</code>.</li>
+          <li>Use <code>catalan</code> only when <code>2n &lt; max</code>.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+FactorialUtils f = new FactorialUtils(1_000_000_007, 1000);
+System.out.println(f.nCr(5, 2));      // 10
+System.out.println(f.nPr(5, 2));      // 20
+System.out.println(f.catalan(4));     // 14
+System.out.println(f.derangement(3)); // 2
+        </code></pre>
+      </section>
+    </div>
+
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

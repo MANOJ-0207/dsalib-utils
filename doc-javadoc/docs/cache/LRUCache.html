@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LRUCache - Docs</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+    <link rel="stylesheet" href="../../styles/docs.css" />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../assets/sun.png" />
+      <img id="icon-moon" src="../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>LRUCache</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>LRUCache&lt;K, V&gt;</code> which extends
+          <a href="AbstractCache.html" target="_blank" class="doc-link"
+            >AbstractCache</a
+          >
+          is an in-memory cache that evicts the Least Recently Used item when it
+          reaches capacity. It uses a combination of a <code>HashMap</code> and
+          a custom doubly linked list to support <code>O(1)</code> time
+          complexity for both <code>get</code> and <code>put</code> operations.
+          This class extends <code>AbstractCache</code> and provides LRU
+          eviction logic.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Web server or API response caching</li>
+          <li>Application-level memory cache</li>
+          <li>GPU texture or browser resource caching</li>
+        </ul>
+      </section>
+
+      <!-- Method Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>V</code></td>
+              <td><code>get(K key)</code></td>
+              <td>
+                Returns the value and updates its usage as most recently used.
+              </td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>put(K key, V value)</code></td>
+              <td>Inserts or updates a key-value entry; evicts if needed.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>size()</code></td>
+              <td>Returns number of entries in the cache.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>contains(K key)</code></td>
+              <td>Checks if key is present in the cache.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>remove(K key)</code></td>
+              <td>Removes the given key from the cache.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>clear()</code></td>
+              <td>Clears all key-value entries.</td>
+              <td>O(n)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>
+          The <code>LRUCache</code> (Least Recently Used Cache) evicts the entry
+          that was accessed least recently:
+        </p>
+        <ul>
+          <li>
+            <strong>Access Tracking:</strong> On every <code>get</code> or
+            <code>put</code>, the accessed node is moved to the front of a
+            doubly linked list to mark it as most recently used.
+          </li>
+          <li>
+            <strong>Eviction Policy:</strong> When capacity is exceeded, the
+            least recently used (tail) node is evicted from the list and removed
+            from the map.
+          </li>
+          <li>
+            <strong>Internal Data Structures:</strong>
+            <ul>
+              <li>
+                <code>Map&lt;K, Node&lt;K, V&gt;&gt;</code> for constant-time
+                key lookup
+              </li>
+              <li>
+                <code>DoublyLinkedList&lt;K, V&gt;</code> to maintain access
+                order in O(1) time
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <p>
+          <strong>Space Complexity:</strong> O(n), where <code>n</code> is the
+          maximum number of entries in the cache. Each entry is stored both in
+          the map and as a node in the doubly linked list.
+        </p>
+      </section>
+
+      <!-- Sample Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+        <pre class="code-block"><code>
+LRUCache&lt;String, Integer&gt; cache = new LRUCache&lt;&gt;(2);
+cache.put("A", 1);
+cache.put("B", 2);
+cache.get("A"); // Access A -> now A is most recently used
+cache.put("C", 3); // Evicts B (least recently used)
+System.out.println(cache.contains("B")); // false
+System.out.println(cache.get("A")); // 1
+System.out.println(cache.get("C")); // 3
+      </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../scripts/docs.js"></script>
+  </body>
+</html>

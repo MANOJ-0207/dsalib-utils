@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trie - Docs</title>
+    <link rel="stylesheet" href="../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../assets/sun.png" />
+      <img id="icon-moon" src="../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>Trie</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>Trie</code> is a prefix tree implementation for efficient string
+          storage and querying operations. It supports insertion, deletion,
+          exact search, prefix search, and frequency counts. The implementation
+          allows duplicate insertions and tracks both word frequency and prefix
+          counts, making it suitable for autocomplete systems, spell checkers,
+          and word frequency analysis. Internally uses a tree of
+          <a href="TrieNode.html" target="_blank" class="doc-link">TrieNode</a>
+          objects with character-based navigation.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Autocomplete and suggestion systems in search engines</li>
+          <li>Spell checkers and word validation systems</li>
+          <li>Dictionary implementations and word frequency analysis</li>
+          <li>IP routing tables and network prefix matching</li>
+          <li>Text processing and natural language processing applications</li>
+          <li>Phone number and contact search systems</li>
+          <li>Word games and puzzle solvers</li>
+          <li>Code completion in IDEs and text editors</li>
+        </ul>
+      </section>
+
+      <!-- Public API and Time Complexity -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>Trie()</code></td>
+              <td>Constructs an empty Trie.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>insert(String word)</code></td>
+              <td>Inserts a word with frequency tracking.</td>
+              <td>O(L), where L is the length of the word</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>search(String word)</code></td>
+              <td>Searches for an exact word in the Trie.</td>
+              <td>O(L), where L is the length of the word</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>startsWith(String prefix)</code></td>
+              <td>Checks if any word starts with the given prefix.</td>
+              <td>O(L), where L is the length of the prefix</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>delete(String word)</code></td>
+              <td>Deletes one instance of a word from the Trie.</td>
+              <td>O(L), where L is the length of the word</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>countWordsEqualTo(String word)</code></td>
+              <td>Returns the frequency count of a specific word.</td>
+              <td>O(L), where L is the length of the word</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>countWordsStartingWith(String prefix)</code></td>
+              <td>Returns the count of words with the given prefix.</td>
+              <td>O(L), where L is the length of the prefix</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;String&gt;</code></td>
+              <td><code>getAllWords()</code></td>
+              <td>
+                Returns all words stored in the Trie (including duplicates).
+              </td>
+              <td>
+                O(N × L), where N is the number of words and L is average word
+                length
+              </td>
+            </tr>
+            <tr>
+              <td><code>List&lt;String&gt;</code></td>
+              <td><code>getAllWordsWithPrefix(String prefix)</code></td>
+              <td>
+                Returns all words in the Trie starting with the given prefix.
+              </td>
+              <td>
+                O(P + M), where P is prefix length and M is total characters in
+                matched words
+              </td>
+            </tr>
+            <tr>
+              <td><code>String</code></td>
+              <td><code>findShortestRoot(String word)</code></td>
+              <td>
+                Finds the shortest prefix of the word that exists as a full word
+                in the Trie.
+              </td>
+              <td>O(L), where L is the length of the word</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>
+          The <code>Trie</code> is a tree-like data structure used for efficient
+          storage and retrieval of strings. It supports operations like
+          insertion, search, deletion, prefix-based queries, and frequency
+          tracking.
+        </p>
+
+        <ul>
+          <li>
+            <strong>Supports:</strong> Exact search, prefix matching, frequency
+            counting, and word listing
+          </li>
+          <li>
+            <strong>Allows:</strong> Duplicate insertions with independent
+            tracking of <code>wordCount</code> and <code>prefixCount</code>
+          </li>
+          <li>
+            <strong>Efficient for:</strong> Dictionary-based lookups,
+            autocomplete, and word frequency analysis
+          </li>
+        </ul>
+
+        <p><strong>Space Complexity:</strong> O(N × L), where:</p>
+        <ul>
+          <li>
+            <code>N</code> is the number of unique words inserted into the Trie
+          </li>
+          <li><code>L</code> is the average length of the inserted words</li>
+          <li>
+            Each character of a word corresponds to a TrieNode, and each node
+            holds:
+            <ul>
+              <li>
+                <code>Map&lt;Character, TrieNode&gt;</code>: child pointers
+              </li>
+              <li>
+                <code>boolean isEndOfWord</code>: marks if the node represents
+                the end of a valid word
+              </li>
+              <li>
+                <code>int wordCount</code>: number of times the full word ends
+                at this node
+              </li>
+              <li>
+                <code>int prefixCount</code>: number of words passing through
+                this node
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+
+        <h3>Basic Trie Operations</h3>
+        <pre class="code-block"><code>
+// Create a new Trie
+Trie trie = new Trie();
+
+// Insert words
+trie.insert("apple");
+trie.insert("app");
+trie.insert("application");
+trie.insert("apply");
+
+// Search for exact words
+System.out.println(trie.search("app"));         // Output: true
+System.out.println(trie.search("apple"));       // Output: true
+System.out.println(trie.search("appl"));        // Output: false
+
+// Check prefix existence
+System.out.println(trie.startsWith("app"));     // Output: true
+System.out.println(trie.startsWith("xyz"));     // Output: false</code></pre>
+
+        <h3>Word Frequency Tracking</h3>
+        <pre class="code-block"><code>
+Trie dictionary = new Trie();
+
+// Insert words multiple times
+dictionary.insert("hello");
+dictionary.insert("hello");
+dictionary.insert("hello");
+dictionary.insert("world");
+dictionary.insert("world");
+
+// Check word frequencies
+System.out.println("Frequency of 'hello': " + dictionary.countWordsEqualTo("hello")); // Output: 3
+System.out.println("Frequency of 'world': " + dictionary.countWordsEqualTo("world")); // Output: 2
+System.out.println("Frequency of 'java': " + dictionary.countWordsEqualTo("java"));   // Output: 0
+
+// Delete one instance
+dictionary.delete("hello");
+System.out.println("After deletion, 'hello' frequency: " + dictionary.countWordsEqualTo("hello")); // Output: 2</code></pre>
+
+        <h3>Prefix Counting and Autocomplete</h3>
+        <pre class="code-block"><code>
+Trie autocomplete = new Trie();
+
+// Build dictionary for autocomplete
+autocomplete.insert("car");
+autocomplete.insert("card");
+autocomplete.insert("care");
+autocomplete.insert("careful");
+autocomplete.insert("carry");
+autocomplete.insert("cat");
+autocomplete.insert("catch");
+
+// Count words with specific prefix
+System.out.println("Words starting with 'car': " + autocomplete.countWordsStartingWith("car")); // Output: 5
+System.out.println("Words starting with 'cat': " + autocomplete.countWordsStartingWith("cat")); // Output: 2
+System.out.println("Words starting with 'ca': " + autocomplete.countWordsStartingWith("ca"));   // Output: 7
+
+// Get all suggestions for a prefix
+List&lt;String&gt; suggestions = autocomplete.getAllWordsWithPrefix("car");
+System.out.println("Autocomplete suggestions for 'car': " + suggestions);
+// Output: [car, card, care, careful, carry]</code></pre>
+
+        <h3>Dictionary and Spell Checker</h3>
+        <pre class="code-block"><code>
+Trie spellChecker = new Trie();
+
+// Load dictionary words
+String[] dictionary = {"computer", "science", "programming", "algorithm", "data", "structure"};
+for (String word : dictionary) {
+    spellChecker.insert(word);
+}
+
+// Check spelling
+String[] testWords = {"computer", "computr", "algorithm", "algorthm", "data"};
+for (String word : testWords) {
+    if (spellChecker.search(word)) {
+        System.out.println("'" + word + "' is spelled correctly");
+    } else {
+        System.out.println("'" + word + "' might have a spelling error");
+        // Get suggestions by checking if it's a prefix of any word
+        List&lt;String&gt; suggestions = spellChecker.getAllWordsWithPrefix(word.substring(0, Math.min(3, word.length())));
+        if (!suggestions.isEmpty()) {
+            System.out.println("  Suggestions: " + suggestions);
+        }
+    }
+}</code></pre>
+
+        <h3>Word Root Finding</h3>
+        <pre class="code-block"><code>
+Trie rootFinder = new Trie();
+
+// Insert root words
+rootFinder.insert("cat");
+rootFinder.insert("bat");
+rootFinder.insert("rat");
+rootFinder.insert("run");
+
+// Find shortest roots for longer words
+String[] testWords = {"cats", "category", "running", "batman", "rationale"};
+for (String word : testWords) {
+    String root = rootFinder.findShortestRoot(word);
+    if (root != null) {
+        System.out.println("Shortest root of '" + word + "': " + root);
+    } else {
+        System.out.println("No root found for '" + word + "'");
+    }
+}
+// Output: 
+// Shortest root of 'cats': cat
+// Shortest root of 'category': cat
+// Shortest root of 'running': run
+// Shortest root of 'batman': bat
+// Shortest root of 'rationale': rat</code></pre>
+
+        <h3>Complete Word Collection</h3>
+        <pre class="code-block"><code>
+Trie wordCollection = new Trie();
+
+// Insert various words including duplicates
+wordCollection.insert("apple");
+wordCollection.insert("banana");
+wordCollection.insert("apple");  // duplicate
+wordCollection.insert("cherry");
+wordCollection.insert("date");
+wordCollection.insert("banana"); // duplicate
+
+// Get all words (including duplicates)
+List&lt;String&gt; allWords = wordCollection.getAllWords();
+System.out.println("All words in Trie: " + allWords);
+// Output: [apple, apple, banana, banana, cherry, date]
+
+// Get unique word count by converting to Set
+Set&lt;String&gt; uniqueWords = new HashSet&lt;>(allWords);
+System.out.println("Unique words: " + uniqueWords.size()); // Output: 4</code></pre>
+
+        <h3>IP Address Prefix Matching</h3>
+        <pre class="code-block"><code>
+Trie ipTrie = new Trie();
+
+// Insert IP prefixes (simplified example)
+ipTrie.insert("192.168");
+ipTrie.insert("192.168.1");
+ipTrie.insert("10.0");
+ipTrie.insert("172.16");
+
+// Check if IP addresses match known prefixes
+String[] ipAddresses = {"192.168.1.100", "192.168.2.50", "10.0.1.1", "8.8.8.8"};
+for (String ip : ipAddresses) {
+    // Extract prefixes of different lengths
+    String[] parts = ip.split("\\.");
+    boolean matched = false;
+    
+    for (int i = Math.min(3, parts.length); i >= 2; i--) {
+        String prefix = String.join(".", Arrays.copyOf(parts, i));
+        if (ipTrie.search(prefix)) {
+            System.out.println("IP " + ip + " matches network prefix: " + prefix);
+            matched = true;
+            break;
+        }
+    }
+
+    
+    if (!matched) {
+        System.out.println("IP " + ip + " does not match any known network");
+    }
+}</code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../scripts/docs.js"></script>
+  </body>
+</html>

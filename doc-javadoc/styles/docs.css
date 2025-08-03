@@ -1,0 +1,230 @@
+:root {
+  --bg: #fdfdfd;
+  --text: #1e1e1e;
+  --card: #ffffff;
+  --border: #ddd;
+  --primary: #0067c0;
+  --accent: #3a7fa6;
+  --code-bg: #f0f0f0;
+}
+
+[data-theme='dark'] {
+  --bg: #1c1c1c;
+  --text: #f1f1f1;
+  --card: #2a2a2a;
+  --border: #444;
+  --primary: #8ab4f8;
+  --accent: #7dbbe6;
+  --code-bg: #2f2f2f;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.6;
+}
+
+.doc-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 2rem;
+}
+
+header {
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: var(--primary);
+  margin: 0;
+}
+
+.class-type {
+  font-size: 1rem;
+  margin-top: 0.3rem;
+  color: var(--text);
+}
+
+.tag {
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.class-tag {
+  background: #e6f1fb;
+  color: #0053a0;
+}
+
+[data-theme='dark'] .class-tag {
+  background: #30567a;
+  color: #a9d5ff;
+}
+
+.doc-section {
+  margin-bottom: 2rem;
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.doc-table th,
+.doc-table td {
+  border: 1px solid var(--border);
+  padding: 0.6rem;
+  text-align: left;
+}
+
+.doc-table th {
+  background: var(--card);
+}
+
+pre.code-block {
+  background: var(--code-bg);
+  padding: 1rem;
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.theme-toggle img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--card);
+  padding: 5px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  right: 26%;
+  transition: opacity 0.3s ease;
+}
+
+#icon-sun { opacity: 0; }
+[data-theme='light'] #icon-sun { opacity: 1; }
+[data-theme='dark'] #icon-sun { opacity: 0; }
+[data-theme='light'] #icon-moon { opacity: 0; }
+[data-theme='dark'] #icon-moon { opacity: 1; }
+
+.tag {
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+/* 🟦 Concrete Class Tag */
+.class-tag {
+  background: #e6f1fb;
+  color: #0053a0;
+}
+[data-theme='dark'] .class-tag {
+  background: #30567a;
+  color: #a9d5ff;
+}
+
+/* 🟩 Interface Tag */
+.interface-tag {
+  background: #e5f6ef;
+  color: #1e7d50;
+}
+[data-theme='dark'] .interface-tag {
+  background: #2b5942;
+  color: #9ae6b4;
+}
+
+/* 🟪 Abstract Class Tag */
+.abstract-tag {
+  background: #f1e5ff;
+  color: #6c2ea3;
+}
+[data-theme='dark'] .abstract-tag {
+  background: #41245c;
+  color: #d2b0ff;
+}
+
+/* 🟦 Record Tag */
+.record-tag {
+  background: #e6f7ff;
+  color: #007c9e;
+}
+[data-theme='dark'] .record-tag {
+  background: #2d4c5a;
+  color: #a3dfff;
+}
+
+
+footer {
+  border-top: 1px solid var(--border);
+  color: #888;
+  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.type-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.doc-link {
+  color: var(--primary);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.doc-link:hover {
+  color: var(--accent);
+  background-color: rgba(0, 103, 192, 0.1);
+  text-decoration: underline solid;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+[data-theme='dark'] .doc-link:hover {
+  background-color: rgba(138, 180, 248, 0.1);
+}
+
+.doc-link img.svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+  /* Adaptive color trick using brightness filter */
+  filter: invert(23%) sepia(69%) saturate(2214%) hue-rotate(193deg) brightness(93%) contrast(88%);
+}
+
+/* For dark mode */
+[data-theme='dark'] .doc-link img.svg {
+  filter: invert(85%) sepia(10%) saturate(470%) hue-rotate(180deg) brightness(120%) contrast(110%);
+}
+
+/* Ensure icon and text are aligned together */
+.doc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

@@ -1,0 +1,246 @@
+/* ============================
+   CSS CUSTOM PROPERTIES (THEMES)
+   ============================ */
+:root {
+  --bg: #f7f9fb;
+  --border: #ccc;
+  --card: #ffffff;
+  --heading-color: #0067c0;
+  --hover: #0053a0;
+  --primary: #0067c0;
+  --links: #0067c0;
+  --text: #1a1a1a;
+}
+
+[data-theme='dark'] {
+  --bg: #1b1b1b;
+  --border: #444;
+  --card: #2a2a2a;
+  --heading-color: #f0f0f0;
+  --hover: #1c3d5a;
+  --links: #8ab4f8;
+  --primary: #102a43;
+  --text: #f1f1f1;
+}
+
+/* ============================
+   BASE STYLES
+   ============================ */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s ease, color 0.3s ease;
+  overflow-y: scroll;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem 1rem;
+}
+
+/* ============================
+   HEADER
+   ============================ */
+header {
+  background: var(--primary);
+  color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+  transition: background 0.3s ease;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+header p {
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* ============================
+   FOOTER
+   ============================ */
+footer {
+  border-top: 1px solid var(--border);
+  color: #888;
+  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ============================
+   THEME TOGGLE
+   ============================ */
+.theme-icon-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.theme-icon-toggle img {
+  background: var(--card);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  padding: 6px;
+  position: absolute;
+  left: -26%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+}
+
+#icon-sun { 
+  opacity: 0; 
+}
+
+[data-theme='light'] #icon-sun { 
+  opacity: 1; 
+}
+
+[data-theme='light'] #icon-moon { 
+  opacity: 0; 
+}
+
+[data-theme='dark'] #icon-sun { 
+  opacity: 0; 
+}
+
+[data-theme='dark'] #icon-moon { 
+  opacity: 1; 
+}
+
+/* ============================
+   ACCORDION COMPONENTS
+   ============================ */
+.accordion-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+  gap: 0.6rem;
+  margin-top: 4px;
+  padding: 0.9rem 1rem;
+  text-align: left;
+  width: 100%;
+  transition: background 0.3s ease, color 0.3s ease;
+  color: var(--text);
+}
+
+.accordion-btn:hover {
+  background: var(--hover);
+  color: white;
+}
+
+.accordion-panel {
+  background: var(--card);
+  overflow: hidden;
+  height: 0;
+  visibility: hidden;
+  pointer-events: none;
+  padding-left: 1.2rem;
+  transition: height 0.4s ease;
+}
+
+.accordion-panel.open,
+.accordion-panel.opening,
+.accordion-panel.closing {
+  visibility: visible;
+  pointer-events: auto;
+  height: auto;
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+}
+
+/* ============================
+   DOCUMENTATION LINKS
+   ============================ */
+.doc-link {
+  border-left: 3px solid transparent;
+  color: var(--links);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.4rem 1rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, border-left-color 0.2s ease;
+}
+
+/* SVG Icon Styling */
+.doc-link .svg {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* ============================
+   LIGHT THEME HOVER STATES
+   ============================ */
+[data-theme='light'] .abstract-link:hover {
+  background-color: #4b9868;
+  color: white;
+  border-left-color: white;
+}
+
+[data-theme='light'] .class-link:hover {
+  background-color: #2f5d8a;
+  color: white;
+  border-left-color: white;
+}
+
+[data-theme='light'] .interface-link:hover {
+  background-color: #2f7f54;
+  color: white;
+  border-left-color: white;
+}
+
+[data-theme='light'] .record-link:hover {
+  background-color: #3a7fa6;
+  color: white;
+  border-left-color: white;
+}
+
+/* ============================
+   DARK THEME HOVER STATES
+   ============================ */
+[data-theme='dark'] .abstract-link:hover {
+  background-color: #9ef0c1;
+  color: black;
+  border-left-color: black;
+}
+
+[data-theme='dark'] .class-link:hover {
+  background-color: #5081a9;
+  color: white;
+  border-left-color: white;
+}
+
+[data-theme='dark'] .interface-link:hover {
+  background-color: #5ed699;
+  color: black;
+  border-left-color: black;
+}
+
+[data-theme='dark'] .record-link:hover {
+  background-color: #7dbbe6;
+  color: black;
+  border-left-color: black;
+}

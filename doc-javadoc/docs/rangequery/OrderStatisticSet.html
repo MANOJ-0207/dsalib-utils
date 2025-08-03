@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>OrderStatisticSet - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+
+  <body>
+    <!-- Theme Toggle -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>OrderStatisticSet</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Overview -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>OrderStatisticSet</code> is a generic order-statistics multiset
+          for efficiently tracking frequencies, rank queries, and value-based
+          queries over a fixed universe of values.
+        </p>
+        <p>
+          Internally uses a <code>GenericEagerSegmentTree</code> over frequency
+          counts with coordinate compression. Supports duplicates and efficient
+          updates, all in logarithmic time.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Real-time leaderboard with ranks and frequency queries</li>
+          <li>K-th order statistics on dynamic input streams</li>
+          <li>Tracking frequency histograms with prefix statistics</li>
+          <li>Multisets with duplicate counts and rank-based access</li>
+          <li>
+            Competitive programming with <code>order_of_key</code> and
+            <code>find_by_order</code> patterns
+          </li>
+          <li>Custom frequency counters over sorted fixed-value domains</li>
+        </ul>
+      </section>
+
+      <!-- Method Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Constructors -->
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>OrderStatisticSet(Set&lt;T&gt; universe)</code></td>
+              <td>
+                Initializes a set from a universe of values without inserting
+                them
+              </td>
+              <td><b>O(n log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>N/A</code></td>
+              <td>
+                <code
+                  >OrderStatisticSet(Set&lt;T&gt; universe, boolean
+                  include)</code
+                >
+              </td>
+              <td>
+                Initializes a set from a universe and inserts all values if
+                <code>include</code> is true
+              </td>
+              <td><b>O(n log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>OrderStatisticSet(List&lt;T&gt; values)</code></td>
+              <td>
+                Creates a set with universe based on the list without inserting
+                values
+              </td>
+              <td><b>O(n log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>N/A</code></td>
+              <td>
+                <code
+                  >OrderStatisticSet(List&lt;T&gt; values, boolean
+                  include)</code
+                >
+              </td>
+              <td>
+                Creates a set with universe and inserts values if
+                <code>include</code> is true
+              </td>
+              <td><b>O(n log n)</b></td>
+            </tr>
+
+            <!-- Methods -->
+            <tr>
+              <td><code>void</code></td>
+              <td><code>insert(T val)</code></td>
+              <td>Inserts one occurrence of the specified value</td>
+              <td><b>O(log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>erase(T val)</code></td>
+              <td>Removes one occurrence of the value if present</td>
+              <td><b>O(log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>count(T val)</code></td>
+              <td>Returns the frequency of the specified value</td>
+              <td><b>O(1)</b></td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>orderOfKey(T val)</code></td>
+              <td>
+                Returns the number of elements strictly less than the given
+                value
+              </td>
+              <td><b>O(log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>T</code></td>
+              <td><code>findByOrder(int k)</code></td>
+              <td>Returns the k-th smallest element (1-based indexing)</td>
+              <td><b>O(log n)</b></td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>size()</code></td>
+              <td>
+                Returns the total number of elements (including duplicates)
+              </td>
+              <td><b>O(1)</b></td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>contains(T val)</code></td>
+              <td>Checks whether the value is present in the multiset</td>
+              <td><b>O(1)</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>
+          The <code>OrderStatisticSet</code> is a multiset data structure for
+          order statistics over a fixed universe of values. It uses:
+        </p>
+        <ul>
+          <li>
+            A sorted list of unique values from the universe (coordinate
+            compression)
+          </li>
+          <li>An integer frequency array for counting occurrences</li>
+          <li>A segment tree for fast prefix sums and binary search</li>
+        </ul>
+
+        <p><strong>Operations Supported:</strong></p>
+        <ul>
+          <li>
+            <code>insert(val)</code> and <code>erase(val)</code>:
+            increment/decrement count and update segment tree
+          </li>
+          <li>
+            <code>count(val)</code>: returns frequency of <code>val</code> in
+            O(1)
+          </li>
+          <li>
+            <code>orderOfKey(val)</code>: returns number of elements less than
+            <code>val</code> in O(log n)
+          </li>
+          <li>
+            <code>findByOrder(k)</code>: returns the k-th smallest element
+            (1-based) in O(log n)
+          </li>
+        </ul>
+
+        <p><strong>Space Complexity:</strong> O(n), where:</p>
+        <ul>
+          <li>
+            <code>n</code> is the number of <strong>unique</strong> elements in
+            the universe
+          </li>
+          <li>
+            The segment tree uses approximately <code>4n</code> space internally
+          </li>
+          <li>
+            Additional arrays: <code>freq[n]</code>,
+            <code>indexToValue[n]</code>, and <code>valueToIndex[n]</code>
+          </li>
+        </ul>
+
+        <p>
+          This structure is ideal for range statistics where the input domain is
+          known and bounded, such as:
+        </p>
+        <ul>
+          <li>Online queries over discrete sets</li>
+          <li>Coordinate-compressed problems in competitive programming</li>
+          <li>Efficient rank and frequency operations in real-time systems</li>
+        </ul>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Examples</h2>
+
+        <h4>Using List Constructor (without auto-insertion)</h4>
+        <pre class="code-block"><code>
+List&lt;Integer&gt; list = List.of(3, 5, 7);
+OrderStatisticSet&lt;Integer&gt; set = new OrderStatisticSet&lt;&gt;(list);
+
+// Insert values from the predefined universe
+set.insert(5);
+set.insert(5);
+set.insert(3);
+
+// The value 10 will be ignored as it's not in the initial universe
+set.insert(10);  
+
+System.out.println(set.count(3));         // 1
+System.out.println(set.count(5));         // 2
+System.out.println(set.count(10));        // 0
+System.out.println(set.orderOfKey(6));    // 3 (3 and two 5s)
+System.out.println(set.orderOfKey(4));    // 1 (one 3)
+System.out.println(set.findByOrder(2));   // 5
+System.out.println(set.findByOrder(3));   // 5
+System.out.println(set.findByOrder(4));   // null
+  </code></pre>
+
+        <h4>Using List Constructor with include = true</h4>
+        <pre class="code-block"><code>
+List&lt;Integer&gt; values = List.of(5, 5, 3, 5, 7);
+OrderStatisticSet&lt;Integer&gt; autoSet = new OrderStatisticSet&lt;&gt;(values, true);
+
+System.out.println(autoSet.count(5));         // 3
+System.out.println(autoSet.count(3));         // 1
+System.out.println(autoSet.orderOfKey(7));    // 4
+System.out.println(autoSet.orderOfKey(5));    // 1
+System.out.println(autoSet.findByOrder(2));   // 5
+System.out.println(autoSet.findByOrder(4));   // 5
+  </code></pre>
+
+        <h4>Using Set Constructor (no auto insert)</h4>
+        <pre class="code-block"><code>
+Set&lt;String&gt; names = Set.of("Alice", "Bob", "Charlie");
+OrderStatisticSet&lt;String&gt; nameSet = new OrderStatisticSet&lt;&gt;(names);
+
+// Manual insertion of values from the universe
+nameSet.insert("Alice");
+nameSet.insert("Bob");
+nameSet.insert("Alice");
+
+System.out.println(nameSet.count("Alice"));      // 2
+System.out.println(nameSet.count("Charlie"));    // 0
+System.out.println(nameSet.findByOrder(1));      // "Alice"
+System.out.println(nameSet.findByOrder(2));      // "Alice"
+System.out.println(nameSet.findByOrder(3));      // "Bob"
+  </code></pre>
+
+        <h4>Using Set Constructor with include = true</h4>
+        <pre class="code-block"><code>
+Set&lt;String&gt; fixed = Set.of("x", "y", "z");
+OrderStatisticSet&lt;String&gt; preloaded = new OrderStatisticSet&lt;&gt;(fixed, true);
+
+// All values from set inserted once
+System.out.println(preloaded.count("x"));     // 1
+System.out.println(preloaded.count("y"));     // 1
+System.out.println(preloaded.count("z"));     // 1
+
+// Insert more of "x"
+preloaded.insert("x");
+preloaded.insert("x");
+
+System.out.println(preloaded.count("x"));     // 3
+System.out.println(preloaded.findByOrder(2)); // "x"
+  </code></pre>
+      </section>
+    </div>
+
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

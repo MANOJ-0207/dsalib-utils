@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DetailedEdge - Docs</title>
+    <link rel="stylesheet" href="../../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>DetailedEdge</h1>
+        <p class="class-type">
+          Type: <span class="tag record-tag">Record</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>DetailedEdge&lt;K&gt;</code> represents a <strong>weighted directed edge</strong>
+          in a graph from a <code>source</code> node to a <code>dest</code> node,
+          along with an integer <code>weight</code>.
+        </p>
+        <p>
+          This class is ideal for algorithms such as:
+        </p>
+        <ul>
+          <li><strong>Dijkstra's Algorithm</strong></li>
+          <li><strong>Bellman-Ford</strong></li>
+          <li><strong>Kruskal's MST</strong></li>
+          <li><strong>Prim's MST</strong> (less common due to directionality)</li>
+        </ul>
+        <p>
+          Being a Java <code>record</code>, it provides:
+        </p>
+        <ul>
+          <li>Immutable structure</li>
+          <li>Thread safety</li>
+          <li>Auto-generated <code>equals()</code>, <code>hashCode()</code>, and <code>toString()</code></li>
+        </ul>
+      </section>
+
+      <!-- Fields -->
+      <section class="doc-section">
+        <h2>Fields</h2>
+        <ul>
+          <li><code>K source</code> — the starting node of the directed edge</li>
+          <li><code>K dest</code> — the ending node of the directed edge</li>
+          <li><code>int weight</code> — the weight associated with the edge</li>
+        </ul>
+      </section>
+
+      <!-- Method Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>DetailedEdge(K source, K dest, int weight)</code></td>
+              <td>Creates a new weighted directed edge from <code>source</code> to <code>dest</code></td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>String</code></td>
+              <td><code>toString()</code></td>
+              <td>Returns a string in the format: <code>source --weight-→ dest</code></td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>equals(Object o)</code></td>
+              <td>Checks equality based on all fields: <code>source</code>, <code>dest</code>, and <code>weight</code></td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>hashCode()</code></td>
+              <td>Generates hash based on all fields</td>
+              <td>O(1)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Basic Usage</h2>
+        <pre class="code-block"><code>
+DetailedEdge&lt;String&gt; e1 = new DetailedEdge<>("A", "B", 5);
+DetailedEdge&lt;String&gt; e2 = new DetailedEdge<>("B", "C", 10);
+
+System.out.println(e1);  // A --5-→ B
+System.out.println(e2);  // B --10-→ C
+        </code></pre>
+      </section>
+    </div>
+
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../../scripts/docs.js"></script>
+  </body>
+</html>

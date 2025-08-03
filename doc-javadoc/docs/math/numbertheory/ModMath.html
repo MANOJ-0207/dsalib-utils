@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ModMath - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>ModMath</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Utility Class</span>
+        </p>
+      </header>
+
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>ModMath</code> is a utility class for performing safe and
+          efficient <strong>modular arithmetic</strong> operations under a given
+          modulus. Supports operations like addition, subtraction,
+          multiplication, division, modular exponentiation, and modular inverse.
+        </p>
+        <p>
+          Assumes that the modulus <code>mod</code> is a
+          <strong>positive integer</strong>, and for operations like division
+          and inverse, it assumes that <code>mod</code> is
+          <strong>prime</strong> (based on Fermat’s Little Theorem).
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>ModMath(int mod)</code></td>
+              <td>
+                Constructs a modular arithmetic utility with a given modulus.
+              </td>
+              <td>O(1)</td>
+            </tr>
+
+            <tr>
+              <td><code>int</code></td>
+              <td><code>modAdd(a, b)</code></td>
+              <td>Modular addition: (a + b) % mod</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>modSub(a, b)</code></td>
+              <td>Modular subtraction: (a - b) % mod</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>modMul(a, b)</code></td>
+              <td>Modular multiplication: (a * b) % mod</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>modDiv(a, b)</code></td>
+              <td>Modular division: (a / b) % mod using modular inverse</td>
+              <td>O(log mod)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>modPow(base, exp)</code></td>
+              <td>Modular exponentiation: (base^exp) % mod</td>
+              <td>O(log exp)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>modInverse(a)</code></td>
+              <td>Modular inverse of <code>a</code>: a⁻¹ % mod</td>
+              <td>O(log mod)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>getMod()</code></td>
+              <td>Returns the current modulus</td>
+              <td>O(1)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Detailed Method Descriptions</h2>
+
+        <h3><code>modAdd(int a, int b)</code></h3>
+        <p>
+          Performs modular addition ensuring result lies in
+          <code>[0, mod - 1]</code>.
+        </p>
+        <pre class="code-block"><code>
+ModMath mm = new ModMath(7);
+int sum = mm.modAdd(5, 6); // 4
+        </code></pre>
+
+        <h3><code>modSub(int a, int b)</code></h3>
+        <p>Computes (a - b + mod) % mod to safely handle negative values.</p>
+        <pre class="code-block"><code>
+int diff = mm.modSub(2, 5); // 4
+        </code></pre>
+
+        <h3><code>modMul(int a, int b)</code></h3>
+        <p>Uses <code>long</code> casting internally to prevent overflow.</p>
+        <pre class="code-block"><code>
+int prod = mm.modMul(3, 4); // 5
+        </code></pre>
+
+        <h3><code>modDiv(int a, int b)</code></h3>
+        <p>
+          Performs modular division using Fermat’s Little Theorem:<br />
+          a / b ≡ a × b<sup>-1</sup> mod m, where m is prime.
+        </p>
+        <pre class="code-block"><code>
+int result = mm.modDiv(10, 4); // result = 5, if mod = 7
+        </code></pre>
+
+        <h3><code>modPow(int base, int exp)</code></h3>
+        <p>
+          Binary exponentiation for efficient computation of powers under
+          modulus.
+        </p>
+        <pre class="code-block"><code>
+int power = mm.modPow(3, 4); // 4^3 = 81 % 7 = 4
+        </code></pre>
+
+        <h3><code>modInverse(int a)</code></h3>
+        <p>Returns x such that (a × x) % mod == 1. Assumes mod is prime.</p>
+        <pre class="code-block"><code>
+int inv = mm.modInverse(3); // = 5 when mod = 7
+        </code></pre>
+
+        <h3><code>getMod()</code></h3>
+        <p>Returns the modulus used in this instance.</p>
+        <pre class="code-block"><code>
+System.out.println(mm.getMod()); // 7
+        </code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Mathematical Notes</h2>
+        <ul>
+          <li>All results are normalized to <code>[0, mod - 1]</code></li>
+          <li>
+            Division and inverse only work properly if <code>mod</code> is a
+            prime
+          </li>
+          <li>
+            Binary exponentiation reduces power computation to logarithmic time
+          </li>
+          <li>
+            Used heavily in combinatorics and number theory (e.g., Fermat, CRT)
+          </li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+ModMath mm = new ModMath(17);
+System.out.println(mm.modAdd(8, 11));       // 2
+System.out.println(mm.modSub(3, 9));        // 11
+System.out.println(mm.modMul(5, 4));        // 3
+System.out.println(mm.modPow(3, 5));        // 5
+System.out.println(mm.modInverse(7));       // 5
+System.out.println(mm.modDiv(10, 4));       // 11
+        </code></pre>
+      </section>
+    </div>
+    <footer>© 2025 DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>

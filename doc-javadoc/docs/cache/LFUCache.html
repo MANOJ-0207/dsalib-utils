@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LFUCache - Docs</title>
+    <link rel="stylesheet" href="../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../assets/sun.png" />
+      <img id="icon-moon" src="../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>LFUCache</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>LFUCache&lt;K, V&gt;</code> which extends
+          <a href="AbstractCache.html" target="_blank" class="doc-link"
+            >AbstractCache</a
+          >
+          is an in-memory fixed-capacity cache that evicts the Least Frequently
+          Used item when capacity is reached. It maintains both usage frequency
+          and insertion order (FIFO among equally used items) using frequency
+          maps and sets.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Browser tab or resource caching with limited memory</li>
+          <li>Image thumbnail or database result caching</li>
+          <li>Systems where frequently used data should remain prioritized</li>
+        </ul>
+      </section>
+
+      <!-- Method Summary -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>V</code></td>
+              <td><code>get(K key)</code></td>
+              <td>Retrieves the value and updates the frequency.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>put(K key, V value)</code></td>
+              <td>Inserts or updates a key-value and evicts if needed.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>int</code></td>
+              <td><code>size()</code></td>
+              <td>Returns the number of entries in the cache.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>contains(K key)</code></td>
+              <td>Checks if a key exists in the cache.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>remove(K key)</code></td>
+              <td>Removes the entry and updates min frequency.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>clear()</code></td>
+              <td>Clears all entries from the cache.</td>
+              <td>O(n)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>
+          The <code>LFUCache</code> (Least Frequently Used Cache) maintains
+          entries by access frequency:
+        </p>
+        <ul>
+          <li>
+            <strong>Frequency Tracking:</strong> Each key tracks how many times
+            it has been accessed. This frequency is updated on every
+            <code>get</code> or existing <code>put</code>.
+          </li>
+          <li>
+            <strong>Eviction Policy:</strong> When the cache exceeds capacity,
+            the key with the lowest frequency is evicted. If multiple keys have
+            the same frequency, the one that was inserted earliest (FIFO among
+            equals) is removed.
+          </li>
+          <li>
+            <strong>Optimized Structures:</strong> Internally uses:
+            <ul>
+              <li><code>Map&lt;K, V&gt;</code> for key-value pairs</li>
+              <li>
+                <code>Map&lt;K, Integer&gt;</code> to track key frequencies
+              </li>
+              <li>
+                <code>Map&lt;Integer, LinkedHashSet&lt;K&gt;&gt;</code> to group
+                keys by frequency, preserving order
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <p>
+        <p>
+          <strong>Space Complexity:</strong> O(N + F), where <code>N</code> is
+          the number of key-value pairs and <code>F</code> is the number of
+          unique frequencies.
+        </p>
+      </section>
+
+
+      <!-- Sample Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+        <pre class="code-block"><code>
+LFUCache&lt;String, Integer&gt; cache = new LFUCache&lt;&gt;(3);
+cache.put("A", 1); // A is inserted with frequency 1
+cache.put("B", 2); // B is inserted with frequency 1
+cache.get("A");    // Access A -> frequency becomes 2
+cache.put("C", 3); 
+cache.put("D",4); // Cache is full, must evict one key
+                  // B and C both have frequency 1, but B was inserted earlier
+                  // Evicts B based on FIFO among same-frequency keys
+
+System.out.println(cache.contains("B")); // false (B was evicted)
+System.out.println(cache.get("A"));      // 1 (A remains with frequency 2)
+System.out.println(cache.get("C"));      // 3 (C was recently inserted with frequency 1)
+  </code></pre>
+
+        <p>
+          <strong>Note:</strong> In LFU (Least Frequently Used) cache, when
+          there is a tie in frequency count (e.g., two or more keys have the
+          same minimum frequency), the eviction follows FIFO
+          (First-In-First-Out) order among those tied keys. This ensures
+          predictable eviction behavior and maintains cache consistency.
+        </p>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../scripts/docs.js"></script>
+  </body>
+</html>

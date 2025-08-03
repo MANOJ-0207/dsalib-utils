@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EfficientHeap - Docs</title>
+    <link rel="stylesheet" href="../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <!-- Toggle Button -->
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../assets/sun.png" />
+      <img id="icon-moon" src="../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <!-- Heading -->
+      <header>
+        <h1>EfficientHeap</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <!-- Description -->
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>EfficientHeap&lt;T extends Comparable&lt;T&gt;&gt;</code> is a
+          highly flexible heap (priority queue) implementation that supports
+          both min-heap and max-heap behavior via a comparator. It provides
+          efficient value removal in <code>O(log n)</code> using an index map
+          and supports update operations (remove + reinsert) for arbitrary
+          values. Internally uses an ArrayList for heap structure and a map from
+          value to set of indices for <code>O(1)</code> deletion support.
+        </p>
+      </section>
+
+      <!-- Use Cases -->
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Priority queues with dynamic priority updates</li>
+          <li>
+            Dijkstra's algorithm and other graph algorithms requiring
+            decrease-key operations
+          </li>
+          <li>Task scheduling systems with changeable priorities</li>
+          <li>Top-K problems with element removal capabilities</li>
+          <li>Median finding with dynamic insertions and deletions</li>
+        </ul>
+      </section>
+
+      <!-- Public API and Time Complexity -->
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>EfficientHeap()</code></td>
+              <td>Constructs a min-heap using natural ordering.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>N/A</code></td>
+              <td><code>EfficientHeap(boolean isMinHeap)</code></td>
+              <td>Constructs heap with min-heap or max-heap ordering.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>N/A</code></td>
+              <td>
+                <code>EfficientHeap(Comparator&lt;T&gt; customComparator)</code>
+              </td>
+              <td>Constructs heap with custom comparator.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isEmpty()</code></td>
+              <td>Checks if the heap is empty.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>T</code></td>
+              <td><code>peek()</code></td>
+              <td>Returns the top element without removing it.</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>add(T val)</code></td>
+              <td>Adds a value to the heap.</td>
+              <td>O(log n)</td>
+            </tr>
+            <tr>
+              <td><code>T</code></td>
+              <td><code>poll()</code></td>
+              <td>Removes and returns the root of the heap.</td>
+              <td>O(log n)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>remove(T val)</code></td>
+              <td>Removes a specific value from the heap.</td>
+              <td>O(log n)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>update(T oldVal, T newVal)</code></td>
+              <td>Updates a value by removing old and inserting new.</td>
+              <td>O(log n)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>printHeap()</code></td>
+              <td>Prints current heap elements for debugging.</td>
+              <td>O(n)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Algorithm Details</h2>
+        <p>
+          The <code>EfficientHeap</code> is a dynamic priority queue
+          implementation that enhances the standard heap by allowing efficient
+          removal and updates of arbitrary elements.
+        </p>
+        <ul>
+          <li>
+            <strong>Supports:</strong> Min-heap or max-heap behavior based on
+            comparator.
+          </li>
+          <li>
+            <strong>Efficient Removal:</strong> Uses a map of values to their
+            indices for O(log n) deletion.
+          </li>
+          <li>
+            <strong>Update Operations:</strong> Arbitrary value updates
+            supported via remove + insert.
+          </li>
+          <li>
+            <strong>Internally Uses:</strong>
+            <ul>
+              <li>
+                <code>ArrayList&lt;T&gt;</code> for the binary heap structure
+              </li>
+              <li>
+                <code>Map&lt;T, Set&lt;Integer&gt;&gt;</code> to track value
+                positions for O(1) lookup during removals
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <p>
+          <strong>Space Complexity:</strong> O(n), where <code>n</code> is the
+          number of elements in the heap. The space is primarily used by:
+        </p>
+        <ul>
+          <li>
+            <code>heap </code>: stores all elements in a dynamic array (size n)
+          </li>
+          <li>
+            <code>valueToIndices </code>: maps each distinct value to a set of
+            its indices in the heap
+          </li>
+        </ul>
+      </section>
+
+      <!-- Example Usage -->
+      <section class="doc-section">
+        <h2>Sample Usage</h2>
+
+        <h3>Basic Min-Heap Operations</h3>
+        <pre class="code-block"><code>
+// Create a min-heap
+EfficientHeap&lt;Integer&gt; minHeap = new EfficientHeap&lt;&gt;();
+
+// Add elements
+minHeap.add(10);
+minHeap.add(5);
+minHeap.add(15);
+minHeap.add(3);
+
+// Peek at minimum element
+System.out.println("Min element: " + minHeap.peek()); // Output: 3
+
+// Poll elements in sorted order
+while (!minHeap.isEmpty()) {
+    System.out.println(minHeap.poll()); // Output: 3, 5, 10, 15
+}</code></pre>
+
+        <h3>Max-Heap Configuration</h3>
+        <pre class="code-block"><code>
+// Create a max-heap
+EfficientHeap&lt;Integer&gt; maxHeap = new EfficientHeap&lt;&gt;(false);
+
+maxHeap.add(10);
+maxHeap.add(5);
+maxHeap.add(15);
+maxHeap.add(3);
+
+System.out.println("Max element: " + maxHeap.peek()); // Output: 15
+
+// Poll elements in reverse sorted order
+while (!maxHeap.isEmpty()) {
+    System.out.println(maxHeap.poll()); // Output: 15, 10, 5, 3
+}</code></pre>
+
+        <h3>Custom Comparator Usage</h3>
+        <pre class="code-block"><code>
+// Create heap with custom comparator (by string length)
+EfficientHeap&lt;String&gt; stringHeap = new EfficientHeap&lt;&gt;(
+    Comparator.comparing(String::length)
+);
+
+stringHeap.add("hello");
+stringHeap.add("hi");
+stringHeap.add("world");
+stringHeap.add("a");
+
+System.out.println("Shortest string: " + stringHeap.peek()); // Output: "a"</code></pre>
+
+        <h3>Efficient Remove Operations</h3>
+        <pre class="code-block"><code>
+EfficientHeap&lt;Integer&gt; heap = new EfficientHeap&lt;&gt;();
+heap.add(20);
+heap.add(10);
+heap.add(30);
+heap.add(15);
+
+// Remove specific element efficiently
+boolean removed = heap.remove(10);
+System.out.println("Removed 10: " + removed); // Output: true
+
+heap.printHeap(); // Shows remaining elements
+
+// Try to remove non-existent element
+boolean notFound = heap.remove(100);
+System.out.println("Removed 100: " + notFound); // Output: false</code></pre>
+
+        <h3>Update Operations</h3>
+        <pre class="code-block"><code>
+EfficientHeap&lt;Integer&gt; priorityQueue = new EfficientHeap&lt;&gt;();
+priorityQueue.add(25);
+priorityQueue.add(10);
+priorityQueue.add(35);
+priorityQueue.add(20);
+
+// Update priority: change 25 to 5 (higher priority in min-heap)
+boolean updated = priorityQueue.update(25, 5);
+System.out.println("Updated priority: " + updated); // Output: true
+
+System.out.println("New min element: " + priorityQueue.peek()); // Output: 5
+
+// Update non-existent element
+boolean notUpdated = priorityQueue.update(100, 50);
+System.out.println("Updated non-existent: " + notUpdated); // Output: false</code></pre>
+
+        <h3>Dijkstra's Algorithm Use Case</h3>
+        <pre class="code-block"><code>
+// Using EfficientHeap for Dijkstra's algorithm
+class Node implements Comparable&lt;Node&gt; {
+    int id;
+    int distance;
+    
+    Node(int id, int distance) {
+        this.id = id;
+        this.distance = distance;
+    }
+    
+    @Override
+    public int compareTo(Node other) {
+        return Integer.compare(this.distance, other.distance);
+    }
+}
+
+EfficientHeap&lt;Node&gt; dijkstraHeap = new EfficientHeap&lt;&gt;();
+dijkstraHeap.add(new Node(0, 0));  // Start node
+dijkstraHeap.add(new Node(1, Integer.MAX_VALUE));
+dijkstraHeap.add(new Node(2, Integer.MAX_VALUE));
+
+// Decrease key operation when shorter path found
+Node oldNode = new Node(1, Integer.MAX_VALUE);
+Node updatedNode = new Node(1, 10);
+dijkstraHeap.update(oldNode, updatedNode);</code></pre>
+      </section>
+    </div>
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../scripts/docs.js"></script>
+  </body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AdjMatrixWeightedGraph - Docs</title>
+    <link rel="stylesheet" href="../../../styles/docs.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/dependency-favicon.png"
+    />
+  </head>
+  <body>
+    <div
+      class="theme-toggle"
+      onclick="toggleTheme()"
+      title="Toggle Theme"
+      id="theme-toggle"
+    >
+      <img id="icon-sun" src="../../../assets/sun.png" />
+      <img id="icon-moon" src="../../../assets/moon.png" />
+    </div>
+
+    <div class="doc-container">
+      <header>
+        <h1>AdjMatrixWeightedGraph</h1>
+        <p class="class-type">
+          Type: <span class="tag class-tag">Concrete Class</span>
+        </p>
+      </header>
+
+      <section class="doc-section">
+        <h2>Description</h2>
+        <p>
+          <code>AdjMatrixWeightedGraph&lt;K&gt;</code> implements
+          <a href="WeightedGraph.html" target="_blank" class="doc-link"
+            >WeightedGraph</a
+          >
+          interface. It represents a weighted graph using an adjacency matrix.
+          Supports both directed and undirected graphs. Provides standard
+          algorithms including BFS, DFS, Dijkstra, Bellman-Ford, Floyd-Warshall,
+          Prim, Kruskal, SCC detection, and bridge/articulation point analysis.
+        </p>
+      </section>
+
+      <section class="doc-section">
+        <h2>Use Cases</h2>
+        <ul>
+          <li>Shortest path queries in dense graphs</li>
+          <li>All-pairs shortest path with Floyd-Warshall</li>
+          <li>Minimum spanning trees via Prim or Kruskal</li>
+          <li>Finding bridges or articulation points (Tarjan)</li>
+          <li>SCC analysis in directed graphs</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Method Summary</h2>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Return Type</th>
+              <th>Method</th>
+              <th>Description</th>
+              <th>Time Complexity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>addEdge(from, to, weight)</code></td>
+              <td>Adds a weighted edge</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>removeEdge(from, to)</code></td>
+              <td>Removes an edge</td>
+              <td>O(1)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>bfs(start, action)</code></td>
+              <td>Breadth-first traversal with callback</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>dfs(start, action)</code></td>
+              <td>Depth-first traversal with callback</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isReachable(from, to)</code></td>
+              <td>Checks if path exists</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>Integer</code></td>
+              <td><code>dijkstra(src, dest)</code></td>
+              <td>Shortest path (null if unreachable)</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Integer&gt;</code></td>
+              <td><code>bellmanFord(src)</code></td>
+              <td>Shortest path with negative weights</td>
+              <td>O(V * E)</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Map&lt;K, Integer&gt;&gt;</code></td>
+              <td><code>floydWarshall()</code></td>
+              <td>All pairs shortest paths</td>
+              <td>O(V³)</td>
+            </tr>
+            <tr>
+              <td><code>Integer</code></td>
+              <td><code>primsMST(start)</code></td>
+              <td>Minimum spanning tree cost</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>Integer</code></td>
+              <td><code>kruskalMST()</code></td>
+              <td>Minimum spanning tree cost</td>
+              <td>O(E log E)</td>
+            </tr>
+            <tr>
+              <td><code>List&lt;List&lt;K&gt;&gt;</code></td>
+              <td><code>getStronglyConnectedComponents()</code></td>
+              <td>Finds SCCs (directed only)</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isStronglyConnected()</code></td>
+              <td>Checks if all nodes are reachable</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>Map&lt;K, Integer&gt;</code></td>
+              <td><code>getSCCMap()</code></td>
+              <td>Maps nodes to SCC IDs</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isBridgeEdge(u, v)</code></td>
+              <td>Checks if edge is a bridge</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>boolean</code></td>
+              <td><code>isBridgeNode(node)</code></td>
+              <td>Checks if node is articulation point</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>Set&lt;DetailedEdge&lt;K&gt;&gt;</code></td>
+              <td><code>getBridgeEdges()</code></td>
+              <td>Returns all bridge edges</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>Set&lt;K&gt;</code></td>
+              <td><code>getBridgeNodes()</code></td>
+              <td>Returns all articulation points</td>
+              <td>O(V²)</td>
+            </tr>
+            <tr>
+              <td><code>void</code></td>
+              <td><code>printGraph()</code></td>
+              <td>Prints adjacency matrix</td>
+              <td>O(V²)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="doc-section">
+        <h2>Implementation Details</h2>
+        <p>
+          <code>AdjMatrixWeightedGraph&lt;K&gt;</code> is a generic,
+          <strong>adjacency matrix–based weighted graph</strong> that uses a
+          dynamically resizing 2D integer array for edge storage. Nodes are
+          mapped to matrix indices using a
+          <code>HashMap&lt;K, Integer&gt;</code>, with
+          <code>Integer.MAX_VALUE</code> representing non-existent edges.
+        </p>
+
+        <p><strong>Core Data Structures:</strong></p>
+        <ul>
+          <li>
+            <strong>Matrix Storage</strong> – <code>int[][] matrix</code> with
+            dynamic resizing (doubles when capacity exceeded)
+          </li>
+          <li>
+            <strong>Node Indexing</strong> –
+            <code>HashMap&lt;K, Integer&gt;</code>
+            for O(1) node-to-index mapping
+          </li>
+          <li>
+            <strong>Edge List</strong> –
+            <code>List&lt;DetailedEdge&lt;K&gt;&gt;</code>
+            maintained for algorithms requiring edge iteration
+          </li>
+          <li>
+            <strong>Bridge Caching</strong> –
+            <code>Set&lt;DetailedEdge&lt;K&gt;&gt;</code> and
+            <code>Set&lt;K&gt;</code> with validity tracking
+          </li>
+        </ul>
+
+        <p><strong>Memory Management:</strong></p>
+        <ul>
+          <li>
+            <strong>Initial Capacity</strong> – Starts with 10×10 matrix,
+            auto-expands as needed
+          </li>
+          <li>
+            <strong>Capacity Doubling</strong> – Matrix size doubles when
+            <code>size == matrix.length</code>
+          </li>
+          <li>
+            <strong>Infinity Initialization</strong> – New matrix cells filled
+            with <code>Integer.MAX_VALUE</code>
+          </li>
+          <li>
+            <strong>Self-Loop Handling</strong> – Diagonal elements set to 0 for
+            registered nodes
+          </li>
+        </ul>
+
+        <p><strong>Bridge Detection Optimization:</strong></p>
+        <ul>
+          <li>
+            <strong>Lazy Computation</strong> – Tarjan's algorithm executed only
+            when bridge information is requested
+          </li>
+          <li>
+            <strong>Cache Invalidation</strong> – <code>bridgeInfoValid</code>
+            flag reset on graph modifications
+          </li>
+          <li>
+            <strong>Unified Analysis</strong> – Single DFS pass computes both
+            bridge edges and articulation points
+          </li>
+          <li>
+            <strong>Cached Results</strong> – Subsequent queries return cached
+            results without recomputation
+          </li>
+        </ul>
+
+        <p><strong>Algorithm Implementations:</strong></p>
+        <ul>
+          <li>
+            <strong>Dijkstra's</strong> – PriorityQueue with matrix-based
+            neighbor iteration
+          </li>
+          <li>
+            <strong>Floyd-Warshall</strong> – Triple nested loop over all vertex
+            pairs using matrix
+          </li>
+          <li>
+            <strong>Kosaraju's SCC</strong> – DFS on original graph, then
+            transpose matrix for second DFS
+          </li>
+          <li>
+            <strong>Prim's MST</strong> – PriorityQueue with matrix edge weight
+            lookup
+          </li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>Detailed Usage Examples</h2>
+        <pre class="code-block"><code>
+AdjMatrixWeightedGraph&lt;String&gt; g = new AdjMatrixWeightedGraph&lt;&gt;(false);
+g.addEdge("A", "B", 4);
+g.addEdge("B", "C", 1);
+g.addEdge("A", "C", 3);
+g.addEdge("C", "D", 2);
+g.addEdge("B", "D", 5);
+
+g.bfs("A", node -&gt; System.out.println("Visited BFS: " + node));
+// Visited BFS: A
+// Visited BFS: B
+// Visited BFS: C
+// Visited BFS: D
+
+g.dfs("A", node -&gt; System.out.println("Visited DFS: " + node));
+// Visited DFS: A
+// Visited DFS: B
+// Visited DFS: C
+// Visited DFS: D
+
+System.out.println("Shortest path from A to D: " + g.dijkstra("A", "D"));
+// Shortest path from A to D: 5
+
+System.out.println("Shortest paths from A (Bellman-Ford): " + g.bellmanFord("A"));
+// {A=0, B=4, C=3, D=5}
+
+System.out.println("All-pairs shortest paths: " + g.floydWarshall());
+// {A={A=0, B=4, C=3, D=5}, ...}
+
+System.out.println("Prim MST cost: " + g.primsMST("A"));
+// Prim MST cost: 7
+
+System.out.println("Kruskal MST cost: " + g.kruskalMST());
+// Kruskal MST cost: 7
+
+System.out.println("Is D reachable from A? " + g.isReachable("A", "D"));
+// true
+
+g.printGraph();
+// A 0 4 3 ∞
+// B 4 0 1 5
+// C 3 1 0 2
+// D ∞ 5 2 0
+        </code></pre>
+
+        <h3>Bridge &amp; Articulation Point Detection</h3>
+        <pre class="code-block"><code>
+AdjMatrixWeightedGraph&lt;Integer&gt; g = new AdjMatrixWeightedGraph&lt;&gt;(false);
+g.addEdge(1, 2, 1);
+g.addEdge(2, 3, 1);
+g.addEdge(3, 4, 1);
+g.addEdge(4, 5, 1);
+g.addEdge(3, 5, 1);
+
+System.out.println("Bridge edges: " + g.getBridgeEdges());
+// Bridge edges: [(1,2)]
+
+System.out.println("Articulation points: " + g.getBridgeNodes());
+// [2, 3]
+
+System.out.println("Is edge (2,3) a bridge? " + g.isBridgeEdge(2, 3));
+// false
+
+System.out.println("Is node 3 a bridge node? " + g.isBridgeNode(3));
+// true
+        </code></pre>
+      </section>
+
+      <section class="doc-section">
+        <h2>Quick Example</h2>
+        <pre class="code-block"><code>
+AdjMatrixWeightedGraph&lt;Integer&gt; g = new AdjMatrixWeightedGraph&lt;&gt;(false);
+g.addEdge(1, 2, 10);
+g.addEdge(2, 3, 5);
+g.addEdge(3, 4, 8);
+
+System.out.println(g.dijkstra(1, 4));  // Output: 23
+System.out.println(g.kruskalMST());    // Output: 23
+        </code></pre>
+      </section>
+    </div>
+
+    <footer>© 2025 Java Generic DSA Utils | Manoj Kumar G</footer>
+    <script src="../../../scripts/docs.js"></script>
+  </body>
+</html>
