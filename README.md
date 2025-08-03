@@ -28,6 +28,7 @@ dsalib-utils/
 - ✅ Number theory (prime, modmath)
 - ✅ Pattern matching: KMP, Z-algo, Rabin-Karp
 - ✅ Order Statistic Tree and Set
+- ✅ Sparce table for array and matrix
 
 ## 🧪 Unit Testing
 
