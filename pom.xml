@@ -1,6 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.manoj-0207</groupId>
@@ -50,14 +51,16 @@
     </dependencies>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
+        <!-- Release/staging repository via Central Publisher Staging API -->
         <repository>
             <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
         </repository>
+        <!-- Snapshot repository -->
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <build>
@@ -69,7 +72,7 @@
                 <version>3.11.0</version>
             </plugin>
 
-            <!-- Attach sources -->
+            <!-- Attach sources JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -85,7 +88,7 @@
                 </executions>
             </plugin>
 
-            <!-- Create javadoc.jar from doc-javadoc directory -->
+            <!-- Custom Javadoc JAR from your doc-javadoc directory -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -105,7 +108,7 @@
                 </executions>
             </plugin>
 
-            <!-- GPG signing -->
+            <!-- GPG signing of all artifacts -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
@@ -121,7 +124,7 @@
                 </executions>
             </plugin>
 
-            <!-- Sonatype OSSRH Deployment -->
+            <!-- Nexus Staging plugin pointing at new staging API -->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -129,7 +132,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <nexusUrl>https://ossrh-staging-api.central.sonatype.com/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
